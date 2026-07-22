@@ -1,0 +1,14 @@
+/* The app is a single centred column: mobile-first, and on desktop it just
+   stays a comfortable reading width in the middle of the screen. */
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+.content {
+  flex: 1;
+  padding: 20px 16px 28px;
+}

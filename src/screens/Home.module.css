@@ -1,0 +1,27 @@
+.home { display: flex; flex-direction: column; gap: 28px; }
+
+.header { text-align: center; padding-top: 8px; }
+.title { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+.tagline { color: var(--text-dim); font-size: 0.95rem; margin-top: 4px; }
+
+.cta { display: flex; flex-direction: column; gap: 12px; }
+.now {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+}
+.now strong { color: var(--text); }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.track { display: flex; flex-direction: column; gap: 12px; }

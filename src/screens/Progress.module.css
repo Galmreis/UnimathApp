@@ -1,0 +1,53 @@
+.progress { display: flex; flex-direction: column; gap: 28px; }
+
+.title { font-size: 1.6rem; font-weight: 800; padding-top: 8px; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.sectionTitle { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+
+.topicList { display: flex; flex-direction: column; gap: 14px; }
+.topicRow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.topicHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+.topicName { display: flex; align-items: center; gap: 8px; }
+.topicStatus { font-size: 0.78rem; color: var(--text-dim); font-weight: 600; }
+.topicStatus[data-status='mastered'] { color: var(--success); }
+.topicStatus[data-status='locked'] { opacity: 0.7; }
+.topicSub { font-size: 0.82rem; color: var(--text-dim); }
+
+.history {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.historyRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.historyScore { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.empty { color: var(--text-dim); font-size: 0.95rem; }

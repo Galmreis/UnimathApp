@@ -1,0 +1,80 @@
+/* Global styles: a tiny reset, the theme "tokens" (CSS variables), and base
+   element styling. Everything component-specific lives in *.module.css files.
+   The palette follows the brief: calm dark mode that doesn't strain the eyes —
+   a blue-grey background (not pure black), off-white text (not pure white),
+   a soft accent, and desaturated success/error colours. */
+
+:root {
+  /* Surfaces */
+  --bg: #171b24;         /* app background — dark blue-grey */
+  --surface: #1f2530;    /* cards */
+  --surface-2: #272e3c;  /* nested surfaces, inputs */
+  --elev: #2f3746;       /* hover/pressed */
+
+  /* Text */
+  --text: #e7eaf0;       /* off-white */
+  --text-dim: #98a2b3;   /* secondary text */
+
+  /* Lines & accent */
+  --border: #313a4a;
+  --accent: #7aa2f7;     /* soft blue — primary actions */
+  --accent-ink: #0e1420; /* text drawn on top of the accent colour */
+
+  /* Feedback (desaturated so nothing is harsh) */
+  --success: #7ecb8f;
+  --success-bg: rgba(126, 203, 143, 0.14);
+  --error: #e39191;
+  --error-bg: rgba(227, 145, 145, 0.14);
+
+  /* Shape & rhythm */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --tap: 52px;           /* minimum comfortable touch target */
+  --maxw: 480px;         /* content column width (centred on desktop) */
+
+  /* Typography — swap the whole app's font by changing this one line.
+     To use a web font, load it (index.html <link> or @import here) then put
+     its name first. See README "Changing the look". */
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  color-scheme: dark;
+}
+
+/* High-contrast option (Settings). Brightens text, borders and accent. */
+:root[data-contrast='high'] {
+  --bg: #0f1218;
+  --surface: #1a212c;
+  --surface-2: #232c3a;
+  --text: #ffffff;
+  --text-dim: #c3ccdb;
+  --border: #46536a;
+  --accent: #9db8ff;
+  --success: #93e0a3;
+  --error: #f0a3a3;
+}
+
+/* --- reset --- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html, body, #root { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;               /* >=16px stops mobile browsers zooming on focus */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Inputs and buttons should inherit the font, not fall back to the OS default. */
+input, button, select, textarea { font: inherit; color: inherit; }
+
+button { cursor: pointer; border: none; background: none; }
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
