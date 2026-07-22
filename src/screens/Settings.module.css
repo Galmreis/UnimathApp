@@ -1,0 +1,68 @@
+.settings { display: flex; flex-direction: column; gap: 28px; }
+
+.title { font-size: 1.6rem; font-weight: 800; padding-top: 8px; }
+
+.group { display: flex; flex-direction: column; gap: 12px; }
+.groupTitle { font-size: 1.05rem; font-weight: 700; }
+
+/* Segmented control: two options, the active one filled with the accent. */
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+.segmented button {
+  min-height: 44px;
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.segmented button[data-active='true'] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Choice chips (session length). */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.chips button[data-active='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+}
+.toggleRow > span { display: flex; flex-direction: column; font-weight: 600; }
+.toggleHint { font-size: 0.8rem; color: var(--text-dim); font-weight: 400; margin-top: 2px; }
+
+/* A big, easy-to-hit native checkbox tinted with the accent colour. */
+.toggle {
+  width: 26px;
+  height: 26px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.note { font-size: 0.82rem; color: var(--text-dim); }
+.about { font-size: 0.8rem; color: var(--text-dim); text-align: center; margin-top: 8px; }
