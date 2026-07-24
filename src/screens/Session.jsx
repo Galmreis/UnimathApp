@@ -15,10 +15,12 @@ const EXAM_QUESTIONS = 10 // the "prova da sexta" is always 10 questions
 //   mode: 'practice' | 'exam'
 //   topicId: which topic to drill
 //   navigate: to move to the summary or back home
-export function Session({ mode, topicId, navigate }) {
+export function Session({ mode, topicId, levelIndex, navigate }) {
   const { settings, progress, commitSession, commitExam } = useStore()
   const topic = getTopic(topicId)
-  const level = progress[topicId]?.levelIndex ?? 0
+  // Practice can target any reached level (levelIndex prop, for reviewing an old
+  // one); default to the current level. The exam always runs at the current level.
+  const level = levelIndex ?? progress[topicId]?.levelIndex ?? 0
 
   // How many questions this session lasts. Time mode has no fixed count — it
   // ends when the clock runs out (handled by the timer effect below).
@@ -78,7 +80,7 @@ export function Session({ mode, topicId, navigate }) {
       commitExam({ topicId, correct, total: finalResults.length, levelIndex: level })
       navigate('summary', { result: { mode: 'exam', topicId, results: finalResults, durationMs, levelIndex: level } })
     } else {
-      commitSession({ topicId, results: finalResults, durationMs })
+      commitSession({ topicId, results: finalResults, durationMs, level })
       navigate('summary', { result: { mode: 'practice', topicId, results: finalResults, durationMs } })
     }
   }

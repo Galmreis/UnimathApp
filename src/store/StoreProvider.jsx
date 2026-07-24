@@ -51,11 +51,14 @@ export function StoreProvider({ children }) {
 
   // Commit a finished practice session: fold each answer into the topic's
   // progress, auto-advance the level if it was "fixed", and log the summary.
-  function commitSession({ topicId, results, durationMs }) {
+  function commitSession({ topicId, results, durationMs, level }) {
     setProgress((prev) => {
       let prog = prev[topicId] ?? emptyProgress()
-      for (const isCorrect of results) prog = recordAnswer(prog, isCorrect)
-      prog = advanceIfReady(prog, getTopic(topicId))
+      // Reviewing a level below the one you've reached: log the answers but don't
+      // let them move the level up (or down).
+      const reviewing = level != null && level < prog.levelIndex
+      for (const isCorrect of results) prog = recordAnswer(prog, isCorrect, reviewing)
+      if (!reviewing) prog = advanceIfReady(prog, getTopic(topicId))
       return { ...prev, [topicId]: prog }
     })
     const correct = results.filter(Boolean).length

@@ -101,6 +101,13 @@ const divisao = TOPICS[0]
 let p2 = advanceIfReady(p, divisao)
 assert(p2.levelIndex === 1 && p2.recent.length === 0, 'advance moves up a level and resets window')
 
+// reviewing a past level (statsOnly) counts toward totals but not the window,
+// so it can never advance the topic
+let pr = { ...emptyProgress(), levelIndex: 2 }
+for (let i = 0; i < 12; i++) pr = recordAnswer(pr, true, true)
+assert(pr.answered === 12 && pr.correct === 12, 'review answers still count in totals')
+assert(pr.recent.length === 0 && !isLevelReady(pr), 'review answers do not fill the mastery window')
+
 // not ready -> no change
 let p3 = emptyProgress()
 p3 = recordAnswer(p3, true)

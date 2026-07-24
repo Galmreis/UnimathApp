@@ -25,7 +25,7 @@ export default function App() {
         {view.name === 'home' && <Home navigate={navigate} />}
         {view.name === 'progress' && <Progress />}
         {view.name === 'settings' && <Settings navigate={navigate} />}
-        {view.name === 'session' && <Session key={`practice-${view.topicId}`} mode="practice" topicId={view.topicId} navigate={navigate} />}
+        {view.name === 'session' && <Session key={`practice-${view.topicId}-${view.levelIndex ?? 'cur'}`} mode="practice" topicId={view.topicId} levelIndex={view.levelIndex} navigate={navigate} />}
         {view.name === 'exam' && <Session key={`exam-${view.topicId}`} mode="exam" topicId={view.topicId} navigate={navigate} />}
         {view.name === 'summary' && <Summary result={view.result} navigate={navigate} />}
       </main>

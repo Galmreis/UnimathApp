@@ -11,13 +11,36 @@
   transition: border-color 0.15s ease, transform 0.05s ease;
 }
 
-.card:not(:disabled):hover { border-color: var(--accent); }
-.card:not(:disabled):active { transform: translateY(1px); }
-.card:disabled { opacity: 0.55; cursor: not-allowed; }
-.card:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.card[data-status='locked'] { opacity: 0.55; }
 
 .card[data-status='mastered'] {
   border-color: color-mix(in srgb, var(--success) 50%, var(--border));
+}
+
+/* one tappable pill per level — tap a past level to review it */
+.levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.levelPill {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.05s ease;
+}
+.levelPill:not(:disabled):hover { border-color: var(--accent); }
+.levelPill:not(:disabled):active { transform: translateY(1px); }
+.levelPill:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.levelPill:disabled { opacity: 0.45; cursor: not-allowed; }
+.levelPill[data-current='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .head {
@@ -43,5 +66,4 @@
 .status[data-status='in_progress'] { color: var(--accent); }
 .status[data-status='mastered'] { color: var(--success); background: var(--success-bg); }
 
-.level { font-size: 0.85rem; color: var(--text-dim); }
 .hint { font-size: 0.85rem; color: var(--text-dim); }
