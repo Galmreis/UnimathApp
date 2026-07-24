@@ -24,7 +24,7 @@ export function Home({ navigate }) {
     <div className={styles.home}>
       <header className={styles.header}>
         <h1 className={styles.title}>Unimath</h1>
-        <p className={styles.tagline}>Treino diário de matemática — rumo à UFRGS.</p>
+        <p className={styles.tagline}><i>Matemática não é talento, é treino!</i></p>
       </header>
 
       <section className={styles.cta}>
@@ -58,7 +58,7 @@ export function Home({ navigate }) {
                 status={status}
                 levelIndex={prog.levelIndex}
                 accuracy={status === 'mastered' ? 1 : recentAccuracy(prog)}
-                onStart={() => navigate('session', { topicId: topic.id })}
+                onStart={(levelIndex) => navigate('session', { topicId: topic.id, levelIndex })}
               />
             )
           })}

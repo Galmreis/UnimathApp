@@ -11,18 +11,18 @@ const STATUS_LABEL = {
   mastered: 'Fixado',
 }
 
+// `onStart(levelIndex)` starts a practice session at the chosen level.
 export function TopicCard({ topic, status, levelIndex, accuracy, onStart }) {
   const locked = status === 'locked'
+  const mastered = status === 'mastered'
   const totalLevels = topic.levels.length
   const safeLevel = Math.min(levelIndex, totalLevels - 1)
+  // Highest level you're allowed to train: everything up to (and including) the
+  // one you've reached — or every level once the topic is fixed.
+  const maxTrainable = mastered ? totalLevels - 1 : safeLevel
 
   return (
-    <button
-      className={styles.card}
-      data-status={status}
-      disabled={locked}
-      onClick={locked ? undefined : onStart}
-    >
+    <div className={styles.card} data-status={status}>
       <div className={styles.head}>
         <TopicGlyph topic={topic} />
         <div className={styles.titles}>
@@ -35,12 +35,22 @@ export function TopicCard({ topic, status, levelIndex, accuracy, onStart }) {
         <div className={styles.hint}>Fixe o tópico anterior para liberar.</div>
       ) : (
         <>
-          <div className={styles.level}>
-            Nível {safeLevel + 1}/{totalLevels} · {topic.levels[safeLevel]}
+          <ProgressBar value={accuracy} tone={mastered ? 'success' : 'accent'} />
+          <div className={styles.levels}>
+            {topic.levels.map((label, i) => (
+              <button
+                key={i}
+                className={styles.levelPill}
+                data-current={i === safeLevel && !mastered}
+                disabled={i > maxTrainable}
+                onClick={() => onStart(i)}
+              >
+                {i + 1}. {label}
+              </button>
+            ))}
           </div>
-          <ProgressBar value={accuracy} tone={status === 'mastered' ? 'success' : 'accent'} />
         </>
       )}
-    </button>
+    </div>
   )
 }

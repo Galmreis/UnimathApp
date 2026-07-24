@@ -2,8 +2,8 @@ import styles from './Settings.module.css'
 import { Button } from '../components/Button.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-const COUNT_OPTIONS = [10, 15, 20, 30]
-const TIME_OPTIONS = [10, 20, 30, 45]
+const COUNT_OPTIONS = [5, 10, 15, 20, 30, 35]
+const TIME_OPTIONS = [1, 5, 10, 20, 30, 45]
 
 export function Settings({ navigate }) {
   const { settings, updateSettings, resetProgress } = useStore()

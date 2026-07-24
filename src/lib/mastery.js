@@ -15,13 +15,16 @@ export function emptyProgress() {
 }
 
 // Fold one answer into a topic's progress (returns a new object — never mutates).
-export function recordAnswer(prog, isCorrect) {
+// `statsOnly` records the answer in the lifetime totals but leaves the rolling
+// window untouched — used when reviewing an already-passed level, so acing easy
+// old questions can't advance or master the topic.
+export function recordAnswer(prog, isCorrect, statsOnly = false) {
   return {
     ...prog,
     answered: prog.answered + 1,
     correct: prog.correct + (isCorrect ? 1 : 0),
     // keep only the last MASTERY_WINDOW results
-    recent: [...prog.recent, isCorrect].slice(-MASTERY_WINDOW),
+    recent: statsOnly ? prog.recent : [...prog.recent, isCorrect].slice(-MASTERY_WINDOW),
   }
 }
 
