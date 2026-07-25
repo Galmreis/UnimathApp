@@ -3,11 +3,10 @@ import { Button } from '../components/Button.jsx'
 import { StatTile } from '../components/StatTile.jsx'
 import { TopicCard } from '../components/TopicCard.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
-import { TOPICS, getTopic } from '../data/topics.js'
 import { topicStatus, recentAccuracy, emptyProgress } from '../lib/mastery.js'
 
 export function Home({ navigate }) {
-  const { progress, sessions, exams, currentTopicId } = useStore()
+  const { t, topics, getTopic, progress, sessions, exams, currentTopicId } = useStore()
 
   const currentTopic = getTopic(currentTopicId)
   const currentLevel = progress[currentTopicId]?.levelIndex ?? 0
@@ -24,31 +23,31 @@ export function Home({ navigate }) {
     <div className={styles.home}>
       <header className={styles.header}>
         <h1 className={styles.title}>Unimath</h1>
-        <p className={styles.tagline}><i>Matemática não é talento, é treino!</i></p>
+        <p className={styles.tagline}><i>{t('tagline')}</i></p>
       </header>
 
       <section className={styles.cta}>
         <div className={styles.now}>
-          Agora: <strong>{currentTopic.name}</strong> · Nível {currentLevel + 1}/{currentTopic.levels.length}
+          {t('now')}: <strong>{currentTopic.name}</strong> · {t('level_of', { n: currentLevel + 1, m: currentTopic.levels.length })}
         </div>
         <Button size="big" full onClick={() => navigate('session', { topicId: currentTopicId })}>
-          Treinar agora
+          {t('trainNow')}
         </Button>
         <Button variant="ghost" full onClick={() => navigate('exam', { topicId: currentTopicId })}>
-          Prova da sexta
+          {t('fridayExam')}
         </Button>
       </section>
 
       <section className={styles.stats}>
-        <StatTile value={studyDays} label="dias estudados" />
-        <StatTile value={totalAnswered} label="questões" />
-        <StatTile value={`${overallPct}%`} label="acerto geral" />
+        <StatTile value={studyDays} label={t('stat_daysStudied')} />
+        <StatTile value={totalAnswered} label={t('stat_questions')} />
+        <StatTile value={`${overallPct}%`} label={t('stat_overall')} />
       </section>
 
       <section>
-        <h2 className={styles.sectionTitle}>Sua trilha</h2>
+        <h2 className={styles.sectionTitle}>{t('yourTrack')}</h2>
         <div className={styles.track}>
-          {TOPICS.map((topic) => {
+          {topics.map((topic) => {
             const prog = progress[topic.id] ?? emptyProgress()
             const status = topicStatus(topic, progress)
             return (

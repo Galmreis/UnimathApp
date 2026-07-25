@@ -38,8 +38,10 @@ export function round(value, places = 2) {
   return Math.round(value * factor) / factor
 }
 
-// Format a number the Brazilian way: decimal comma, no trailing ".00".
-// formatNumber(6.25) -> "6,25", formatNumber(5) -> "5".
-export function formatNumber(value) {
-  return String(round(value, 2)).replace('.', ',')
+// Format a number for display, no trailing ".00". Portuguese uses a decimal
+// comma (6,25); English uses a decimal point (6.25).
+// formatNumber(6.25) -> "6,25", formatNumber(6.25, 'en') -> "6.25".
+export function formatNumber(value, lang = 'pt') {
+  const s = String(round(value, 2))
+  return lang === 'en' ? s : s.replace('.', ',')
 }

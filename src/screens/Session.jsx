@@ -3,7 +3,6 @@ import styles from './Session.module.css'
 import { Button } from '../components/Button.jsx'
 import { ProgressBar } from '../components/ProgressBar.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
-import { getTopic } from '../data/topics.js'
 import { generateQuestion } from '../lib/generators.js'
 import { checkAnswer, formatAnswer } from '../lib/checkAnswer.js'
 import { randInt } from '../lib/math.js'
@@ -16,7 +15,7 @@ const EXAM_QUESTIONS = 10 // the "prova da sexta" is always 10 questions
 //   topicId: which topic to drill
 //   navigate: to move to the summary or back home
 export function Session({ mode, topicId, levelIndex, navigate }) {
-  const { settings, progress, commitSession, commitExam } = useStore()
+  const { settings, t, lang, getTopic, progress, commitSession, commitExam } = useStore()
   const topic = getTopic(topicId)
   // Practice can target any reached level (levelIndex prop, for reviewing an old
   // one); default to the current level. The exam always runs at the current level.
@@ -32,7 +31,7 @@ export function Session({ mode, topicId, levelIndex, navigate }) {
   // Build one question. Practice drills the current level; the exam mixes every
   // level up to the current one, to test the whole range you've climbed.
   function makeQuestion() {
-    return generateQuestion(topicId, mode === 'exam' ? randInt(0, level) : level)
+    return generateQuestion(topicId, mode === 'exam' ? randInt(0, level) : level, lang)
   }
 
   const [question, setQuestion] = useState(makeQuestion)
@@ -113,7 +112,7 @@ export function Session({ mode, topicId, levelIndex, navigate }) {
   }
 
   function quit() {
-    if (window.confirm('Sair da sessão? O que você fez agora não será salvo.')) {
+    if (window.confirm(t('quitConfirm'))) {
       navigate('home')
     }
   }
@@ -128,11 +127,11 @@ export function Session({ mode, topicId, levelIndex, navigate }) {
   return (
     <div className={styles.session}>
       <header className={styles.top}>
-        <button className={styles.close} onClick={quit} aria-label="Sair da sessão">✕</button>
+        <button className={styles.close} onClick={quit} aria-label={t('quitAria')}>✕</button>
         <div className={styles.meta}>
-          <span className={styles.topicName}>{topic.name}{mode === 'exam' && ' · Prova'}</span>
+          <span className={styles.topicName}>{topic.name}{mode === 'exam' && ` · ${t('examTag')}`}</span>
           <span className={styles.counter}>
-            {byTime ? `⏱ ${formatClock(startedAt + settings.sessionMinutes * 60000 - now)}` : `Questão ${shownNumber} de ${targetCount}`}
+            {byTime ? `⏱ ${formatClock(startedAt + settings.sessionMinutes * 60000 - now)}` : t('questionOf', { n: shownNumber, m: targetCount })}
           </span>
         </div>
         <ProgressBar value={sessionProgress} />
@@ -148,25 +147,25 @@ export function Session({ mode, topicId, levelIndex, navigate }) {
             value={input}
             onChange={(e) => setInput(sanitizeAnswer(e.target.value, question.kind))}
             inputMode={question.kind === 'fraction' || question.signed ? 'text' : 'decimal'}
-            placeholder={question.kind === 'fraction' ? 'ex.: 3/4' : 'sua resposta'}
+            placeholder={question.kind === 'fraction' ? t('answerPlaceholderFraction') : t('answerPlaceholder')}
             autoComplete="off"
             enterKeyHint="go"
             disabled={phase === 'feedback'}
-            aria-label="Sua resposta"
+            aria-label={t('answerAria')}
           />
 
           {phase === 'answering' && (
-            <Button type="submit" full disabled={input.trim() === ''}>Responder</Button>
+            <Button type="submit" full disabled={input.trim() === ''}>{t('submit')}</Button>
           )}
         </form>
 
         {phase === 'feedback' && (
           <>
             <div className={styles.feedback} data-correct={lastCorrect}>
-              {lastCorrect ? 'Certo!' : <>Errou — resposta certa: <strong>{formatAnswer(question)}</strong></>}
+              {lastCorrect ? t('correct') : <>{t('wrongPrefix')} <strong>{formatAnswer(question, lang)}</strong></>}
             </div>
             {settings.showExplanations && (
-              <ol className={styles.steps} aria-label="Passo a passo">
+              <ol className={styles.steps} aria-label={t('stedAria')}>
                 {question.steps.map((step, i) => (
                   <li key={i}>{step}</li>
                 ))}
@@ -174,20 +173,20 @@ export function Session({ mode, topicId, levelIndex, navigate }) {
             )}
             {settings.showTips && question.tips.length > 0 && (
               <div className={styles.tip}>
-                <span className={styles.tipLabel}>Dica</span>
-                {question.tips.map((t, i) => (
-                  <p key={i}>{t}</p>
+                <span className={styles.tipLabel}>{t('tipLabel')}</span>
+                {question.tips.map((tip, i) => (
+                  <p key={i}>{tip}</p>
                 ))}
               </div>
             )}
             <Button autoFocus full onClick={goNext}>
-              {isLastCount ? 'Ver resumo' : 'Próxima'}
+              {isLastCount ? t('seeSummary') : t('next')}
             </Button>
           </>
         )}
 
         {mode === 'exam' && (
-          <p className={styles.examNote}>Prova sem correção na hora — o resultado aparece no fim.</p>
+          <p className={styles.examNote}>{t('examNote')}</p>
         )}
       </div>
     </div>

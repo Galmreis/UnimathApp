@@ -4,12 +4,13 @@ import { useStore } from '../store/StoreProvider.jsx'
 
 const COUNT_OPTIONS = [5, 10, 15, 20, 30, 35]
 const TIME_OPTIONS = [1, 5, 10, 20, 30, 45]
+const THEMES = ['midnight', 'dim', 'sepia', 'forest', 'ocean', 'plum', 'rose', 'slate', 'clay']
 
 export function Settings({ navigate }) {
-  const { settings, updateSettings, resetProgress } = useStore()
+  const { t, settings, updateSettings, resetProgress } = useStore()
 
   function handleReset() {
-    if (window.confirm('Apagar TODO o progresso (tópicos, sessões e provas)? Isso não pode ser desfeito.')) {
+    if (window.confirm(t('resetConfirm'))) {
       resetProgress()
       navigate('home')
     }
@@ -17,22 +18,40 @@ export function Settings({ navigate }) {
 
   return (
     <div className={styles.settings}>
-      <h1 className={styles.title}>Ajustes</h1>
+      <h1 className={styles.title}>{t('settingsTitle')}</h1>
 
       <section className={styles.group}>
-        <h2 className={styles.groupTitle}>Tamanho da sessão</h2>
+        <h2 className={styles.groupTitle}>{t('language')}</h2>
+        <div className={styles.segmented}>
+          <button
+            data-active={settings.lang === 'pt'}
+            onClick={() => updateSettings({ lang: 'pt' })}
+          >
+            Português
+          </button>
+          <button
+            data-active={settings.lang === 'en'}
+            onClick={() => updateSettings({ lang: 'en' })}
+          >
+            English
+          </button>
+        </div>
+      </section>
+
+      <section className={styles.group}>
+        <h2 className={styles.groupTitle}>{t('sessionSize')}</h2>
         <div className={styles.segmented}>
           <button
             data-active={settings.sessionMode === 'count'}
             onClick={() => updateSettings({ sessionMode: 'count' })}
           >
-            Por questões
+            {t('byQuestions')}
           </button>
           <button
             data-active={settings.sessionMode === 'time'}
             onClick={() => updateSettings({ sessionMode: 'time' })}
           >
-            Por tempo
+            {t('byTime')}
           </button>
         </div>
 
@@ -44,7 +63,7 @@ export function Settings({ navigate }) {
                 data-active={settings.sessionCount === n}
                 onClick={() => updateSettings({ sessionCount: n })}
               >
-                {n} questões
+                {t('nQuestions', { n })}
               </button>
             ))}
           </div>
@@ -56,7 +75,7 @@ export function Settings({ navigate }) {
                 data-active={settings.sessionMinutes === n}
                 onClick={() => updateSettings({ sessionMinutes: n })}
               >
-                {n} min
+                {t('nMin', { n })}
               </button>
             ))}
           </div>
@@ -64,11 +83,11 @@ export function Settings({ navigate }) {
       </section>
 
       <section className={styles.group}>
-        <h2 className={styles.groupTitle}>Correção</h2>
+        <h2 className={styles.groupTitle}>{t('feedbackGroup')}</h2>
         <label className={styles.toggleRow}>
           <span>
-            Explicações passo a passo
-            <span className={styles.toggleHint}>Mostra a resolução, passo a passo, na correção.</span>
+            {t('explanations')}
+            <span className={styles.toggleHint}>{t('explanationsHint')}</span>
           </span>
           <input
             type="checkbox"
@@ -79,8 +98,8 @@ export function Settings({ navigate }) {
         </label>
         <label className={styles.toggleRow}>
           <span>
-            Dica (estratégia)
-            <span className={styles.toggleHint}>Mostra um atalho de cálculo mental para cada questão.</span>
+            {t('tipsSetting')}
+            <span className={styles.toggleHint}>{t('tipsHint')}</span>
           </span>
           <input
             type="checkbox"
@@ -92,11 +111,38 @@ export function Settings({ navigate }) {
       </section>
 
       <section className={styles.group}>
-        <h2 className={styles.groupTitle}>Visual</h2>
+        <h2 className={styles.groupTitle}>{t('appearance')}</h2>
+        <div className={styles.selectRow}>
+          <span className={styles.preview} aria-hidden="true" />
+          <div className={styles.selectWrap}>
+            <select
+              className={styles.select}
+              value={settings.theme}
+              onChange={(e) => updateSettings({ theme: e.target.value })}
+              aria-label={t('theme')}
+            >
+              {THEMES.map((id) => (
+                <option key={id} value={id}>{t(`theme_${id}`)}</option>
+              ))}
+            </select>
+          </div>
+        </div>
         <label className={styles.toggleRow}>
           <span>
-            Alto contraste
-            <span className={styles.toggleHint}>Cores mais fortes para leitura fácil.</span>
+            {t('animations')}
+            <span className={styles.toggleHint}>{t('animationsHint')}</span>
+          </span>
+          <input
+            type="checkbox"
+            className={styles.toggle}
+            checked={settings.animations}
+            onChange={(e) => updateSettings({ animations: e.target.checked })}
+          />
+        </label>
+        <label className={styles.toggleRow}>
+          <span>
+            {t('highContrast')}
+            <span className={styles.toggleHint}>{t('highContrastHint')}</span>
           </span>
           <input
             type="checkbox"
@@ -105,15 +151,15 @@ export function Settings({ navigate }) {
             onChange={(e) => updateSettings({ highContrast: e.target.checked })}
           />
         </label>
-        <p className={styles.note}>O app usa modo escuro por padrão para cansar menos a vista.</p>
+        <p className={styles.note}>{t('darkNote')}</p>
       </section>
 
       <section className={styles.group}>
-        <h2 className={styles.groupTitle}>Dados</h2>
-        <Button variant="danger" full onClick={handleReset}>Zerar progresso</Button>
+        <h2 className={styles.groupTitle}>{t('dataGroup')}</h2>
+        <Button variant="danger" full onClick={handleReset}>{t('resetProgress')}</Button>
       </section>
 
-      <p className={styles.about}>Unimath · treino de matemática para o vestibular. Seus dados ficam só neste navegador.</p>
+      <p className={styles.about}>{t('about')}</p>
     </div>
   )
 }

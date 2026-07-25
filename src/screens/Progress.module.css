@@ -1,53 +1,163 @@
-.progress { display: flex; flex-direction: column; gap: 28px; }
+.progress { display: flex; flex-direction: column; gap: 28px; animation: fade-up 0.28s ease both; }
 
 .title { font-size: 1.6rem; font-weight: 800; padding-top: 8px; }
 
-.stats {
+/* The at-a-glance overview: one panel, four big numbers in a 2×2 grid with
+   hairline dividers, rather than four small separate tiles. The overall-accuracy
+   figure is drawn in the accent colour as the headline stat. */
+.overview {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.ovCell {
+  padding: 22px 16px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.ovCell:nth-child(2n) { border-right: none; }
+.ovCell:nth-last-child(-n+2) { border-bottom: none; }
+.ovValue {
+  font-size: 2.3rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.ovAccent { color: var(--accent); }
+.ovLabel { font-size: 0.82rem; color: var(--text-dim); margin-top: 7px; }
+
+/* Section titles carry the same accent tick as the Settings groups, so both
+   tabs read as one system. It keys off --accent and re-tints with the theme. */
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sectionTitle::before {
+  content: '';
+  width: 4px;
+  height: 1.05em;
+  border-radius: 2px;
+  background: var(--accent);
 }
 
-.sectionTitle { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+/* "Where to improve" — weak-topic rows flagged with an error-toned left edge,
+   the same callout language as the Session "Dica". The percentage is drawn in
+   the error colour so the number itself signals "work on this". */
+.improveList { display: flex; flex-direction: column; gap: 10px; }
+.improveRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--error);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.improveTitles { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.improveName { font-weight: 700; }
+.improveSub { font-size: 0.8rem; color: var(--text-dim); }
+.improvePct {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--error);
+}
+.improveGood {
+  background: var(--success-bg);
+  border: 1px solid color-mix(in srgb, var(--success) 40%, var(--border));
+  border-radius: var(--radius);
+  padding: 16px;
+  color: var(--success);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
 
-.topicList { display: flex; flex-direction: column; gap: 14px; }
+.topicList { display: flex; flex-direction: column; gap: 12px; }
 .topicRow {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
-.topicHead {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
+/* Mastered topics get a success-tinted border so "done" reads at a glance. */
+.topicRow[data-status='mastered'] {
+  border-color: color-mix(in srgb, var(--success) 45%, var(--border));
 }
-.topicName { display: flex; align-items: center; gap: 8px; }
-.topicStatus { font-size: 0.78rem; color: var(--text-dim); font-weight: 600; }
-.topicStatus[data-status='mastered'] { color: var(--success); }
-.topicStatus[data-status='locked'] { opacity: 0.7; }
-.topicSub { font-size: 0.82rem; color: var(--text-dim); }
+.topicHead { display: flex; align-items: center; gap: 12px; }
 
+/* The accuracy bar with its percentage pulled out as a prominent, colour-coded
+   number — the metric you scan this list for. */
+.accRow { display: flex; align-items: center; gap: 12px; }
+.accBar { flex: 1; }
+.accPct {
+  flex-shrink: 0;
+  min-width: 42px;
+  text-align: right;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+.accPct[data-status='in_progress'] { color: var(--accent); }
+.accPct[data-status='mastered'] { color: var(--success); }
+.topicTitles { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.topicName { font-weight: 700; font-size: 1.02rem; }
+.topicSub { font-size: 0.8rem; color: var(--text-dim); }
+
+/* Status pill — matches the one on the Home topic cards. */
+.topicStatus {
+  flex-shrink: 0;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.topicStatus[data-status='in_progress'] { color: var(--accent); }
+.topicStatus[data-status='mastered'] { color: var(--success); background: var(--success-bg); }
+.topicStatus[data-status='locked'] { opacity: 0.7; }
+
+/* History as one card with divided rows, rather than loose separate pills. */
 .history {
   list-style: none;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 .historyRow {
   display: flex;
   justify-content: space-between;
-  padding: 12px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
 }
+.historyRow:last-child { border-bottom: none; }
 .historyScore { color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
-.empty { color: var(--text-dim); font-size: 0.95rem; }
+.empty {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}

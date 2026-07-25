@@ -1,20 +1,14 @@
 import styles from './Progress.module.css'
-import { StatTile } from '../components/StatTile.jsx'
 import { ProgressBar } from '../components/ProgressBar.jsx'
 import { TopicGlyph } from '../components/TopicGlyph.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
-import { TOPICS, getTopic } from '../data/topics.js'
-import { topicStatus, lifetimeAccuracy } from '../lib/mastery.js'
+import { topicStatus, lifetimeAccuracy, MASTERY_ACCURACY } from '../lib/mastery.js'
 
-const STATUS_LABEL = {
-  locked: 'Bloqueado',
-  available: 'Disponível',
-  in_progress: 'Em andamento',
-  mastered: 'Fixado',
-}
+// Only judge a topic once there's enough data for the accuracy to mean something.
+const IMPROVE_MIN_ANSWERED = 5
 
 export function Progress() {
-  const { progress, sessions, exams } = useStore()
+  const { t, topics, getTopic, progress, sessions, exams } = useStore()
 
   const allProgress = Object.values(progress)
   const totalAnswered = allProgress.reduce((sum, p) => sum + p.answered, 0)
@@ -23,37 +17,93 @@ export function Progress() {
   // A study day = any day with a practice session OR a Friday exam.
   const studyDays = new Set([...sessions, ...exams].map((r) => r.date)).size
 
+  // "Where to improve": topics you've practiced enough but whose accuracy is
+  // still below the mastery bar — weakest first. `graded` is how many topics
+  // have enough data at all, so we can tell "no weak spots" from "no data yet".
+  const graded = topics.filter((topic) => (progress[topic.id]?.answered ?? 0) >= IMPROVE_MIN_ANSWERED)
+  const weakSpots = graded
+    .map((topic) => {
+      const prog = progress[topic.id]
+      return { topic, prog, accFrac: lifetimeAccuracy(prog), misses: prog.answered - prog.correct }
+    })
+    .filter((w) => w.accFrac < MASTERY_ACCURACY)
+    .sort((a, b) => a.accFrac - b.accFrac)
+    .slice(0, 3)
+
   return (
     <div className={styles.progress}>
-      <h1 className={styles.title}>Progresso</h1>
+      <h1 className={styles.title}>{t('progressTitle')}</h1>
 
-      <section className={styles.stats}>
-        <StatTile value={totalAnswered} label="questões" />
-        <StatTile value={`${overallPct}%`} label="acerto geral" />
-        <StatTile value={studyDays} label="dias" />
-        <StatTile value={sessions.length} label="sessões" />
+      <section className={styles.overview}>
+        <div className={styles.ovCell}>
+          <div className={styles.ovValue}>{totalAnswered}</div>
+          <div className={styles.ovLabel}>{t('stat_questions')}</div>
+        </div>
+        <div className={styles.ovCell}>
+          <div className={`${styles.ovValue} ${styles.ovAccent}`}>{overallPct}%</div>
+          <div className={styles.ovLabel}>{t('stat_overall')}</div>
+        </div>
+        <div className={styles.ovCell}>
+          <div className={styles.ovValue}>{studyDays}</div>
+          <div className={styles.ovLabel}>{t('stat_days')}</div>
+        </div>
+        <div className={styles.ovCell}>
+          <div className={styles.ovValue}>{sessions.length}</div>
+          <div className={styles.ovLabel}>{t('stat_sessions')}</div>
+        </div>
       </section>
 
+      {graded.length > 0 && (
+        <section>
+          <h2 className={styles.sectionTitle}>{t('improveTitle')}</h2>
+          {weakSpots.length > 0 ? (
+            <div className={styles.improveList}>
+              {weakSpots.map(({ topic, prog }) => (
+                <div key={topic.id} className={styles.improveRow}>
+                  <TopicGlyph topic={topic} size="sm" />
+                  <div className={styles.improveTitles}>
+                    <span className={styles.improveName}>{topic.name}</span>
+                    <span className={styles.improveSub}>
+                      {t('improveMisses', { misses: prog.answered - prog.correct, answered: prog.answered })}
+                    </span>
+                  </div>
+                  <span className={styles.improvePct}>{Math.round(lifetimeAccuracy(prog) * 100)}%</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.improveGood}>{t('improveNone')}</p>
+          )}
+        </section>
+      )}
+
       <section>
-        <h2 className={styles.sectionTitle}>Por tópico</h2>
+        <h2 className={styles.sectionTitle}>{t('byTopic')}</h2>
         <div className={styles.topicList}>
-          {TOPICS.map((topic) => {
+          {topics.map((topic) => {
             const prog = progress[topic.id]
             const status = topicStatus(topic, progress)
             const acc = Math.round(lifetimeAccuracy(prog) * 100)
             return (
-              <div key={topic.id} className={styles.topicRow}>
+              <div key={topic.id} className={styles.topicRow} data-status={status}>
                 <div className={styles.topicHead}>
-                  <span className={styles.topicName}>
-                    <TopicGlyph topic={topic} size="sm" />
-                    {topic.name}
+                  <TopicGlyph topic={topic} />
+                  <div className={styles.topicTitles}>
+                    <span className={styles.topicName}>{topic.name}</span>
+                    <span className={styles.topicSub}>
+                      {t('topicSub', { n: (prog?.levelIndex ?? 0) + 1, m: topic.levels.length, answered: prog?.answered ?? 0 })}
+                    </span>
+                  </div>
+                  <span className={styles.topicStatus} data-status={status}>{t(`status_${status}`)}</span>
+                </div>
+                <div className={styles.accRow}>
+                  <div className={styles.accBar}>
+                    <ProgressBar value={lifetimeAccuracy(prog)} tone={status === 'mastered' ? 'success' : 'accent'} />
+                  </div>
+                  <span className={styles.accPct} data-status={status}>
+                    {prog?.answered ? `${acc}%` : '—'}
                   </span>
-                  <span className={styles.topicStatus} data-status={status}>{STATUS_LABEL[status]}</span>
                 </div>
-                <div className={styles.topicSub}>
-                  Nível {(prog?.levelIndex ?? 0) + 1}/{topic.levels.length} · {prog?.answered ?? 0} questões · {acc}% de acerto
-                </div>
-                <ProgressBar value={lifetimeAccuracy(prog)} tone={status === 'mastered' ? 'success' : 'accent'} />
               </div>
             )
           })}
@@ -61,9 +111,9 @@ export function Progress() {
       </section>
 
       <section>
-        <h2 className={styles.sectionTitle}>Últimas sessões</h2>
+        <h2 className={styles.sectionTitle}>{t('recentSessions')}</h2>
         {sessions.length === 0 ? (
-          <p className={styles.empty}>Você ainda não treinou. Que tal começar agora?</p>
+          <p className={styles.empty}>{t('noSessions')}</p>
         ) : (
           <ul className={styles.history}>
             {sessions.slice(0, 8).map((s, i) => (
@@ -78,7 +128,7 @@ export function Progress() {
 
       {exams.length > 0 && (
         <section>
-          <h2 className={styles.sectionTitle}>Provas da sexta</h2>
+          <h2 className={styles.sectionTitle}>{t('examsTitle')}</h2>
           <ul className={styles.history}>
             {exams.slice(0, 8).map((e, i) => (
               <li key={i} className={styles.historyRow}>

@@ -23,3 +23,10 @@
 
 .tab[data-active='true'] { color: var(--accent); }
 .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* Icon micro-motion: a gentle lift on hover, and a little pop when the tab
+   becomes the active one (the [data-active] selector re-triggers the animation
+   each time you switch tabs). Both are killed by the "Animações" toggle. */
+.tab svg { transition: transform 0.18s ease; }
+.tab:hover svg { transform: translateY(-2px); }
+.tab[data-active='true'] svg { animation: icon-pop 0.32s ease; }
