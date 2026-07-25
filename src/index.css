@@ -40,17 +40,143 @@
   color-scheme: dark;
 }
 
-/* High-contrast option (Settings). Brightens text, borders and accent. */
+/* Alternate themes (Settings › Tema). All dark and low-strain by design — the
+   goal is calm, not contrast. Each block only overrides the colour tokens it
+   changes; shape, spacing and fonts stay shared. `:root` above is the default
+   "Meia-noite" theme, so data-theme='midnight' needs no block of its own. */
+
+/* Dim — a softer, lower-contrast neutral grey. The gentlest on tired eyes. */
+:root[data-theme='dim'] {
+  --bg: #1a1c20;
+  --surface: #23262c;
+  --surface-2: #2b2f37;
+  --elev: #343945;
+  --text: #d7dae0;
+  --text-dim: #8b909b;
+  --border: #333842;
+  --accent: #8fb0e8;
+  --success: #86c99a;
+  --error: #d89a9a;
+}
+
+/* Sepia — warm amber tones, less blue light for evening study. */
+:root[data-theme='sepia'] {
+  --bg: #1e1a15;
+  --surface: #282219;
+  --surface-2: #322a1f;
+  --elev: #3d3427;
+  --text: #ece3d3;
+  --text-dim: #ab9d86;
+  --border: #3d3427;
+  --accent: #d9a45b;
+  --accent-ink: #201a12;
+  --success: #a7c48a;
+  --success-bg: rgba(167, 196, 138, 0.14);
+  --error: #d89a86;
+  --error-bg: rgba(216, 154, 134, 0.14);
+}
+
+/* Forest — muted green-grey, restful and low-saturation. */
+:root[data-theme='forest'] {
+  --bg: #161d19;
+  --surface: #1e2723;
+  --surface-2: #26312c;
+  --elev: #2f3b35;
+  --text: #e2e8e2;
+  --text-dim: #93a29a;
+  --border: #2e3a34;
+  --accent: #83c19a;
+  --accent-ink: #0d1712;
+  --success: #8fce9f;
+  --success-bg: rgba(143, 206, 159, 0.14);
+  --error: #d99a9a;
+}
+
+/* Ocean — desaturated deep teal, cool and quiet. */
+:root[data-theme='ocean'] {
+  --bg: #141d20;
+  --surface: #1c272b;
+  --surface-2: #243136;
+  --elev: #2d3d43;
+  --text: #dfe9e9;
+  --text-dim: #8fa3a5;
+  --border: #2c3a3f;
+  --accent: #6fbfc4;
+  --accent-ink: #0a1416;
+  --success: #8fce9f;
+  --error: #d99a9a;
+}
+
+/* Plum — soft muted lavender on a warm-dark aubergine. */
+:root[data-theme='plum'] {
+  --bg: #1a1620;
+  --surface: #241e2c;
+  --surface-2: #2d2637;
+  --elev: #382f45;
+  --text: #e7e1ee;
+  --text-dim: #9f95ab;
+  --border: #352d40;
+  --accent: #b79be0;
+  --accent-ink: #160f1e;
+  --success: #9ecf9f;
+  --error: #dd9aa9;
+}
+
+/* Rose — dusty rose on a warm charcoal, gentle and low-saturation. */
+:root[data-theme='rose'] {
+  --bg: #1f171a;
+  --surface: #291f23;
+  --surface-2: #33272c;
+  --elev: #3f3036;
+  --text: #efe2e5;
+  --text-dim: #b0989e;
+  --border: #3d2f34;
+  --accent: #d98fa0;
+  --accent-ink: #1e1215;
+  --success: #a7c48a;
+  --error: #dd9a9a;
+}
+
+/* Slate — neutral graphite with a muted periwinkle accent. */
+:root[data-theme='slate'] {
+  --bg: #181a1e;
+  --surface: #212429;
+  --surface-2: #292d34;
+  --elev: #333842;
+  --text: #e3e6eb;
+  --text-dim: #969ba6;
+  --border: #31363f;
+  --accent: #93a7cf;
+  --accent-ink: #12141a;
+  --success: #8cc99a;
+  --error: #d69a9a;
+}
+
+/* Clay — warm terracotta on a soft dark earth. */
+:root[data-theme='clay'] {
+  --bg: #1e1815;
+  --surface: #28211c;
+  --surface-2: #322824;
+  --elev: #3e322b;
+  --text: #ede3dc;
+  --text-dim: #ab9a8f;
+  --border: #3d3129;
+  --accent: #d99873;
+  --accent-ink: #1f1410;
+  --success: #a7c48a;
+  --error: #dd9a86;
+}
+
+/* High-contrast option (Settings). An accessibility override that LAYERS on top
+   of the active theme — it only strengthens legibility (pure-white text, much
+   brighter secondary text and borders) and deliberately leaves --bg, --surface
+   and --accent to the theme, so each theme keeps its identity while gaining
+   contrast. (It must not re-declare those, or every theme would look the same.)
+   Comes last so it wins over the theme blocks above. */
 :root[data-contrast='high'] {
-  --bg: #0f1218;
-  --surface: #1a212c;
-  --surface-2: #232c3a;
   --text: #ffffff;
-  --text-dim: #c3ccdb;
-  --border: #46536a;
-  --accent: #9db8ff;
-  --success: #93e0a3;
-  --error: #f0a3a3;
+  --text-dim: #e2e6ee;
+  --border: #7c8493;
 }
 
 /* --- reset --- */
@@ -74,7 +200,33 @@ input, button, select, textarea { font: inherit; color: inherit; }
 
 button { cursor: pointer; border: none; background: none; }
 
-/* Respect users who ask for less motion. */
+/* --- motion --- */
+/* Shared keyframes. Screens fade up on entry; small reveals/pops accent key
+   moments. Kept short and gentle to match the calm palette. */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.82); }
+  to   { opacity: 1; transform: none; }
+}
+/* A small overshoot for icons — used when a nav tab becomes active. */
+@keyframes icon-pop {
+  0%   { transform: scale(0.7); }
+  55%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* The "Animações" toggle (Settings) sets data-motion='off' on the root, killing
+   every animation and transition at once. `prefers-reduced-motion` does the same
+   for users who ask the OS for less motion — either switch is enough. */
+:root[data-motion='off'] *,
+:root[data-motion='off'] *::before,
+:root[data-motion='off'] *::after {
+  animation: none !important;
+  transition: none !important;
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

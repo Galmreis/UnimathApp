@@ -54,11 +54,12 @@ assert(!checkAnswer('2/4', fracQ), 'rejects wrong fraction')
 assert(formatAnswer(fracQ) === '3/4', 'formats fraction')
 assert(formatAnswer({ kind: 'fraction', answer: { n: 4, d: 2 } }) === '2', 'formats whole-number fraction as int')
 
-// ---- generators: every topic × level must produce a valid, self-consistent question ----
-for (const topic of TOPICS) {
+// ---- generators: every topic × level × language must produce a valid, self-consistent question ----
+for (const lang of ['pt', 'en']) {
+  for (const topic of TOPICS) {
   for (let level = 0; level < topic.levels.length; level++) {
     for (let i = 0; i < 200; i++) {
-      const q = generateQuestion(topic.id, level)
+      const q = generateQuestion(topic.id, level, lang)
       assert(typeof q.prompt === 'string' && q.prompt.length > 0, `${topic.id} L${level} has prompt`)
       assert(q.kind === 'number' || q.kind === 'fraction', `${topic.id} L${level} valid kind`)
       // every question must carry non-empty steps AND non-empty strategy tips
@@ -86,6 +87,7 @@ for (const topic of TOPICS) {
         assert(round((Number(m[2]) * Number(m[1])) / 100, 2) === q.answer, `porcentagem: ${q.prompt}`)
       }
     }
+  }
   }
 }
 

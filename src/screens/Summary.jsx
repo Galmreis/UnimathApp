@@ -1,11 +1,13 @@
 import styles from './Summary.module.css'
 import { Button } from '../components/Button.jsx'
-import { getTopic, TOPICS } from '../data/topics.js'
+import { useStore } from '../store/StoreProvider.jsx'
+import { TOPICS } from '../data/topics.js'
 import { round } from '../lib/math.js'
 
 // Shown after a session or exam. `result` is what Session handed us:
 //   { mode, topicId, results: boolean[], durationMs, levelIndex? }
 export function Summary({ result, navigate }) {
+  const { t, getTopic } = useStore()
   const topic = getTopic(result.topicId)
   const total = result.results.length
   const correct = result.results.filter(Boolean).length
@@ -16,49 +18,47 @@ export function Summary({ result, navigate }) {
     <div className={styles.summary}>
       <div className={styles.hero}>
         <div className={styles.pct}>{pct}%</div>
-        <div className={styles.score}>{correct} de {total} certas</div>
+        <div className={styles.score}>{t('ofCorrect', { correct, total })}</div>
         <div className={styles.sub}>
           {topic.name} · {formatDuration(result.durationMs)}
         </div>
       </div>
 
       <p className={styles.message}>
-        {isExam ? examMessage(correct, total, result.levelIndex, topic) : practiceMessage(pct)}
+        {isExam ? examMessage(t, correct, total, result.levelIndex, topic) : practiceMessage(t, pct)}
       </p>
 
       <div className={styles.actions}>
         <Button size="big" full onClick={() => navigate(isExam ? 'exam' : 'session', { topicId: result.topicId })}>
-          {isExam ? 'Refazer prova' : 'Treinar de novo'}
+          {isExam ? t('retakeExam') : t('trainAgain')}
         </Button>
-        <Button variant="ghost" full onClick={() => navigate('home')}>Voltar ao início</Button>
+        <Button variant="ghost" full onClick={() => navigate('home')}>{t('backHome')}</Button>
       </div>
     </div>
   )
 }
 
 // Short, guilt-free encouragement based on how the practice went.
-function practiceMessage(pct) {
-  if (pct >= 90) return 'Mandou muito bem! Consistência assim fixa rápido.'
-  if (pct >= 70) return 'Bom ritmo. Seguindo assim, o nível fixa logo.'
-  if (pct >= 50) return 'Tá evoluindo. Cada erro corrigido é aprendizado.'
-  return 'Sem pressa — repetir é o que fixa. Bora de novo.'
+function practiceMessage(t, pct) {
+  if (pct >= 90) return t('practice90')
+  if (pct >= 70) return t('practice70')
+  if (pct >= 50) return t('practice50')
+  return t('practice0')
 }
 
 // Explains what the exam did to your level (mirrors applyExamResult's rule).
-function examMessage(correct, total, levelIndex, topic) {
+function examMessage(t, correct, total, levelIndex, topic) {
   const ratio = correct / total
   const atLastLevel = levelIndex >= topic.levels.length - 1
   const isLastTopic = TOPICS[TOPICS.length - 1].id === topic.id
   if (ratio >= 0.8) {
-    if (!atLastLevel) return 'Passou! Você avançou de nível.'
-    return isLastTopic
-      ? `Você fixou "${topic.name}" e completou toda a trilha! Mandou muito bem.`
-      : `Você fixou "${topic.name}"! O próximo tópico foi liberado.`
+    if (!atLastLevel) return t('examUp')
+    return isLastTopic ? t('examMasteredAll', { topic: topic.name }) : t('examMastered', { topic: topic.name })
   }
   if (ratio < 0.5 && levelIndex > 0) {
-    return 'Você voltou um nível para reforçar a base — sem crise, faz parte.'
+    return t('examDown')
   }
-  return 'Quase lá. Repita o nível mais um pouco para fixar.'
+  return t('examStay')
 }
 
 // Milliseconds -> "3 min" or "45 s".

@@ -47,10 +47,10 @@ export function checkAnswer(userText, question) {
 }
 
 // The correct answer as a readable string, for the "certo/errado" feedback.
-export function formatAnswer(question) {
+export function formatAnswer(question, lang = 'pt') {
   if (question.kind === 'fraction') {
     const { n, d } = reduceFraction(question.answer.n, question.answer.d)
     return d === 1 ? String(n) : `${n}/${d}` // show "2" instead of "2/1"
   }
-  return formatNumber(question.answer)
+  return formatNumber(question.answer, lang)
 }

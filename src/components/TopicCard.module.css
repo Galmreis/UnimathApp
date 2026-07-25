@@ -49,21 +49,39 @@
   gap: 12px;
 }
 
-.titles { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.titles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .name { font-size: 1.1rem; font-weight: 700; }
+.sub { font-size: 0.8rem; color: var(--text-dim); }
 
-/* status pill */
+/* status pill — pushed to the right of the head */
 .status {
-  font-size: 0.68rem;
+  flex-shrink: 0;
+  font-size: 0.66rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 3px 8px;
+  letter-spacing: 0.05em;
+  padding: 4px 9px;
   border-radius: 999px;
   background: var(--surface-2);
   color: var(--text-dim);
+  white-space: nowrap;
 }
 .status[data-status='in_progress'] { color: var(--accent); }
 .status[data-status='mastered'] { color: var(--success); background: var(--success-bg); }
+
+/* Accuracy bar with its percentage pulled out — matches the Progress rows. */
+.accRow { display: flex; align-items: center; gap: 12px; }
+.accBar { flex: 1; }
+.accPct {
+  flex-shrink: 0;
+  min-width: 42px;
+  text-align: right;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+.accPct[data-status='in_progress'] { color: var(--accent); }
+.accPct[data-status='mastered'] { color: var(--success); }
 
 .hint { font-size: 0.85rem; color: var(--text-dim); }

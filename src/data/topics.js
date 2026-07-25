@@ -17,6 +17,7 @@ export const TOPICS = [
     blurb: 'A base de tudo: exata, com resto, longa e com decimais.',
     levels: ['Exata', 'Com resto', 'Divisão longa', 'Com decimais'],
     prerequisite: null, // the first topic is always available
+    en: { name: 'Division', levels: ['Exact', 'With remainder', 'Long division', 'With decimals'] },
   },
   {
     id: 'fracoes',
@@ -26,6 +27,7 @@ export const TOPICS = [
     blurb: 'Simplificar e operar com frações.',
     levels: ['Simplificar', 'Somar e subtrair', 'Multiplicar', 'Dividir'],
     prerequisite: 'divisao',
+    en: { name: 'Fractions', levels: ['Simplify', 'Add and subtract', 'Multiply', 'Divide'] },
   },
   {
     id: 'porcentagem',
@@ -35,6 +37,7 @@ export const TOPICS = [
     blurb: 'Porcentagem de um valor, comparação e aumento/desconto.',
     levels: ['Porcentagem de um valor', 'Que porcentagem é', 'Aumento e desconto'],
     prerequisite: 'fracoes',
+    en: { name: 'Percentage', levels: ['Percent of a value', 'What percent is it', 'Increase and discount'] },
   },
   {
     id: 'equacao1',
@@ -44,6 +47,7 @@ export const TOPICS = [
     blurb: 'Isolar o x e resolver equações lineares.',
     levels: ['ax = b', 'ax + b = c', 'ax + b = cx + d'],
     prerequisite: 'porcentagem',
+    en: { name: 'Linear equation', levels: ['ax = b', 'ax + b = c', 'ax + b = cx + d'] },
   },
   {
     id: 'funcoes',
@@ -53,6 +57,7 @@ export const TOPICS = [
     blurb: 'Função do 1º grau: calcular, achar a raiz e o coeficiente.',
     levels: ['Calcular f(x)', 'Raiz da função', 'Coeficiente angular'],
     prerequisite: 'equacao1',
+    en: { name: 'Functions', levels: ['Compute f(x)', 'Root of the function', 'Slope'] },
   },
 ]
 
