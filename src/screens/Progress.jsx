@@ -30,6 +30,15 @@ export function Progress() {
     .sort((a, b) => a.accFrac - b.accFrac)
     .slice(0, 3)
 
+  // Same sectioning as Home's track: bucket topics by `group`, track order kept.
+  const groups = []
+  for (const topic of topics) {
+    const key = topic.group ?? 'outros'
+    let g = groups.find((x) => x.key === key)
+    if (!g) { g = { key, topics: [] }; groups.push(g) }
+    g.topics.push(topic)
+  }
+
   return (
     <div className={styles.progress}>
       <h1 className={styles.title}>{t('progressTitle')}</h1>
@@ -79,35 +88,40 @@ export function Progress() {
 
       <section>
         <h2 className={styles.sectionTitle}>{t('byTopic')}</h2>
-        <div className={styles.topicList}>
-          {topics.map((topic) => {
-            const prog = progress[topic.id]
-            const status = topicStatus(topic, progress)
-            const acc = Math.round(lifetimeAccuracy(prog) * 100)
-            return (
-              <div key={topic.id} className={styles.topicRow} data-status={status}>
-                <div className={styles.topicHead}>
-                  <TopicGlyph topic={topic} />
-                  <div className={styles.topicTitles}>
-                    <span className={styles.topicName}>{topic.name}</span>
-                    <span className={styles.topicSub}>
-                      {t('topicSub', { n: (prog?.levelIndex ?? 0) + 1, m: topic.levels.length, answered: prog?.answered ?? 0 })}
-                    </span>
+        {groups.map((group) => (
+          <div key={group.key} className={styles.group}>
+            <h3 className={styles.groupTitle}>{t(`group_${group.key}`)}</h3>
+            <div className={styles.topicList}>
+              {group.topics.map((topic) => {
+                const prog = progress[topic.id]
+                const status = topicStatus(topic, progress)
+                const acc = Math.round(lifetimeAccuracy(prog) * 100)
+                return (
+                  <div key={topic.id} className={styles.topicRow} data-status={status}>
+                    <div className={styles.topicHead}>
+                      <TopicGlyph topic={topic} />
+                      <div className={styles.topicTitles}>
+                        <span className={styles.topicName}>{topic.name}</span>
+                        <span className={styles.topicSub}>
+                          <span className={styles.statusText} data-status={status}>{t(`status_${status}`)}</span>
+                          {' · '}{t('topicSub', { n: (prog?.levelIndex ?? 0) + 1, m: topic.levels.length, answered: prog?.answered ?? 0 })}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={styles.accRow}>
+                      <div className={styles.accBar}>
+                        <ProgressBar value={lifetimeAccuracy(prog)} tone={status === 'mastered' ? 'success' : 'accent'} />
+                      </div>
+                      <span className={styles.accPct} data-status={status}>
+                        {prog?.answered ? `${acc}%` : '—'}
+                      </span>
+                    </div>
                   </div>
-                  <span className={styles.topicStatus} data-status={status}>{t(`status_${status}`)}</span>
-                </div>
-                <div className={styles.accRow}>
-                  <div className={styles.accBar}>
-                    <ProgressBar value={lifetimeAccuracy(prog)} tone={status === 'mastered' ? 'success' : 'accent'} />
-                  </div>
-                  <span className={styles.accPct} data-status={status}>
-                    {prog?.answered ? `${acc}%` : '—'}
-                  </span>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </section>
 
       <section>

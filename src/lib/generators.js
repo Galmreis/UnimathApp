@@ -36,6 +36,149 @@ function coefX(n) {
   return `${n}x`
 }
 
+// ----------------------------------------------------------------- Adição ----
+function adicao(level, lang) {
+  const L = (pt, en) => (lang === 'en' ? en : pt)
+  const f = (v) => formatNumber(v, lang)
+  switch (level) {
+    case 0: { // Sem reagrupar — every column sum stays below 10, so no carrying
+      const t1 = randInt(1, 8), t2 = randInt(1, 9 - t1)
+      const u1 = randInt(0, 9), u2 = randInt(0, 9 - u1)
+      const a = t1 * 10 + u1, b = t2 * 10 + u2
+      return {
+        prompt: `${a} + ${b} = ?`, answer: a + b, kind: 'number',
+        steps: [
+          L(`Some as unidades: ${u1} + ${u2} = ${u1 + u2}.`, `Add the units: ${u1} + ${u2} = ${u1 + u2}.`),
+          L(`Some as dezenas: ${t1} + ${t2} = ${t1 + t2}. Junte tudo: ${a + b}.`, `Add the tens: ${t1} + ${t2} = ${t1 + t2}. Put it together: ${a + b}.`),
+        ],
+        tips: S.adicaoTips(a, b, lang),
+      }
+    }
+    case 1: { // Com reagrupamento — force the units column to spill past 10
+      let a, b
+      do { a = randInt(15, 89); b = randInt(15, 89) } while ((a % 10) + (b % 10) < 10)
+      return {
+        prompt: `${a} + ${b} = ?`, answer: a + b, kind: 'number',
+        steps: [
+          L(`Some as unidades: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)} — passa de 10, então "vai 1".`, `Add the units: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)} — over 10, so carry 1.`),
+          L(`Some as dezenas com o 1 que subiu: total ${a + b}.`, `Add the tens together with the carried 1: total ${a + b}.`),
+        ],
+        tips: S.adicaoTips(a, b, lang),
+      }
+    }
+    default: { // Com decimais — tenths keep the arithmetic clean
+      let A, B
+      do { A = randInt(15, 199) } while (A % 10 === 0)
+      do { B = randInt(15, 199) } while (B % 10 === 0)
+      const a = A / 10, b = B / 10, ans = round((A + B) / 10, 1)
+      return {
+        prompt: `${f(a)} + ${f(b)} = ?`, answer: ans, kind: 'number',
+        steps: [
+          L(`Alinhe as vírgulas, uma embaixo da outra.`, `Line up the decimal points, one under the other.`),
+          L(`Some como se fossem inteiros: ${f(a)} + ${f(b)} = ${f(ans)}.`, `Add as if they were whole numbers: ${f(a)} + ${f(b)} = ${f(ans)}.`),
+        ],
+        tips: S.adicaoDecimalTips(lang),
+      }
+    }
+  }
+}
+
+// -------------------------------------------------------------- Subtração ----
+function subtracao(level, lang) {
+  const L = (pt, en) => (lang === 'en' ? en : pt)
+  const f = (v) => formatNumber(v, lang)
+  switch (level) {
+    case 0: { // Sem reagrupar — each top digit ≥ the one below it (no borrow)
+      let a, b
+      do {
+        const t1 = randInt(2, 9), u1 = randInt(0, 9)
+        a = t1 * 10 + u1
+        b = randInt(1, t1) * 10 + randInt(0, u1)
+      } while (a <= b)
+      return {
+        prompt: `${a} − ${b} = ?`, answer: a - b, kind: 'number',
+        steps: [
+          L(`Subtraia as unidades: ${a % 10} − ${b % 10} = ${(a % 10) - (b % 10)}.`, `Subtract the units: ${a % 10} − ${b % 10} = ${(a % 10) - (b % 10)}.`),
+          L(`Subtraia as dezenas: ${Math.floor(a / 10)} − ${Math.floor(b / 10)} = ${Math.floor(a / 10) - Math.floor(b / 10)}. Resultado: ${a - b}.`, `Subtract the tens: ${Math.floor(a / 10)} − ${Math.floor(b / 10)} = ${Math.floor(a / 10) - Math.floor(b / 10)}. Result: ${a - b}.`),
+        ],
+        tips: S.subtracaoTips(a, b, lang),
+      }
+    }
+    case 1: { // Com reagrupamento — units of the top number fall short, so borrow
+      let a, b
+      do { a = randInt(20, 99); b = randInt(11, a - 1) } while ((a % 10) >= (b % 10))
+      return {
+        prompt: `${a} − ${b} = ?`, answer: a - b, kind: 'number',
+        steps: [
+          L(`Nas unidades, ${a % 10} − ${b % 10} não dá: peça 1 emprestado da dezena (${a % 10} vira ${a % 10 + 10}, e ${a % 10 + 10} − ${b % 10} = ${a % 10 + 10 - (b % 10)}).`, `In the units, ${a % 10} − ${b % 10} won't do: borrow 1 from the tens (${a % 10} becomes ${a % 10 + 10}, and ${a % 10 + 10} − ${b % 10} = ${a % 10 + 10 - (b % 10)}).`),
+          L(`Desconte o empréstimo nas dezenas e finalize: ${a - b}.`, `Take the borrow off the tens and finish: ${a - b}.`),
+        ],
+        tips: S.subtracaoTips(a, b, lang),
+      }
+    }
+    default: { // Com decimais
+      let A, B
+      do { A = randInt(30, 199) } while (A % 10 === 0)
+      do { B = randInt(15, A - 5) } while (B % 10 === 0)
+      const a = A / 10, b = B / 10, ans = round((A - B) / 10, 1)
+      return {
+        prompt: `${f(a)} − ${f(b)} = ?`, answer: ans, kind: 'number',
+        steps: [
+          L(`Alinhe as vírgulas uma sob a outra.`, `Line up the decimal points, one under the other.`),
+          L(`Subtraia como se fossem inteiros: ${f(a)} − ${f(b)} = ${f(ans)}.`, `Subtract as if they were whole numbers: ${f(a)} − ${f(b)} = ${f(ans)}.`),
+        ],
+        tips: S.subtracaoDecimalTips(lang),
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------- Multiplicação ----
+function multiplicacao(level, lang) {
+  const L = (pt, en) => (lang === 'en' ? en : pt)
+  switch (level) {
+    case 0: { // Tabuada — single digit × single digit
+      const a = randInt(2, 9), b = randInt(2, 9)
+      return {
+        prompt: `${a} × ${b} = ?`, answer: a * b, kind: 'number',
+        steps: [
+          L(`${a} × ${b} é somar ${a} um total de ${b} vezes.`, `${a} × ${b} is adding ${a} a total of ${b} times.`),
+          `= ${a * b}.`,
+        ],
+        tips: S.multiplicacaoTabuadaTips(a, b, lang),
+      }
+    }
+    case 1: { // Por um dígito — 2-digit × 1-digit, split by the distributive rule
+      const a = randInt(11, 99), b = randInt(3, 9)
+      const t = Math.floor(a / 10) * 10, u = a % 10
+      return {
+        prompt: `${a} × ${b} = ?`, answer: a * b, kind: 'number',
+        steps: [
+          L(`Separe ${a} em ${t} + ${u}.`, `Split ${a} into ${t} + ${u}.`),
+          `${t} × ${b} = ${t * b}, ${u} × ${b} = ${u * b}.`,
+          L(`Some: ${t * b} + ${u * b} = ${a * b}.`, `Add: ${t * b} + ${u * b} = ${a * b}.`),
+        ],
+        tips: S.multiplicacaoTips(a, b, lang),
+      }
+    }
+    default: { // Dois dígitos — 2-digit × 2-digit, split the second factor
+      const a = randInt(11, 99)
+      let b
+      do { b = randInt(11, 29) } while (b % 10 === 0)
+      const t = Math.floor(b / 10) * 10, u = b % 10
+      return {
+        prompt: `${a} × ${b} = ?`, answer: a * b, kind: 'number',
+        steps: [
+          L(`Separe ${b} em ${t} + ${u}.`, `Split ${b} into ${t} + ${u}.`),
+          `${a} × ${t} = ${a * t}, ${a} × ${u} = ${a * u}.`,
+          L(`Some: ${a * t} + ${a * u} = ${a * b}.`, `Add: ${a * t} + ${a * u} = ${a * b}.`),
+        ],
+        tips: S.multiplicacaoTips(a, b, lang),
+      }
+    }
+  }
+}
+
 // ---------------------------------------------------------------- Divisão ----
 function divisao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
@@ -327,9 +470,53 @@ function funcoes(level, lang) {
   }
 }
 
+// ----------------------------------------------------- Potências e raízes ----
+function potencias(level, lang) {
+  const L = (pt, en) => (lang === 'en' ? en : pt)
+  const f = (v) => formatNumber(v, lang)
+  switch (level) {
+    case 0: { // Potências de 10 — the answer is 1 followed by e zeros
+      const e = randInt(2, 6)
+      const ans = 10 ** e
+      return {
+        prompt: `10^${e} = ?`, answer: ans, kind: 'number',
+        steps: [
+          L(`10^${e} é 1 seguido de ${e} zeros.`, `10^${e} is a 1 followed by ${e} zeros.`),
+          `= ${f(ans)}.`,
+        ],
+        tips: S.potenciaDezTips(e, lang),
+      }
+    }
+    case 1: { // Potências de base pequena — square or cube
+      const b = randInt(2, 9), e = pick([2, 3])
+      const ans = b ** e
+      const expand = e === 3 ? `${b} × ${b} × ${b}` : `${b} × ${b}`
+      return {
+        prompt: `${b}^${e} = ?`, answer: ans, kind: 'number',
+        steps: [
+          L(`Potência é multiplicação repetida: ${b}^${e} = ${expand}.`, `A power is repeated multiplication: ${b}^${e} = ${expand}.`),
+          `= ${ans}.`,
+        ],
+        tips: S.potenciaTips(b, e, lang),
+      }
+    }
+    default: { // Raiz quadrada exata — of a perfect square
+      const n = randInt(2, 15), sq = n * n
+      return {
+        prompt: `√${sq} = ?`, answer: n, kind: 'number',
+        steps: [
+          L(`Procure o número que, multiplicado por si mesmo, dá ${sq}.`, `Find the number that, multiplied by itself, gives ${sq}.`),
+          L(`${n} × ${n} = ${sq}, então √${sq} = ${n}.`, `${n} × ${n} = ${sq}, so √${sq} = ${n}.`),
+        ],
+        tips: S.raizTips(n, sq, lang),
+      }
+    }
+  }
+}
+
 // Map each topic id to its generator. To add a topic: add it to data/topics.js
 // and register a function here.
-const GENERATORS = { divisao, fracoes, porcentagem, equacao1, funcoes }
+const GENERATORS = { adicao, subtracao, multiplicacao, divisao, fracoes, porcentagem, equacao1, funcoes, potencias }
 
 // Public entry point. Clamps `levelIndex` to the topic's real range so callers
 // never have to worry about off-by-one at the edges. `lang` picks the language

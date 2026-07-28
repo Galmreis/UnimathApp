@@ -19,6 +19,16 @@ export function Home({ navigate }) {
   // A study day = any day with a practice session OR a Friday exam.
   const studyDays = new Set([...sessions, ...exams].map((r) => r.date)).size
 
+  // Bucket topics into their sections, keeping track order within each group.
+  // Driven by each topic's `group`, so a new topic just declares one.
+  const groups = []
+  for (const topic of topics) {
+    const key = topic.group ?? 'outros'
+    let g = groups.find((x) => x.key === key)
+    if (!g) { g = { key, topics: [] }; groups.push(g) }
+    g.topics.push(topic)
+  }
+
   return (
     <div className={styles.home}>
       <header className={styles.header}>
@@ -46,22 +56,27 @@ export function Home({ navigate }) {
 
       <section>
         <h2 className={styles.sectionTitle}>{t('yourTrack')}</h2>
-        <div className={styles.track}>
-          {topics.map((topic) => {
-            const prog = progress[topic.id] ?? emptyProgress()
-            const status = topicStatus(topic, progress)
-            return (
-              <TopicCard
-                key={topic.id}
-                topic={topic}
-                status={status}
-                levelIndex={prog.levelIndex}
-                accuracy={status === 'mastered' ? 1 : recentAccuracy(prog)}
-                onStart={(levelIndex) => navigate('session', { topicId: topic.id, levelIndex })}
-              />
-            )
-          })}
-        </div>
+        {groups.map((group) => (
+          <div key={group.key} className={styles.group}>
+            <h3 className={styles.groupTitle}>{t(`group_${group.key}`)}</h3>
+            <div className={styles.track}>
+              {group.topics.map((topic) => {
+                const prog = progress[topic.id] ?? emptyProgress()
+                const status = topicStatus(topic, progress)
+                return (
+                  <TopicCard
+                    key={topic.id}
+                    topic={topic}
+                    status={status}
+                    levelIndex={prog.levelIndex}
+                    accuracy={status === 'mastered' ? 1 : recentAccuracy(prog)}
+                    onStart={(levelIndex) => navigate('session', { topicId: topic.id, levelIndex })}
+                  />
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </section>
     </div>
   )

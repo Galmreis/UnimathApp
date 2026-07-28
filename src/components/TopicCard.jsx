@@ -24,16 +24,14 @@ export function TopicCard({ topic, status, levelIndex, accuracy, onStart }) {
         <TopicGlyph topic={topic} />
         <div className={styles.titles}>
           <div className={styles.name}>{topic.name}</div>
-          {!locked && (
-            <div className={styles.sub}>{t('level_of', { n: safeLevel + 1, m: totalLevels })}</div>
-          )}
+          <div className={styles.sub}>
+            <span className={styles.statusText} data-status={status}>{t(`status_${status}`)}</span>
+            {!locked && <>{' · '}{t('level_of', { n: safeLevel + 1, m: totalLevels })}</>}
+          </div>
         </div>
-        <div className={styles.status} data-status={status}>{t(`status_${status}`)}</div>
       </div>
 
-      {locked ? (
-        <div className={styles.hint}>{t('lockedHint')}</div>
-      ) : (
+      {!locked && (
         <>
           <div className={styles.accRow}>
             <div className={styles.accBar}>
