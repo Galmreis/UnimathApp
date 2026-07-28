@@ -85,6 +85,16 @@ for (const lang of ['pt', 'en']) {
         assert(round(Number(m[1]) / Number(m[2]), 2) === q.answer, `divisão decimal: ${q.prompt}`)
       } else if ((m = q.prompt.match(/^Quanto é (\d+)% de (\d+)\?$/))) {
         assert(round((Number(m[2]) * Number(m[1])) / 100, 2) === q.answer, `porcentagem: ${q.prompt}`)
+      } else if ((m = q.prompt.match(/^(\d+) \+ (\d+) = \?$/))) {
+        assert(Number(m[1]) + Number(m[2]) === q.answer, `adição: ${q.prompt}`)
+      } else if ((m = q.prompt.match(/^(\d+) − (\d+) = \?$/))) {
+        assert(Number(m[1]) - Number(m[2]) === q.answer, `subtração: ${q.prompt}`)
+      } else if ((m = q.prompt.match(/^(\d+) × (\d+) = \?$/))) {
+        assert(Number(m[1]) * Number(m[2]) === q.answer, `multiplicação: ${q.prompt}`)
+      } else if ((m = q.prompt.match(/^(\d+)\^(\d+) = \?$/))) {
+        assert(Number(m[1]) ** Number(m[2]) === q.answer, `potência: ${q.prompt}`)
+      } else if ((m = q.prompt.match(/^√(\d+) = \?$/))) {
+        assert(q.answer * q.answer === Number(m[1]), `raiz: ${q.prompt}`)
       }
     }
   }
@@ -99,8 +109,8 @@ assert(p.answered === 12 && p.correct === 12, 'lifetime totals accumulate')
 assert(recentAccuracy(p) === 1, 'recent accuracy 100%')
 assert(isLevelReady(p), '10/10 recent -> level ready')
 
-const divisao = TOPICS[0]
-let p2 = advanceIfReady(p, divisao)
+const firstTopic = TOPICS[0]
+let p2 = advanceIfReady(p, firstTopic)
 assert(p2.levelIndex === 1 && p2.recent.length === 0, 'advance moves up a level and resets window')
 
 // reviewing a past level (statsOnly) counts toward totals but not the window,
@@ -113,24 +123,24 @@ assert(pr.recent.length === 0 && !isLevelReady(pr), 'review answers do not fill 
 // not ready -> no change
 let p3 = emptyProgress()
 p3 = recordAnswer(p3, true)
-assert(!isLevelReady(p3) && advanceIfReady(p3, divisao).levelIndex === 0, 'not enough answers -> no advance')
+assert(!isLevelReady(p3) && advanceIfReady(p3, firstTopic).levelIndex === 0, 'not enough answers -> no advance')
 
 // exam rule: 8/10 up, 6/10 stay, 3/10 down
-assert(applyExamResult({ ...emptyProgress(), levelIndex: 0 }, divisao, 8, 10).levelIndex === 1, 'exam 8/10 advances')
-assert(applyExamResult({ ...emptyProgress(), levelIndex: 1 }, divisao, 6, 10).levelIndex === 1, 'exam 6/10 repeats')
-assert(applyExamResult({ ...emptyProgress(), levelIndex: 1 }, divisao, 3, 10).levelIndex === 0, 'exam 3/10 drops')
-const lastLevel = divisao.levels.length - 1
-assert(applyExamResult({ ...emptyProgress(), levelIndex: lastLevel }, divisao, 10, 10).mastered, 'acing the last level masters the topic')
+assert(applyExamResult({ ...emptyProgress(), levelIndex: 0 }, firstTopic, 8, 10).levelIndex === 1, 'exam 8/10 advances')
+assert(applyExamResult({ ...emptyProgress(), levelIndex: 1 }, firstTopic, 6, 10).levelIndex === 1, 'exam 6/10 repeats')
+assert(applyExamResult({ ...emptyProgress(), levelIndex: 1 }, firstTopic, 3, 10).levelIndex === 0, 'exam 3/10 drops')
+const lastLevel = firstTopic.levels.length - 1
+assert(applyExamResult({ ...emptyProgress(), levelIndex: lastLevel }, firstTopic, 10, 10).mastered, 'acing the last level masters the topic')
 
 // a fixed topic is never changed by re-taking the exam (no demotion, no contradictory state)
 const masteredProg = { ...emptyProgress(), levelIndex: lastLevel, mastered: true }
-assert(applyExamResult(masteredProg, divisao, 3, 10) === masteredProg, 'exam does not demote a fixed topic')
-assert(applyExamResult(masteredProg, divisao, 10, 10) === masteredProg, 'exam leaves a fixed topic unchanged')
+assert(applyExamResult(masteredProg, firstTopic, 3, 10) === masteredProg, 'exam does not demote a fixed topic')
+assert(applyExamResult(masteredProg, firstTopic, 10, 10) === masteredProg, 'exam leaves a fixed topic unchanged')
 
 // lock rule
 assert(topicStatus(TOPICS[0], {}) === 'available', 'first topic available')
 assert(topicStatus(TOPICS[1], {}) === 'locked', 'second topic locked until first mastered')
-assert(topicStatus(TOPICS[1], { divisao: { mastered: true } }) === 'available', 'mastering prereq unlocks next')
+assert(topicStatus(TOPICS[1], { [TOPICS[0].id]: { mastered: true } }) === 'available', 'mastering prereq unlocks next')
 
 // fraction-sum tip must not claim "no common factor" when there IS one
 assert(!fracaoSomaTips(4, 6)[0].includes('não têm fator comum'), 'somar tip: 4 & 6 share the factor 2')

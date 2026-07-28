@@ -35,4 +35,23 @@
   background: var(--accent);
 }
 
-.track { display: flex; flex-direction: column; gap: 12px; }
+/* Each group stacks under its own small label. */
+.group { margin-bottom: 20px; }
+.group:last-child { margin-bottom: 0; }
+.groupTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+/* Cards flow into as many columns as fit (2–3 on wide screens, 1 on phones),
+   so the whole track no longer forces a long scroll. */
+.track {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  align-items: start;
+}

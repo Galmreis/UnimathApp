@@ -21,6 +21,8 @@ const DICT = {
     stat_days: 'dias',
     stat_sessions: 'sessões',
     yourTrack: 'Sua trilha',
+    group_fundamentos: 'Fundamentos',
+    group_avancado: 'Avançado',
     lockedHint: 'Fixe o tópico anterior para liberar.',
 
     status_locked: 'Bloqueado',
@@ -122,6 +124,8 @@ const DICT = {
     stat_days: 'days',
     stat_sessions: 'sessions',
     yourTrack: 'Your track',
+    group_fundamentos: 'Foundations',
+    group_avancado: 'Advanced',
     lockedHint: 'Master the previous topic to unlock.',
 
     status_locked: 'Locked',

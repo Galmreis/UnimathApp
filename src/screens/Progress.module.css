@@ -82,15 +82,34 @@
   font-size: 0.95rem;
 }
 
-.topicList { display: flex; flex-direction: column; gap: 12px; }
+/* Each group stacks under its own small label — same sectioning as Home. */
+.group { margin-bottom: 20px; }
+.group:last-child { margin-bottom: 0; }
+.groupTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+/* Topic cards flow two-up on the fixed content column, one-up on narrow phones,
+   so the list stays contained instead of a long scroll. */
+.topicList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
 .topicRow {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 /* Mastered topics get a success-tinted border so "done" reads at a glance. */
 .topicRow[data-status='mastered'] {
@@ -114,25 +133,14 @@
 .accPct[data-status='in_progress'] { color: var(--accent); }
 .accPct[data-status='mastered'] { color: var(--success); }
 .topicTitles { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.topicName { font-weight: 700; font-size: 1.02rem; }
+.topicName { font-weight: 700; font-size: 1.02rem; line-height: 1.2; }
 .topicSub { font-size: 0.8rem; color: var(--text-dim); }
 
-/* Status pill — matches the one on the Home topic cards. */
-.topicStatus {
-  flex-shrink: 0;
-  font-size: 0.66rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--text-dim);
-  white-space: nowrap;
-}
-.topicStatus[data-status='in_progress'] { color: var(--accent); }
-.topicStatus[data-status='mastered'] { color: var(--success); background: var(--success-bg); }
-.topicStatus[data-status='locked'] { opacity: 0.7; }
+/* Status as a small colored word in the subtitle — matches the Home cards and
+   keeps the card narrow enough to sit two-up without crowding the name. */
+.statusText { font-weight: 700; }
+.statusText[data-status='in_progress'] { color: var(--accent); }
+.statusText[data-status='mastered'] { color: var(--success); }
 
 /* History as one card with divided rows, rather than loose separate pills. */
 .history {

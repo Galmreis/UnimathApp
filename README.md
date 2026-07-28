@@ -7,7 +7,8 @@ instantly, tracks your progress locally, and only unlocks the next topic once yo
 "fixed" the current one.
 
 Built with **React + Vite**, plain CSS Modules, and `localStorage` — no backend, works
-offline once loaded. UI is in Portuguese; the code and comments are in English.
+offline once loaded. The UI ships in **Portuguese or English** (switchable in Ajustes)
+with **nine colour themes**; the code and comments are in English.
 
 ## Running it
 
@@ -17,6 +18,7 @@ npm run dev     # start the dev server (http://localhost:5173)
 npm run build   # production build into dist/
 npm run check   # run the pure-logic self-check (no browser needed)
 ```
+
 
 ## How the app is organised
 
@@ -32,8 +34,8 @@ src/
   index.css           Theme tokens (CSS variables), dark mode, reset, base styles.
 
   data/
-    topics.js         The learning track: the list of topics, their levels and the
-                      prerequisite order. Plain data — adding a topic starts here.
+    topics.js         The learning track: topics, their levels, prerequisite order and
+                      section group. Plain data — adding a topic starts here.
 
   lib/                Pure logic. No React, no browser. Testable on its own.
     math.js           randInt, gcd, fraction reduction, number formatting.
@@ -41,7 +43,8 @@ src/
     strategies.js     The "Dica": mental-math shortcuts chosen from the numbers.
     checkAnswer.js    Decides if what you typed is right; formats the correct answer.
     mastery.js        The progression rules ("só avança quando fixou") + exam rule.
-    selfcheck.mjs     11k assertions over the above. Run with `npm run check`.
+    i18n.js           UI text in PT/EN; makeT(lang) + localizeTopic(topic, lang).
+    selfcheck.mjs     ~113k assertions over the above. Run with `npm run check`.
 
   store/              The app's memory.
     useLocalStorage.js  useState that also saves to localStorage (survives reloads).
@@ -55,8 +58,8 @@ src/
 ## The three ideas that make it tick
 
 **1. Questions are generated, not stored.** `lib/generators.js` has one function per
-topic. Each returns `{ prompt, answer, kind, steps }` built from random numbers, so you
-get infinite practice and can never memorise an answer key. `difficulty level` picks the
+topic. Each returns `{ prompt, answer, kind, steps, tips }` built from random numbers, so
+you get infinite practice and can never memorise an answer key. `difficulty level` picks the
 sub-level (e.g. Division: exact → with remainder → long → decimals). The **step-by-step
 solution** (`steps`) is built from those same numbers, so the explanation always matches
 the exact question. Each question also gets a **"Dica"** (`tips`) — a mental-math shortcut
@@ -103,10 +106,12 @@ Almost all styling is driven by a small set of **design tokens** (CSS variables)
 | Text size | `src/index.css` → base `font-size` on `body`; per-element sizes are in `rem` inside each `.module.css` |
 | Corner roundness, touch-target size, content width | `src/index.css` → `--radius`, `--tap`, `--maxw` |
 | High-contrast palette | `src/index.css` → the `:root[data-contrast='high']` block |
-| A topic's symbol or colour (the coloured badges) | `src/data/topics.js` → `glyph` and `color` per topic |
+| A topic's symbol, colour or section | `src/data/topics.js` → `glyph`, `color`, `group` per topic (group labels in `src/lib/i18n.js`) |
 | The bottom-nav icons | `src/components/Icon.jsx` (SVG paths on a 24×24 grid) |
-| App name & tagline | `src/screens/Home.jsx` (the `<h1>` and the tagline line) |
-| Session-length options (10/15/20/30, minutes) | `src/screens/Settings.jsx` → `COUNT_OPTIONS`, `TIME_OPTIONS` |
+| App name (`<h1>`) | `src/screens/Home.jsx` |
+| Tagline & all UI wording (PT/EN) | `src/lib/i18n.js` |
+| Colour themes | `src/index.css` → the `:root[data-theme='…']` blocks; the list in `src/screens/Settings.jsx` → `THEMES` |
+| Session-length options (question counts / minutes) | `src/screens/Settings.jsx` → `COUNT_OPTIONS`, `TIME_OPTIONS` |
 | The question size, steps box, or "Dica" callout look | `src/screens/Session.module.css` → `.prompt`, `.steps`, `.tip` |
 | The wording of the steps | `src/lib/generators.js` → the `steps: [...]` arrays |
 | The strategy / mental-math "Dica" tips | `src/lib/strategies.js` (one function per topic/level) |
@@ -154,12 +159,43 @@ don't zoom the page when you focus the answer box). Every other size is in `rem`
 resize just one thing, edit its `rem` value in that component's `.module.css` — e.g. the
 question text is `.prompt { font-size: 1.9rem }` in `Session.module.css`.
 
-## What's intentionally NOT here yet (see requirements, "fase posterior")
+## What's intentionally NOT here yet
 
-- A light/dark theme *toggle* (dark mode is the default and stays; there is a
-  high-contrast toggle in Ajustes).
-- A Node backend + accounts + cloud sync (Phase 4 — only worth it for multi-device).
+- A Node backend + accounts + cloud sync — only worth it for multi-device. Everything is
+  still local-only via `localStorage` (works offline; nothing leaves the browser).
 
-Adding a **new topic** is the good first exercise: add an entry to `data/topics.js`
-(with its `glyph` and `color`) and a matching generator in `lib/generators.js`
-(returning `prompt`, `answer`, `kind`, `steps`). Nothing else needs to change.
+_(The original "Portuguese-only" and "no theme toggle" caveats are gone — both shipped;
+see "What's new since the first version".)_
+
+Adding a **new topic** is the good first exercise, and it's still just data + one
+generator + its tips — three files:
+
+1. `data/topics.js` — a topic object: `id`, `name`, `glyph`, `color`, `levels`,
+   `prerequisite`, `group`, and an `en` block for the English name/levels.
+2. `lib/generators.js` — a `topicId(level, lang)` function returning
+   `{ prompt, answer, kind, steps, tips }`, registered in the `GENERATORS` map.
+3. `lib/strategies.js` — the mental-math `tips` for each level.
+
+Then `npm run check` validates every level × language automatically. Nothing else needs
+to change — Home, Progress, the coloured badge and both languages all follow from the data.
+
+## What's new since the first version
+
+The app has grown since the original README described it. The notable changes:
+
+- **Four more topics (nine total).** Added **Adição, Subtração, Multiplicação** and
+  **Potências e raízes** alongside the original Divisão, Frações, Porcentagem, Equação and
+  Funções. The learning track (the prerequisite chain) now runs:
+  Adição → Subtração → Multiplicação → Divisão → Frações → Porcentagem → Equação →
+  Funções → Potências.
+- **Topics are grouped on Home and Progress.** Instead of one long scroll of nine cards,
+  topics are bucketed into **Fundamentos** and **Avançado** and laid out as a responsive
+  two-column grid, so you can reach any level without scrolling. Grouping is data-driven —
+  each topic carries a `group` field.
+- **Bilingual UI (Portuguese / English)** via `lib/i18n.js`, with a language switch in
+  Ajustes. Prompts, steps and tips are generated in the chosen language too.
+- **Nine colour themes**, plus animation and high-contrast toggles, under Ajustes ›
+  Aparência.
+- **Bigger self-check.** `npm run check` now runs ~113k assertions (up from ~11k),
+  including independent arithmetic verification of every generated +, −, ×, ÷, ^ and √
+  question.

@@ -4,10 +4,10 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   transition: border-color 0.15s ease, transform 0.05s ease;
 }
 
@@ -46,28 +46,18 @@
 .head {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .titles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.name { font-size: 1.1rem; font-weight: 700; }
+.name { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
 .sub { font-size: 0.8rem; color: var(--text-dim); }
 
-/* status pill — pushed to the right of the head */
-.status {
-  flex-shrink: 0;
-  font-size: 0.66rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--text-dim);
-  white-space: nowrap;
-}
-.status[data-status='in_progress'] { color: var(--accent); }
-.status[data-status='mastered'] { color: var(--success); background: var(--success-bg); }
+/* status is a small colored word in the subtitle, not a wide pill — keeps the
+   card narrow enough to sit two-up without crowding the topic name. */
+.statusText { font-weight: 700; }
+.statusText[data-status='in_progress'] { color: var(--accent); }
+.statusText[data-status='mastered'] { color: var(--success); }
 
 /* Accuracy bar with its percentage pulled out — matches the Progress rows. */
 .accRow { display: flex; align-items: center; gap: 12px; }
@@ -83,5 +73,3 @@
 }
 .accPct[data-status='in_progress'] { color: var(--accent); }
 .accPct[data-status='mastered'] { color: var(--success); }
-
-.hint { font-size: 0.85rem; color: var(--text-dim); }
