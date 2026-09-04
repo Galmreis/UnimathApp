@@ -1,12 +1,17 @@
 import styles from './Home.module.css'
 import { Button } from '../components/Button.jsx'
+import { Icon } from '../components/Icon.jsx'
 import { StatTile } from '../components/StatTile.jsx'
 import { TopicCard } from '../components/TopicCard.jsx'
+import { RankBadge } from '../components/RankBadge.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 import { topicStatus, recentAccuracy, emptyProgress } from '../lib/mastery.js'
 
 export function Home({ navigate }) {
-  const { t, topics, getTopic, progress, sessions, exams, currentTopicId } = useStore()
+  const {
+    t, topics, getTopic, progress, sessions, exams, currentTopicId,
+    rank, pending, clearPending,
+  } = useStore()
 
   const currentTopic = getTopic(currentTopicId)
   const currentLevel = progress[currentTopicId]?.levelIndex ?? 0
@@ -32,9 +37,58 @@ export function Home({ navigate }) {
   return (
     <div className={styles.home}>
       <header className={styles.header}>
+        {/* The two quiet corners: your rank on the left, the "how does this
+            work?" page on the right — both one tap from the first screen. */}
+        <div className={styles.topRow}>
+          <button className={styles.rankChip} onClick={() => navigate('rank', { from: 'home' })} aria-label={t('rank_title')}>
+            <RankBadge step={rank.step} size="sm" />
+          </button>
+          <button className={styles.helpBtn} onClick={() => navigate('help', { from: 'home' })} aria-label={t('help_title')}>
+            <Icon name="help" size={20} />
+          </button>
+        </div>
         <h1 className={styles.title}>Unimath</h1>
         <p className={styles.tagline}><i>{t('tagline')}</i></p>
       </header>
+
+      {/* A paused session, if there is one, comes before "Treinar agora": the
+          field test asked to be able to pick a session back up, and the offer is
+          only useful where the user lands. */}
+      {pending && (
+        <section className={styles.pending}>
+          <div className={styles.pendingHead}>
+            <span className={styles.pendingIcon} aria-hidden><Icon name="pause" size={18} /></span>
+            <div className={styles.pendingTitles}>
+              <span className={styles.pendingTitle}>{t('pending_title')}</span>
+              <span className={styles.pendingWhere}>
+                {t('pending_where', {
+                  topic: getTopic(pending.topicId)?.name ?? pending.topicId,
+                  n: (pending.level ?? 0) + 1,
+                })}
+              </span>
+            </div>
+          </div>
+          <p className={styles.pendingSub}>{pendingSubtitle(t, pending)}</p>
+          <div className={styles.pendingActions}>
+            <Button
+              onClick={() => navigate('session', {
+                topicId: pending.topicId,
+                levelIndex: pending.level,
+                resume: pending,
+                resumeId: pending.savedAt,
+              })}
+            >
+              {t('pending_resume')}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => { if (window.confirm(t('pending_discardConfirm'))) clearPending() }}
+            >
+              {t('pending_discard')}
+            </Button>
+          </div>
+        </section>
+      )}
 
       <section className={styles.cta}>
         <div className={styles.now}>
@@ -80,4 +134,19 @@ export function Home({ navigate }) {
       </section>
     </div>
   )
+}
+
+// The one line under "Sessão pausada": how far in you were. A session measured
+// in questions shows the count and the score; a timed one shows what is left on
+// the clock, since it has no target count to count towards.
+function pendingSubtitle(t, pending) {
+  const answered = pending.results?.length ?? 0
+  const correct = pending.results?.filter(Boolean).length ?? 0
+  if (pending.byTime) {
+    const left = Math.max(0, (pending.totalMs ?? 0) - (pending.elapsedMs ?? 0))
+    const seconds = Math.ceil(left / 1000)
+    const clock = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
+    return t('pending_timeSub', { answered, clock })
+  }
+  return t('pending_countSub', { answered, total: pending.targetCount ?? answered, correct })
 }

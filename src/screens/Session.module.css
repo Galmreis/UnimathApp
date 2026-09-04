@@ -120,3 +120,65 @@
   font-size: 0.82rem;
   color: var(--text-dim);
 }
+
+/* "Retomando de onde você parou" — shown once when a paused session resumes. */
+.resumed {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* In a rank match the questions come from different topics, so each one names
+   the topic it belongs to. */
+.questionTag {
+  align-self: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-dim);
+}
+
+/* --- the pause sheet --- */
+/* A bottom sheet on phones (thumb reach) that centres itself on wide screens.
+   Three choices, so a window.confirm() no longer does the job. */
+.sheetWrap {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sheetBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  animation: fade-up 0.18s ease both;
+}
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: var(--maxw);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 22px 16px calc(22px + env(safe-area-inset-bottom));
+  animation: fade-up 0.22s ease both;
+}
+.sheetTitle { font-size: 1.2rem; font-weight: 800; }
+.sheetBody { font-size: 0.92rem; line-height: 1.55; color: var(--text-dim); margin-bottom: 6px; }
+
+@media (min-height: 720px) {
+  .sheetWrap { align-items: center; }
+  .sheet {
+    max-width: 420px;
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding-bottom: 22px;
+  }
+}

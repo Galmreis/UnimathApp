@@ -1,0 +1,36 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 700;
+}
+
+/* The plate holding the roman numeral. Colours are set inline from the tier. */
+.plate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid;
+  border-radius: 11px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.label { font-size: 1rem; }
+
+.sm { gap: 7px; font-size: 0.85rem; }
+.sm .plate { min-width: 28px; height: 28px; border-radius: 9px; font-size: 0.78rem; }
+.sm .label { font-size: 0.85rem; }
+
+.lg { gap: 14px; }
+.lg .plate {
+  min-width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  font-size: 1.7rem;
+}
+.lg .label { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; }

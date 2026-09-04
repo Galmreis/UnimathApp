@@ -11,7 +11,17 @@ import {
   applyExamResult, topicStatus, recentAccuracy,
 } from './mastery.js'
 import { fracaoSomaTips } from './strategies.js'
-import { TOPICS } from '../data/topics.js'
+import { translationKeys, LANGS } from './i18n.js'
+import {
+  RANK_TIERS, RANK_STEPS, MATCH_QUESTIONS, MATCH_SPREAD, roman, clampStep, rankAt,
+  tierStartStep, matchOutcome, applyMatchResult, trainingLadder, ladderTarget, matchPool,
+} from './ranks.js'
+import {
+  availableSources, availableTopicIds, filterPapers, countPapers, drawPaperSet,
+  localizePaper, letterFor, isPaperCorrect,
+} from './papers.js'
+import { TOPICS, getTopic } from '../data/topics.js'
+import { EXAM_QUESTIONS, EXAM_SOURCES } from '../data/exams.js'
 
 let checks = 0
 function assert(cond, msg) {
@@ -147,5 +157,161 @@ assert(!fracaoSomaTips(4, 6)[0].includes('não têm fator comum'), 'somar tip: 4
 assert(fracaoSomaTips(4, 6)[0].includes('12'), 'somar tip: 4 & 6 → common denominator 12')
 assert(fracaoSomaTips(3, 5)[0].includes('não têm fator comum'), 'somar tip: 3 & 5 are truly coprime')
 assert(fracaoSomaTips(2, 6)[0].includes('múltiplo'), 'somar tip: 2 divides 6')
+
+// ---- i18n: the two dictionaries must define exactly the same keys ----
+// (a key missing from `en` falls back to Portuguese, so only this catches it)
+const ptKeys = new Set(translationKeys('pt'))
+const enKeys = new Set(translationKeys('en'))
+assert(LANGS.length === 2, 'two languages')
+assert(ptKeys.size > 0 && enKeys.size > 0, 'both dictionaries have keys')
+for (const key of ptKeys) assert(enKeys.has(key), `en is missing the key "${key}"`)
+for (const key of enKeys) assert(ptKeys.has(key), `pt is missing the key "${key}"`)
+
+// ---- the rank ladder ----
+assert(RANK_STEPS === RANK_TIERS.reduce((sum, tier) => sum + tier.divisions, 0), 'RANK_STEPS matches the tiers')
+assert(RANK_STEPS === 20, 'the ladder is 20 steps (Iniciante I .. Sábio VI)')
+assert(roman(1) === 'I' && roman(4) === 'IV' && roman(6) === 'VI', 'roman numerals')
+
+// clamping keeps every input inside the ladder
+assert(clampStep(-5) === 0, 'clampStep floors at 0')
+assert(clampStep(999) === RANK_STEPS - 1, 'clampStep caps at the top step')
+assert(clampStep(undefined) === 0, 'clampStep survives a missing value')
+assert(clampStep(3.4) === 3, 'clampStep rounds')
+
+// every step maps to a real tier/division, and the two ends are what we promise
+const seenLabels = new Set()
+for (let step = 0; step < RANK_STEPS; step++) {
+  const rank = rankAt(step)
+  const tier = RANK_TIERS[rank.tierIndex]
+  assert(tier && tier.key === rank.tierKey, `rankAt(${step}) lands on a real tier`)
+  assert(rank.division >= 1 && rank.division <= tier.divisions, `rankAt(${step}) division in range`)
+  assert(rank.step === step, `rankAt(${step}) keeps its step`)
+  assert(typeof rank.color === 'string' && rank.color.startsWith('#'), `rankAt(${step}) carries a colour`)
+  const label = `${rank.tierKey} ${rank.roman}`
+  assert(!seenLabels.has(label), `no two steps share the label "${label}"`)
+  seenLabels.add(label)
+}
+assert(seenLabels.size === RANK_STEPS, 'every step has its own label')
+const bottom = rankAt(0)
+const top = rankAt(RANK_STEPS - 1)
+assert(bottom.tierKey === 'iniciante' && bottom.roman === 'I', 'step 0 is Iniciante I')
+assert(top.tierKey === 'sabio' && top.roman === 'VI' && top.isTop, 'the last step is Sábio VI')
+assert(rankAt(RANK_STEPS + 10).step === RANK_STEPS - 1, 'rankAt clamps out-of-range steps')
+// tierStartStep must line up with rankAt
+for (let i = 0; i < RANK_TIERS.length; i++) {
+  const start = tierStartStep(i)
+  assert(rankAt(start).tierIndex === i && rankAt(start).division === 1, `tierStartStep(${i}) is that tier's division I`)
+}
+
+// the match rule: 8+/10 up, 5-7 stay, <5 down — and never off the ladder
+for (let step = 0; step < RANK_STEPS; step++) {
+  for (let correct = 0; correct <= MATCH_QUESTIONS; correct++) {
+    const outcome = matchOutcome(step, correct, MATCH_QUESTIONS)
+    const next = applyMatchResult(step, correct, MATCH_QUESTIONS)
+    assert(next >= 0 && next <= RANK_STEPS - 1, `match ${correct}/10 at ${step} stays on the ladder`)
+    assert(Math.abs(next - step) <= 1, `match ${correct}/10 at ${step} moves at most one step`)
+    if (correct >= 8) {
+      assert(outcome === (step < RANK_STEPS - 1 ? 'up' : 'stay'), `${correct}/10 promotes (unless at the top)`)
+      assert(next === Math.min(step + 1, RANK_STEPS - 1), `${correct}/10 climbs one step`)
+    } else if (correct < 5) {
+      assert(outcome === (step > 0 ? 'down' : 'stay'), `${correct}/10 demotes (unless at the bottom)`)
+      assert(next === Math.max(step - 1, 0), `${correct}/10 drops one step`)
+    } else {
+      assert(outcome === 'stay' && next === step, `${correct}/10 holds the step`)
+    }
+  }
+}
+// the rule is a ratio, so a 20-question match behaves the same way
+assert(applyMatchResult(5, 16, 20) === 6, 'a 20-question match at 80% still promotes')
+assert(applyMatchResult(5, 9, 20) === 4, 'a 20-question match under 50% still demotes')
+assert(matchOutcome(3, 0, 0) === 'down', 'a match with no questions cannot count as a win')
+
+// the difficulty ladder a match draws from
+const ladder = trainingLadder(TOPICS)
+assert(ladder.length === TOPICS.reduce((sum, topic) => sum + topic.levels.length, 0), 'the ladder has one rung per topic level')
+assert(ladder[0].topicId === TOPICS[0].id && ladder[0].level === 0, 'the ladder starts at the first level of the first topic')
+assert(ladderTarget(0, ladder.length) === 0, 'rank 0 targets the easiest rung')
+assert(ladderTarget(RANK_STEPS - 1, ladder.length) === ladder.length - 1, 'the top rank targets the hardest rung')
+let previousTarget = -1
+for (let step = 0; step < RANK_STEPS; step++) {
+  const target = ladderTarget(step, ladder.length)
+  assert(target >= previousTarget, `ladderTarget never goes backwards (step ${step})`)
+  assert(target >= 0 && target < ladder.length, `ladderTarget(${step}) is a real rung`)
+  previousTarget = target
+
+  const poolForStep = matchPool(step, TOPICS)
+  assert(poolForStep.length === Math.min(MATCH_SPREAD, ladder.length), `matchPool(${step}) always offers the same spread`)
+  for (const rung of poolForStep) {
+    const topic = getTopic(rung.topicId)
+    assert(topic, `matchPool(${step}) only names real topics`)
+    assert(rung.level >= 0 && rung.level < topic.levels.length, `matchPool(${step}) only names real levels`)
+    // a question must actually be generatable for every rung the pool offers
+    for (const lang of LANGS) {
+      const q = generateQuestion(rung.topicId, rung.level, lang)
+      assert(typeof q.prompt === 'string' && q.prompt.length > 0, `match question has a prompt (${rung.topicId} ${rung.level} ${lang})`)
+      assert(checkAnswer(canonicalText(q), q), `match question grades its own answer (${rung.topicId} ${rung.level} ${lang})`)
+    }
+  }
+}
+assert(matchPool(0, TOPICS)[0].level === 0, 'the easiest match starts at the first rung')
+assert(matchPool(RANK_STEPS - 1, TOPICS).at(-1).topicId === TOPICS[TOPICS.length - 1].id, 'the hardest match reaches the last topic')
+
+// ---- the exam bank (data/exams.js) ----
+// This is hand-catalogued data, so the checks below are what EXAMS.md promises.
+const seenExamIds = new Set()
+for (const q of EXAM_QUESTIONS) {
+  assert(typeof q.id === 'string' && q.id.length > 0, 'every exam question has an id')
+  assert(!seenExamIds.has(q.id), `exam id "${q.id}" is used twice`)
+  seenExamIds.add(q.id)
+  assert(EXAM_SOURCES.includes(q.source), `${q.id}: source must be one of EXAM_SOURCES`)
+  assert(['official', 'adapted', 'authored'].includes(q.origin), `${q.id}: origin must be official/adapted/authored`)
+  assert(q.year === null || (Number.isInteger(q.year) && q.year > 1990), `${q.id}: year is null or a real year`)
+  assert(q.number === null || Number.isInteger(q.number), `${q.id}: number is null or an integer`)
+  const topic = getTopic(q.topicId)
+  assert(topic, `${q.id}: topicId "${q.topicId}" must exist in data/topics.js`)
+  assert(Number.isInteger(q.level) && q.level >= 0 && q.level < topic.levels.length, `${q.id}: level must be one of the topic's levels`)
+  assert(typeof q.statement === 'string' && q.statement.length > 10, `${q.id}: statement`)
+  assert(Array.isArray(q.alternatives) && q.alternatives.length === 5, `${q.id}: exactly 5 alternatives`)
+  assert(new Set(q.alternatives).size === 5, `${q.id}: the 5 alternatives must all differ`)
+  assert(Number.isInteger(q.correct) && q.correct >= 0 && q.correct < 5, `${q.id}: correct must index an alternative`)
+  assert(Array.isArray(q.solution) && q.solution.length > 0, `${q.id}: a worked solution`)
+  // both languages, and the localized copy must never move the answer
+  assert(q.en && typeof q.en.statement === 'string' && q.en.statement.length > 10, `${q.id}: English statement`)
+  assert(Array.isArray(q.en.alternatives) && q.en.alternatives.length === 5, `${q.id}: 5 English alternatives`)
+  assert(Array.isArray(q.en.solution) && q.en.solution.length > 0, `${q.id}: English solution`)
+  for (const lang of LANGS) {
+    const localized = localizePaper(q, lang)
+    assert(localized.correct === q.correct, `${q.id}: localizing (${lang}) must not move the answer`)
+    assert(localized.id === q.id && localized.topicId === q.topicId, `${q.id}: localizing (${lang}) keeps the structure`)
+    assert(localized.alternatives.length === 5, `${q.id}: localized (${lang}) alternatives`)
+    assert(isPaperCorrect(localized, q.correct), `${q.id}: localized (${lang}) grades the right answer`)
+    assert(!isPaperCorrect(localized, (q.correct + 1) % 5), `${q.id}: localized (${lang}) rejects a wrong answer`)
+  }
+}
+assert(letterFor(0) === 'a' && letterFor(4) === 'e', 'alternatives are labelled a..e')
+
+// filtering and drawing
+assert(availableSources().every((source) => EXAM_SOURCES.includes(source)), 'availableSources stays inside EXAM_SOURCES')
+assert(availableTopicIds().every((id) => getTopic(id)), 'availableTopicIds are real topics')
+assert(countPapers({}) === EXAM_QUESTIONS.length, 'no filter counts the whole bank')
+assert(countPapers({ source: 'all', topicId: 'all' }) === EXAM_QUESTIONS.length, '"all" means no filter')
+for (const source of availableSources()) {
+  const filtered = filterPapers(EXAM_QUESTIONS, { source })
+  assert(filtered.length > 0 && filtered.every((q) => q.source === source), `filtering by ${source}`)
+}
+for (const topicId of availableTopicIds()) {
+  const filtered = filterPapers(EXAM_QUESTIONS, { topicId })
+  assert(filtered.length > 0 && filtered.every((q) => q.topicId === topicId), `filtering by topic ${topicId}`)
+}
+assert(filterPapers(EXAM_QUESTIONS, { source: 'ENEM', topicId: 'porcentagem' }).every((q) => q.source === 'ENEM' && q.topicId === 'porcentagem'), 'both filters apply together')
+for (let run = 0; run < 200; run++) {
+  const set = drawPaperSet({ count: 10 })
+  assert(set.length === 10, 'a draw returns the asked-for count while the bank allows it')
+  assert(new Set(set.map((q) => q.id)).size === set.length, 'a draw never repeats a question')
+  assert(set.every((q) => EXAM_QUESTIONS.includes(q)), 'a draw only returns bank questions')
+}
+assert(drawPaperSet({ count: 999 }).length === EXAM_QUESTIONS.length, 'asking for more than the bank has returns the whole bank')
+assert(drawPaperSet({ source: 'UFRGS', count: 5 }).every((q) => q.source === 'UFRGS'), 'a filtered draw respects its filter')
+assert(drawPaperSet({ topicId: 'nao-existe', count: 5 }).length === 0, 'a filter matching nothing draws nothing')
 
 console.log(`✅ todos os ${checks} testes passaram`)

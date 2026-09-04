@@ -1,0 +1,39 @@
+.picker { display: flex; flex-direction: column; gap: 12px; }
+
+/* Segmented control: two options, the active one filled with the accent.
+   (Same look as the other segmented controls in Ajustes.) */
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+.segmented button {
+  min-height: 44px;
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.segmented button[data-active='true'] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Choice chips (session length). */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.chips button[data-active='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}

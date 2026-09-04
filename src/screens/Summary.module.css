@@ -32,3 +32,10 @@
 }
 
 .actions { display: flex; flex-direction: column; gap: 12px; }
+
+/* The rank badge after a match, under the score. */
+.rankRow {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}

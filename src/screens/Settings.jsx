@@ -1,9 +1,8 @@
 import styles from './Settings.module.css'
 import { Button } from '../components/Button.jsx'
+import { SessionSizePicker } from '../components/SessionSizePicker.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-const COUNT_OPTIONS = [5, 10, 15, 20, 30, 35]
-const TIME_OPTIONS = [1, 5, 10, 20, 30, 45]
 const THEMES = ['midnight', 'dim', 'sepia', 'forest', 'ocean', 'plum', 'rose', 'slate', 'clay']
 
 export function Settings({ navigate }) {
@@ -40,46 +39,8 @@ export function Settings({ navigate }) {
 
       <section className={styles.group}>
         <h2 className={styles.groupTitle}>{t('sessionSize')}</h2>
-        <div className={styles.segmented}>
-          <button
-            data-active={settings.sessionMode === 'count'}
-            onClick={() => updateSettings({ sessionMode: 'count' })}
-          >
-            {t('byQuestions')}
-          </button>
-          <button
-            data-active={settings.sessionMode === 'time'}
-            onClick={() => updateSettings({ sessionMode: 'time' })}
-          >
-            {t('byTime')}
-          </button>
-        </div>
-
-        {settings.sessionMode === 'count' ? (
-          <div className={styles.chips}>
-            {COUNT_OPTIONS.map((n) => (
-              <button
-                key={n}
-                data-active={settings.sessionCount === n}
-                onClick={() => updateSettings({ sessionCount: n })}
-              >
-                {t('nQuestions', { n })}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className={styles.chips}>
-            {TIME_OPTIONS.map((n) => (
-              <button
-                key={n}
-                data-active={settings.sessionMinutes === n}
-                onClick={() => updateSettings({ sessionMinutes: n })}
-              >
-                {t('nMin', { n })}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* The same control the first-run tour shows, so both stay in step. */}
+        <SessionSizePicker />
       </section>
 
       <section className={styles.group}>
@@ -152,6 +113,20 @@ export function Settings({ navigate }) {
           />
         </label>
         <p className={styles.note}>{t('darkNote')}</p>
+      </section>
+
+      <section className={styles.group}>
+        <h2 className={styles.groupTitle}>{t('help_title')}</h2>
+        <Button variant="ghost" full onClick={() => navigate('help', { from: 'settings' })}>{t('helpLink')}</Button>
+        <div className={styles.actionRow}>
+          <span>
+            {t('tour_replay')}
+            <span className={styles.toggleHint}>{t('tour_replayHint')}</span>
+          </span>
+          <button className={styles.inlineAction} onClick={() => updateSettings({ onboarded: false })}>
+            {t('openAction')}
+          </button>
+        </div>
       </section>
 
       <section className={styles.group}>

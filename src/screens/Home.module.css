@@ -55,3 +55,68 @@
   gap: 12px;
   align-items: start;
 }
+
+/* The header's top row: the rank chip and the help button, one in each corner,
+   sitting above the centred title. */
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.rankChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.rankChip:hover { border-color: var(--accent); }
+.rankChip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.helpBtn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.helpBtn:hover { color: var(--accent); border-color: var(--accent); }
+.helpBtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* The paused-session card. Accent-tinted so it reads as an offer, not a chore. */
+.pending {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+  border-radius: var(--radius);
+  padding: 16px;
+  animation: fade-up 0.28s ease both;
+}
+.pendingHead { display: flex; align-items: center; gap: 12px; }
+.pendingIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-2));
+  color: var(--accent);
+}
+.pendingTitles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pendingTitle { font-weight: 700; }
+.pendingWhere { font-size: 0.82rem; color: var(--text-dim); }
+.pendingSub { font-size: 0.85rem; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.pendingActions { display: grid; grid-template-columns: 1fr auto; gap: 10px; }

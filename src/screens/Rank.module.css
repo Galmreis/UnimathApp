@@ -1,0 +1,99 @@
+.rank { display: flex; flex-direction: column; gap: 26px; animation: fade-up 0.28s ease both; }
+
+/* The hero: the badge, which step of the ladder it is, and one bar for the
+   whole climb. Everything here is derived from rank.step. */
+.hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  text-align: center;
+}
+.heroMeta { font-size: 0.82rem; color: var(--text-dim); }
+.hero > div:last-child { width: 100%; }
+
+.cta { display: flex; flex-direction: column; gap: 10px; }
+.ctaNote { text-align: center; font-size: 0.82rem; color: var(--text-dim); }
+
+/* Same accent tick as the other screens' section titles. */
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sectionTitle::before {
+  content: '';
+  width: 4px;
+  height: 1.05em;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* The ladder: one row per tier, its divisions as roman-numeral pips. Cleared
+   pips carry the tier's colour, the current one is filled, the rest stay dim. */
+.ladder { display: flex; flex-direction: column; gap: 8px; }
+.tier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.tier[data-current='true'] { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.tierName { font-weight: 700; font-size: 0.95rem; color: var(--text-dim); }
+.tier[data-current='true'] .tierName { font-weight: 800; }
+
+.pips { display: flex; gap: 6px; flex-wrap: wrap; }
+.pip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.pip[data-state='current'] {
+  border-width: 2px;
+  font-weight: 800;
+  animation: pop 0.3s ease both;
+}
+.pip[data-state='done'] { opacity: 0.75; }
+
+.rules { display: flex; flex-direction: column; gap: 8px; }
+.ruleLine { font-size: 0.9rem; line-height: 1.6; color: var(--text-dim); }
+
+.empty { font-size: 0.9rem; color: var(--text-dim); }
+
+.history { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.historyRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+}
+.historyWhen { color: var(--text-dim); }
+.historyScore { font-weight: 700; font-variant-numeric: tabular-nums; }
+.historyScore[data-outcome='up'] { color: var(--success); }
+.historyScore[data-outcome='down'] { color: var(--error); }

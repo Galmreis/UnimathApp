@@ -1,0 +1,51 @@
+.more { display: flex; flex-direction: column; gap: 20px; animation: fade-up 0.28s ease both; }
+
+.title { font-size: 1.6rem; font-weight: 800; padding-top: 8px; }
+
+.list { display: flex; flex-direction: column; gap: 10px; }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 76px;
+  padding: 14px 16px;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, transform 0.05s ease;
+}
+.row:hover { border-color: var(--accent); }
+.row:active { transform: translateY(1px); }
+.row:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.rowIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 13%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  color: var(--accent);
+}
+
+.rowText { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rowTitle { font-weight: 700; }
+.rowSub { font-size: 0.82rem; color: var(--text-dim); line-height: 1.4; }
+
+/* A right-pointing chevron drawn with borders — no extra icon needed. */
+.chevron {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--text-dim);
+  border-bottom: 2px solid var(--text-dim);
+  transform: rotate(-45deg);
+}
+
+.note { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }

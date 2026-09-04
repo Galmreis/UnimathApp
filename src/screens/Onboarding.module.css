@@ -1,0 +1,100 @@
+/* The tour owns the viewport: a column with the card in the middle and the
+   buttons pinned to the bottom, so the thumb always lands in the same place. */
+.tour {
+  min-height: 100dvh;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 16px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* Step indicator: the current step is a wide accent pill, past steps are solid
+   dots, upcoming ones are dim. */
+.dots { display: flex; align-items: center; gap: 6px; }
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border);
+  transition: width 0.2s ease, background-color 0.2s ease;
+}
+.dot[data-state='done'] { background: var(--text-dim); }
+.dot[data-state='current'] { width: 24px; background: var(--accent); }
+
+.skip {
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.skip:hover { color: var(--text); }
+.skip:focus-visible { outline: 2px solid var(--accent); }
+
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  animation: fade-up 0.3s ease both;
+}
+
+/* A big, quiet math symbol standing in for an illustration — same visual
+   language as the topic badges, no emoji, no image weight. */
+.glyph {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+  color: var(--accent);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  animation: pop 0.32s ease both;
+}
+
+.counter {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.title { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+
+.body { color: var(--text-dim); font-size: 1rem; line-height: 1.6; }
+
+/* The session-size step: the real control, framed so it reads as "do this now". */
+.configure {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.warn {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface-2));
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.actions { display: flex; flex-direction: column; gap: 10px; }

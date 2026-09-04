@@ -2,11 +2,12 @@ import styles from './NavBar.module.css'
 import { Icon } from './Icon.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-// The bottom tab bar (mobile-first). Three destinations; the active one is
+// The bottom tab bar (mobile-first). Four destinations; the active one is
 // highlighted. This is our navigation instead of a router — simple state.
 const TABS = [
   { id: 'home', labelKey: 'nav_home', icon: 'home' },
   { id: 'progress', labelKey: 'nav_progress', icon: 'progress' },
+  { id: 'more', labelKey: 'nav_more', icon: 'more' },
   { id: 'settings', labelKey: 'nav_settings', icon: 'settings' },
 ]
 
