@@ -257,7 +257,7 @@ assert(matchPool(0, TOPICS)[0].level === 0, 'the easiest match starts at the fir
 assert(matchPool(RANK_STEPS - 1, TOPICS).at(-1).topicId === TOPICS[TOPICS.length - 1].id, 'the hardest match reaches the last topic')
 
 // ---- the exam bank (data/exams.js) ----
-// This is hand-catalogued data, so the checks below are what EXAMS.md promises.
+// Hand-catalogued data, so the checks below are the rules documented in exams.js.
 const seenExamIds = new Set()
 for (const q of EXAM_QUESTIONS) {
   assert(typeof q.id === 'string' && q.id.length > 0, 'every exam question has an id')

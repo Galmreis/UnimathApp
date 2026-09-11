@@ -1,32 +1,38 @@
 // The question bank for the "Provas" mode (ENEM / UFRGS style).
 //
-// Unlike the training track — where questions are *generated* from random
-// numbers (lib/generators.js) — real exam questions are contextual, multiple
-// choice and can't be built from a formula. So they live here as plain data, one
-// object per question, and lib/papers.js filters/draws from this list.
+// Training questions are generated from random numbers (lib/generators.js), but
+// real exam questions are contextual and multiple choice, so they live here as
+// plain data. lib/papers.js filters and draws from this list.
 //
-// HOW TO ADD A PAPER: see EXAMS.md in the repo root. It documents every field
-// below, the cataloguing conventions and the checklist `npm run check` enforces.
+// One question:
+//   id           unique slug, never reused (React key + log key)
+//   source       must be in EXAM_SOURCES
+//   year         the paper's year, or null
+//   number       the question's number in the paper, or null
+//   origin       'official' transcribed as printed
+//                'adapted'  real question, numbers or wording changed
+//                'authored' written in that exam's style, not a real question
+//   topicId      a topic in data/topics.js (pick the dominant skill)
+//   level        that topic's level index
+//   statement    question text, Portuguese, plain text
+//   alternatives exactly 5, in the paper's order, all different
+//   correct      index 0-4, checked against the official key
+//   solution     2 to 4 worked steps
+//   en           statement/alternatives/solution in English, same order
 //
-// The shape of one question:
-//   id           unique slug, never reused (it's the React key and the log key)
-//   source       'ENEM' | 'UFRGS' — the exam board (add new ones to EXAM_SOURCES)
-//   year         the paper's year, or null for the authored seed questions
-//   number       the question's number in the official paper, or null
-//   origin       'official'  transcribed from the official paper, unchanged
-//                'adapted'   based on an official question, numbers/wording changed
-//                'authored'  written for Unimath in the style of that exam
-//   topicId      which track topic it exercises (must exist in data/topics.js)
-//   level        that topic's level index the question sits closest to
-//   statement    the question text (Portuguese)
-//   alternatives exactly 5 options, in order a) b) c) d) e)
-//   correct      index (0-4) of the right alternative
-//   solution     ordered steps explaining the answer
-//   en           the same statement/alternatives/solution in English
+// Rules that npm run check enforces, and a few it can't:
+//   - no images. If it needs a figure, rewrite the data into the text (that
+//     makes it 'adapted') or skip the question.
+//   - no question groups. Repeat the shared context in each statement, since
+//     questions are drawn individually.
+//   - keep the numbers exact, don't round an alternative.
+//   - to add a board, put its name in EXAM_SOURCES and catalogue one question.
+//     Empty boards never show up as a filter chip.
 //
-// Everything currently here is origin: 'authored' — written for the seed so the
-// mode has content to run on. Replace/extend with catalogued papers as they are
-// transcribed; nothing else in the app needs to change.
+// Papers and answer keys: INEP for ENEM, COPERSE for UFRGS.
+//
+// Everything here is origin: 'authored', written so the mode has content to run
+// on. Replace or extend with catalogued papers; nothing else needs to change.
 
 export const EXAM_SOURCES = ['ENEM', 'UFRGS']
 

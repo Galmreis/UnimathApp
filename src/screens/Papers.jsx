@@ -12,8 +12,7 @@ import {
 // many questions, then run the round (screens/PaperRun.jsx).
 //
 // The filters are built from the bank itself (lib/papers.js reads data/exams.js),
-// so cataloguing a new paper makes it selectable here with no code change — see
-// EXAMS.md.
+// so cataloguing a new paper makes it selectable here with no code change.
 export function Papers({ navigate }) {
   const { t, getTopic, papers } = useStore()
 
