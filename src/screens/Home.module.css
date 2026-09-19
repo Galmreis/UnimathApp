@@ -26,7 +26,7 @@
   align-items: center;
   gap: 10px;
 }
-/* Same accent tick as the Progress and Settings sections — one visual system. */
+
 .sectionTitle::before {
   content: '';
   width: 4px;
@@ -35,7 +35,7 @@
   background: var(--accent);
 }
 
-/* Each group stacks under its own small label. */
+
 .group { margin-bottom: 20px; }
 .group:last-child { margin-bottom: 0; }
 .groupTitle {
@@ -47,8 +47,7 @@
   margin-bottom: 10px;
 }
 
-/* Cards flow into as many columns as fit (2–3 on wide screens, 1 on phones),
-   so the whole track no longer forces a long scroll. */
+/* Colunas conforme cabe, 1 em tela estreita. */
 .track {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -56,8 +55,7 @@
   align-items: start;
 }
 
-/* The header's top row: the rank chip and the help button, one in each corner,
-   sitting above the centred title. */
+
 .topRow {
   display: flex;
   align-items: center;
@@ -92,7 +90,7 @@
 .helpBtn:hover { color: var(--accent); border-color: var(--accent); }
 .helpBtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* The paused-session card. Accent-tinted so it reads as an offer, not a chore. */
+/* Cor de destaque pra parecer oferta, não pendência. */
 .pending {
   display: flex;
   flex-direction: column;

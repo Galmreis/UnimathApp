@@ -38,7 +38,7 @@
 .rowTitle { font-weight: 700; }
 .rowSub { font-size: 0.82rem; color: var(--text-dim); line-height: 1.4; }
 
-/* A right-pointing chevron drawn with borders — no extra icon needed. */
+
 .chevron {
   flex-shrink: 0;
   width: 8px;

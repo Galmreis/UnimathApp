@@ -40,8 +40,7 @@
   color: var(--text-dim);
 }
 
-/* Exam questions are prose, not a big formula — so this is reading size, not
-   the 1.9rem of the generated prompts in Session. */
+/* Enunciado é prosa, não fórmula, por isso tamanho de leitura e não o 1.9rem do Session. */
 .statement { font-size: 1.05rem; line-height: 1.6; }
 
 .alternatives { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -64,7 +63,7 @@
 .alternative:disabled { cursor: default; }
 .alternative:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-/* The a) b) c) plate. It's what carries the state colour. */
+
 .letter {
   flex-shrink: 0;
   display: inline-flex;
@@ -106,8 +105,7 @@
 }
 .feedback[data-correct='true'] { background: var(--success-bg); color: var(--success); }
 
-/* The worked solution, styled like Session's step list so the two modes read
-   as the same app. */
+
 .solution {
   border-left: 3px solid var(--accent);
   background: color-mix(in srgb, var(--accent) 9%, var(--surface-2));
@@ -137,7 +135,7 @@
 
 .originNote { font-size: 0.76rem; color: var(--text-dim); text-align: center; }
 
-/* --- result phase --- */
+/* --- resultado --- */
 .resultHero {
   background: var(--surface);
   border: 1px solid var(--border);

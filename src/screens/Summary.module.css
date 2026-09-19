@@ -19,7 +19,7 @@
   font-weight: 800;
   line-height: 1;
   color: var(--accent);
-  animation: pop 0.4s 0.1s ease both; /* the score lands a beat after the screen */
+  animation: pop 0.4s 0.1s ease both;
 }
 .score { font-size: 1.25rem; font-weight: 600; margin-top: 8px; }
 .sub { font-size: 0.9rem; color: var(--text-dim); margin-top: 4px; }
@@ -33,7 +33,7 @@
 
 .actions { display: flex; flex-direction: column; gap: 12px; }
 
-/* The rank badge after a match, under the score. */
+
 .rankRow {
   margin-top: 16px;
   display: flex;

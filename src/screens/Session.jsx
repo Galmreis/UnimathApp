@@ -8,7 +8,7 @@ import { checkAnswer, formatAnswer } from '../lib/checkAnswer.js'
 import { randInt, pick } from '../lib/math.js'
 import { MATCH_QUESTIONS, matchPool, matchOutcome, applyMatchResult } from '../lib/ranks.js'
 
-const EXAM_LENGTH = 10 // the "prova da sexta" is always 10 questions
+const EXAM_LENGTH = 10 // prova da sexta é sempre 10 questões
 
 // Três modos:
 //   practice  feedback na hora, com passos e Dica. Dá pra pausar.
@@ -55,8 +55,8 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
   const [phase, setPhase] = useState('answering') // 'answering' | 'feedback'
   const [lastCorrect, setLastCorrect] = useState(false)
   const [results, setResults] = useState(resume?.results ?? []) // one boolean per answered question
-  const [paused, setPaused] = useState(false)     // is the pause sheet open?
-  const [resumed, setResumed] = useState(Boolean(resume)) // show the "picking up" note once
+  const [paused, setPaused] = useState(false)     // ficha de pausa aberta?
+  const [resumed, setResumed] = useState(Boolean(resume)) // mostra o aviso de retomada uma vez
 
   const inputRef = useRef(null)
   // Finge que começou há X ms pro relógio continuar em vez de zerar.
@@ -158,7 +158,7 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
     setPhase('feedback')
   }
 
-  // User dismisses the feedback and moves on (practice only).
+
   function goNext() {
     if (results.length >= targetCount) { finish(results); return } // count mode: done
     setPhase('answering')
@@ -166,13 +166,13 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
     setQuestion(makeQuestion())
   }
 
-  // Pause and leave: keep the snapshot so Home can offer "Continuar".
+  // Pausa e sai: guarda o snapshot pra Home oferecer "Continuar".
   function pauseAndLeave() {
     savePending(snapshot(results))
     navigate('home')
   }
 
-  // Leave and throw the session away.
+
   function quitAndDiscard() {
     if (isPractice) clearPending()
     navigate('home')
@@ -184,8 +184,7 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
   const sessionProgress = byTime
     ? Math.min(1, (now - startedAt) / totalMs)
     : answered / targetCount
-  // A match names the topic of the question at hand; practice and the exam name
-  // the topic of the whole session.
+  // No match cada questão carrega seu próprio tópico; em practice/exam é um só.
   const headerName = isMatch ? t('rank_matchTag') : topic.name
   const questionTopic = isMatch ? getTopic(question.topicId) : null
 
@@ -285,9 +284,7 @@ function formatClock(ms) {
   return `${m}:${s}`
 }
 
-// Keep only characters that can form a valid answer: digits, a decimal
-// separator (, or .) and a minus sign — plus "/" for fractions. This stops
-// letters (or a pasted word) from ending up in the answer box.
+// Só deixa passar dígito, separador decimal, sinal de menos e "/" pra fração.
 function sanitizeAnswer(value, kind) {
   const allowed = kind === 'fraction' ? /[^0-9/.,-]/g : /[^0-9.,-]/g
   return value.replace(allowed, '')

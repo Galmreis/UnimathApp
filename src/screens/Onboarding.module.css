@@ -1,5 +1,4 @@
-/* The tour owns the viewport: a column with the card in the middle and the
-   buttons pinned to the bottom, so the thumb always lands in the same place. */
+/* Botão sempre no mesmo lugar embaixo, pro polegar não precisar procurar. */
 .tour {
   min-height: 100dvh;
   max-width: var(--maxw);
@@ -12,8 +11,7 @@
 
 .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 
-/* Step indicator: the current step is a wide accent pill, past steps are solid
-   dots, upcoming ones are dim. */
+
 .dots { display: flex; align-items: center; gap: 6px; }
 .dot {
   width: 8px;
@@ -45,8 +43,7 @@
   animation: fade-up 0.3s ease both;
 }
 
-/* A big, quiet math symbol standing in for an illustration — same visual
-   language as the topic badges, no emoji, no image weight. */
+
 .glyph {
   align-self: flex-start;
   display: inline-flex;
@@ -76,7 +73,7 @@
 
 .body { color: var(--text-dim); font-size: 1rem; line-height: 1.6; }
 
-/* The session-size step: the real control, framed so it reads as "do this now". */
+
 .configure {
   margin-top: 8px;
   display: flex;

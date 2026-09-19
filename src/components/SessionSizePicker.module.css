@@ -1,7 +1,6 @@
 .picker { display: flex; flex-direction: column; gap: 12px; }
 
-/* Segmented control: two options, the active one filled with the accent.
-   (Same look as the other segmented controls in Ajustes.) */
+
 .segmented {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -22,7 +21,7 @@
   color: var(--accent-ink);
 }
 
-/* Choice chips (session length). */
+
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chips button {
   min-height: 44px;

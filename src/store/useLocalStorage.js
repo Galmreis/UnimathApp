@@ -8,7 +8,7 @@ export function useLocalStorage(key, initialValue) {
       const stored = localStorage.getItem(key)
       return stored !== null ? JSON.parse(stored) : initialValue
     } catch {
-      return initialValue // storage disabled or corrupt JSON -> use the default
+      return initialValue // storage desligado ou JSON corrompido -> usa o default
     }
   })
 

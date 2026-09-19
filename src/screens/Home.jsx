@@ -21,7 +21,7 @@ export function Home({ navigate }) {
   const totalAnswered = allProgress.reduce((sum, p) => sum + p.answered, 0)
   const totalCorrect = allProgress.reduce((sum, p) => sum + p.correct, 0)
   const overallPct = totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0
-  // A study day = any day with a practice session OR a Friday exam.
+  // Dia estudado = teve sessão de prática OU prova da sexta.
   const studyDays = new Set([...sessions, ...exams].map((r) => r.date)).size
 
   const groups = []

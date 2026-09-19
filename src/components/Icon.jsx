@@ -51,7 +51,7 @@ const ICONS = {
       <path d="M12 17.2h.01" />
     </>
   ),
-  // A left chevron — the back button on the secondary screens.
+  // Voltar
   back: (
     <>
       <path d="M14.5 5 8 12l6.5 7" />
@@ -64,7 +64,7 @@ const ICONS = {
       <path d="M20 4v4h-4" />
     </>
   ),
-  // A pause bar pair — the paused-session card.
+  // Pausa
   pause: (
     <>
       <path d="M9.5 5v14M14.5 5v14" />

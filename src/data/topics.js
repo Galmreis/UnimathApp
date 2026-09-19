@@ -1,13 +1,8 @@
 // A ordem desse array é o plano de estudo: cada tópico só destrava quando o
 // `prerequisite` dele é dominado.
 
-// `glyph` is the math symbol shown in the topic's coloured badge (see
-// components/TopicGlyph.jsx). `color` tints that badge. Both are easy to change
-// — swap a glyph or a hex value here and the whole UI follows.
-//
-// `group` buckets topics into the sections shown on Home (label lives in
-// lib/i18n.js as `group_<key>`). Topics with the same group render together, in
-// track order; a new group key just needs a matching i18n label.
+// glyph e color pintam o badge do tópico. group agrupa na Home (label em
+// i18n.js como group_<key>).
 export const TOPICS = [
   {
     id: 'adicao',
@@ -17,7 +12,7 @@ export const TOPICS = [
     color: '#7dcfff',
     blurb: 'O primeiro passo: somar com e sem reagrupar, e com decimais.',
     levels: ['Sem reagrupar', 'Com reagrupamento', 'Com decimais'],
-    prerequisite: null, // the first topic is always available
+    prerequisite: null,
     en: { name: 'Addition', levels: ['No carrying', 'With carrying', 'With decimals'] },
   },
   {
@@ -110,7 +105,6 @@ export const TOPICS = [
   },
 ]
 
-// Look up a topic by id. Returns undefined if not found.
 export function getTopic(id) {
   return TOPICS.find((topic) => topic.id === id)
 }

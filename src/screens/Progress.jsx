@@ -4,7 +4,7 @@ import { TopicGlyph } from '../components/TopicGlyph.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 import { topicStatus, lifetimeAccuracy, MASTERY_ACCURACY } from '../lib/mastery.js'
 
-// Only judge a topic once there's enough data for the accuracy to mean something.
+// Só julga um tópico quando já tem dado suficiente pra taxa significar algo.
 const IMPROVE_MIN_ANSWERED = 5
 
 export function Progress() {
@@ -14,7 +14,7 @@ export function Progress() {
   const totalAnswered = allProgress.reduce((sum, p) => sum + p.answered, 0)
   const totalCorrect = allProgress.reduce((sum, p) => sum + p.correct, 0)
   const overallPct = totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0
-  // A study day = any day with a practice session OR a Friday exam.
+  // Dia estudado = teve sessão de prática OU prova da sexta.
   const studyDays = new Set([...sessions, ...exams].map((r) => r.date)).size
 
   // graded separa "nenhum ponto fraco" de "ainda não tem dado suficiente".

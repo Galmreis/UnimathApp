@@ -1,26 +1,23 @@
-/* Global styles: a tiny reset, the theme "tokens" (CSS variables), and base
-   element styling. Everything component-specific lives in *.module.css files.
-   The palette follows the brief: calm dark mode that doesn't strain the eyes —
-   a blue-grey background (not pure black), off-white text (not pure white),
-   a soft accent, and desaturated success/error colours. */
+/* Reset + tokens de tema. Especifico de componente fica no *.module.css.
+   Fundo azul-acinzentado, não preto puro; texto quase branco, não branco puro. */
 
 :root {
   /* Surfaces */
-  --bg: #171b24;         /* app background — dark blue-grey */
-  --surface: #1f2530;    /* cards */
-  --surface-2: #272e3c;  /* nested surfaces, inputs */
-  --elev: #2f3746;       /* hover/pressed */
+  --bg: #171b24;
+  --surface: #1f2530;
+  --surface-2: #272e3c;
+  --elev: #2f3746;
 
   /* Text */
-  --text: #e7eaf0;       /* off-white */
-  --text-dim: #98a2b3;   /* secondary text */
+  --text: #e7eaf0;
+  --text-dim: #98a2b3;
 
   /* Lines & accent */
   --border: #313a4a;
-  --accent: #7aa2f7;     /* soft blue — primary actions */
-  --accent-ink: #0e1420; /* text drawn on top of the accent colour */
+  --accent: #7aa2f7;
+  --accent-ink: #0e1420; /* texto em cima do accent */
 
-  /* Feedback (desaturated so nothing is harsh) */
+  /* Feedback */
   --success: #7ecb8f;
   --success-bg: rgba(126, 203, 143, 0.14);
   --error: #e39191;
@@ -29,23 +26,18 @@
   /* Shape & rhythm */
   --radius: 16px;
   --radius-sm: 10px;
-  --tap: 52px;           /* minimum comfortable touch target */
-  --maxw: 480px;         /* content column width (centred on desktop) */
+  --tap: 52px;           /* alvo mínimo de toque */
+  --maxw: 480px;
 
-  /* Typography — swap the whole app's font by changing this one line.
-     To use a web font, load it (index.html <link> or @import here) then put
-     its name first. See README "Changing the look". */
+  /* Troca a fonte do app inteiro nessa linha. */
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   color-scheme: dark;
 }
 
-/* Alternate themes (Settings › Tema). All dark and low-strain by design — the
-   goal is calm, not contrast. Each block only overrides the colour tokens it
-   changes; shape, spacing and fonts stay shared. `:root` above is the default
-   "Meia-noite" theme, so data-theme='midnight' needs no block of its own. */
+/* Temas alternativos. Cada bloco só sobrescreve cor; forma e espaçamento ficam
+   compartilhados. :root acima já é o tema padrão "Meia-noite". */
 
-/* Dim — a softer, lower-contrast neutral grey. The gentlest on tired eyes. */
 :root[data-theme='dim'] {
   --bg: #1a1c20;
   --surface: #23262c;
@@ -59,7 +51,6 @@
   --error: #d89a9a;
 }
 
-/* Sepia — warm amber tones, less blue light for evening study. */
 :root[data-theme='sepia'] {
   --bg: #1e1a15;
   --surface: #282219;
@@ -76,7 +67,6 @@
   --error-bg: rgba(216, 154, 134, 0.14);
 }
 
-/* Forest — muted green-grey, restful and low-saturation. */
 :root[data-theme='forest'] {
   --bg: #161d19;
   --surface: #1e2723;
@@ -92,7 +82,6 @@
   --error: #d99a9a;
 }
 
-/* Ocean — desaturated deep teal, cool and quiet. */
 :root[data-theme='ocean'] {
   --bg: #141d20;
   --surface: #1c272b;
@@ -107,7 +96,6 @@
   --error: #d99a9a;
 }
 
-/* Plum — soft muted lavender on a warm-dark aubergine. */
 :root[data-theme='plum'] {
   --bg: #1a1620;
   --surface: #241e2c;
@@ -122,7 +110,6 @@
   --error: #dd9aa9;
 }
 
-/* Rose — dusty rose on a warm charcoal, gentle and low-saturation. */
 :root[data-theme='rose'] {
   --bg: #1f171a;
   --surface: #291f23;
@@ -137,7 +124,6 @@
   --error: #dd9a9a;
 }
 
-/* Slate — neutral graphite with a muted periwinkle accent. */
 :root[data-theme='slate'] {
   --bg: #181a1e;
   --surface: #212429;
@@ -152,7 +138,6 @@
   --error: #d69a9a;
 }
 
-/* Clay — warm terracotta on a soft dark earth. */
 :root[data-theme='clay'] {
   --bg: #1e1815;
   --surface: #28211c;
@@ -167,12 +152,8 @@
   --error: #dd9a86;
 }
 
-/* High-contrast option (Settings). An accessibility override that LAYERS on top
-   of the active theme — it only strengthens legibility (pure-white text, much
-   brighter secondary text and borders) and deliberately leaves --bg, --surface
-   and --accent to the theme, so each theme keeps its identity while gaining
-   contrast. (It must not re-declare those, or every theme would look the same.)
-   Comes last so it wins over the theme blocks above. */
+/* Camada de alto contraste sobre o tema ativo. Não redeclara --bg/--surface/
+   --accent, senão todo tema ficaria igual. Vem por último pra ganhar dos temas. */
 :root[data-contrast='high'] {
   --text: #ffffff;
   --text-dim: #e2e6ee;
@@ -189,20 +170,17 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 16px;               /* >=16px stops mobile browsers zooming on focus */
+  font-size: 16px;               /* >=16px, senão o celular dá zoom ao focar input */
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Inputs and buttons should inherit the font, not fall back to the OS default. */
 input, button, select, textarea { font: inherit; color: inherit; }
 
 button { cursor: pointer; border: none; background: none; }
 
-/* --- motion --- */
-/* Shared keyframes. Screens fade up on entry; small reveals/pops accent key
-   moments. Kept short and gentle to match the calm palette. */
+/* --- animação --- */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: none; }
@@ -211,16 +189,13 @@ button { cursor: pointer; border: none; background: none; }
   from { opacity: 0; transform: scale(0.82); }
   to   { opacity: 1; transform: none; }
 }
-/* A small overshoot for icons — used when a nav tab becomes active. */
 @keyframes icon-pop {
   0%   { transform: scale(0.7); }
   55%  { transform: scale(1.18); }
   100% { transform: scale(1); }
 }
 
-/* The "Animações" toggle (Settings) sets data-motion='off' on the root, killing
-   every animation and transition at once. `prefers-reduced-motion` does the same
-   for users who ask the OS for less motion — either switch is enough. */
+/* Toggle de Animações em Ajustes seta data-motion='off' na raiz, mata tudo. */
 :root[data-motion='off'] *,
 :root[data-motion='off'] *::before,
 :root[data-motion='off'] *::after {

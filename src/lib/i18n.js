@@ -428,7 +428,7 @@ const DICT = {
     ob_config_p: 'Before you start, set the session size. This is the setting that shapes your study routine the most.',
     ob_config_warn: 'Pick what you can keep up every day — 15 minutes daily beats two hours on a Sunday. You can change this any time in Settings.',
 
-    // More (hub for the side features)
+    // Mais (hub das funções extras)
     more_title: 'More',
     more_papers: 'ENEM/UFRGS papers',
     more_papersSub: 'Multiple-choice questions in the style of the real exams.',
@@ -555,8 +555,8 @@ const DICT = {
   },
 }
 
-// Build a translator bound to one language. `t('questionOf', { n, m })` fills
-// {n}/{m}. Missing keys fall back to the key name so nothing renders blank.
+// t('questionOf', { n, m }) preenche {n}/{m}. Chave que falta cai no próprio
+// nome, nunca renderiza vazio.
 export function makeT(lang) {
   const table = DICT[lang] ?? DICT.pt
   return function t(key, params) {
@@ -568,15 +568,13 @@ export function makeT(lang) {
   }
 }
 
-// Every key defined for one language. The self-check uses it to prove the two
-// dictionaries stay in step: a key missing from `en` silently falls back to the
-// Portuguese string above, so nothing but a test can catch it.
+// O self-check usa isso pra provar que os dois dicionários batem: falta em `en`
+// cai calado pro PT, só teste pega.
 export function translationKeys(lang) {
   return Object.keys(DICT[lang] ?? {})
 }
 
-// A topic with its display strings swapped to `lang`. Structural fields (id,
-// glyph, color, prerequisite, level count) are untouched; only name/levels move.
+// Só name/levels mudam com lang; id, glyph, color ficam.
 export function localizeTopic(topic, lang) {
   if (!topic || lang !== 'en' || !topic.en) return topic
   return { ...topic, ...topic.en }

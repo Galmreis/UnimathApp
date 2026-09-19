@@ -28,7 +28,7 @@
 .topicName { font-weight: 700; }
 .counter { color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
-/* The question card is deliberately the only thing on screen — one clear task. */
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -44,7 +44,7 @@
   font-weight: 700;
   text-align: center;
   line-height: 1.25;
-  overflow-wrap: anywhere; /* long function prompts never overflow the card */
+  overflow-wrap: anywhere;
 }
 
 .input {
@@ -77,10 +77,10 @@
   color: var(--success);
 }
 
-/* The dynamic step-by-step solution shown under the feedback. */
+
 .steps {
   margin: 0;
-  padding: 16px 16px 16px 36px; /* left room for the numbers */
+  padding: 16px 16px 16px 36px; /* espaço pro número */
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -94,7 +94,7 @@
 .steps li { padding-left: 4px; }
 .steps li::marker { color: var(--accent); font-weight: 700; }
 
-/* The strategy / mental-math "Dica" callout, shown under the steps. */
+
 .tip {
   border-left: 3px solid var(--accent);
   background: color-mix(in srgb, var(--accent) 9%, var(--surface-2));
@@ -121,15 +121,14 @@
   color: var(--text-dim);
 }
 
-/* "Retomando de onde você parou" — shown once when a paused session resumes. */
+
 .resumed {
   font-size: 0.8rem;
   color: var(--accent);
   font-weight: 600;
 }
 
-/* In a rank match the questions come from different topics, so each one names
-   the topic it belongs to. */
+/* No teste de rank a questão pode vir de outro tópico, então mostra qual. */
 .questionTag {
   align-self: center;
   font-size: 0.68rem;
@@ -139,9 +138,8 @@
   color: var(--text-dim);
 }
 
-/* --- the pause sheet --- */
-/* A bottom sheet on phones (thumb reach) that centres itself on wide screens.
-   Three choices, so a window.confirm() no longer does the job. */
+/* --- ficha de pausa --- */
+/* Três opções, window.confirm não dava mais conta. */
 .sheetWrap {
   position: fixed;
   inset: 0;

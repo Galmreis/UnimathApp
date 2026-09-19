@@ -2,9 +2,7 @@
 
 .title { font-size: 1.6rem; font-weight: 800; padding-top: 8px; }
 
-/* The at-a-glance overview: one panel, four big numbers in a 2×2 grid with
-   hairline dividers, rather than four small separate tiles. The overall-accuracy
-   figure is drawn in the accent colour as the headline stat. */
+/* Um painel só, 4 números em grid 2×2, em vez de 4 cards soltos. */
 .overview {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -30,8 +28,7 @@
 .ovAccent { color: var(--accent); }
 .ovLabel { font-size: 0.82rem; color: var(--text-dim); margin-top: 7px; }
 
-/* Section titles carry the same accent tick as the Settings groups, so both
-   tabs read as one system. It keys off --accent and re-tints with the theme. */
+/* Mesmo tracinho de destaque dos grupos de Ajustes. */
 .sectionTitle {
   font-size: 1.1rem;
   font-weight: 700;
@@ -48,9 +45,7 @@
   background: var(--accent);
 }
 
-/* "Where to improve" — weak-topic rows flagged with an error-toned left edge,
-   the same callout language as the Session "Dica". The percentage is drawn in
-   the error colour so the number itself signals "work on this". */
+/* "Onde melhorar": borda na cor de erro pra número já sinalizar sozinho. */
 .improveList { display: flex; flex-direction: column; gap: 10px; }
 .improveRow {
   display: flex;
@@ -82,7 +77,7 @@
   font-size: 0.95rem;
 }
 
-/* Each group stacks under its own small label — same sectioning as Home. */
+/* Mesmo agrupamento da Home. */
 .group { margin-bottom: 20px; }
 .group:last-child { margin-bottom: 0; }
 .groupTitle {
@@ -94,8 +89,7 @@
   margin-bottom: 10px;
 }
 
-/* Topic cards flow two-up on the fixed content column, one-up on narrow phones,
-   so the list stays contained instead of a long scroll. */
+/* Dois por linha, um em tela estreita. */
 .topicList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -111,14 +105,13 @@
   flex-direction: column;
   gap: 12px;
 }
-/* Mastered topics get a success-tinted border so "done" reads at a glance. */
+
 .topicRow[data-status='mastered'] {
   border-color: color-mix(in srgb, var(--success) 45%, var(--border));
 }
 .topicHead { display: flex; align-items: center; gap: 12px; }
 
-/* The accuracy bar with its percentage pulled out as a prominent, colour-coded
-   number — the metric you scan this list for. */
+
 .accRow { display: flex; align-items: center; gap: 12px; }
 .accBar { flex: 1; }
 .accPct {
@@ -136,13 +129,12 @@
 .topicName { font-weight: 700; font-size: 1.02rem; line-height: 1.2; }
 .topicSub { font-size: 0.8rem; color: var(--text-dim); }
 
-/* Status as a small colored word in the subtitle — matches the Home cards and
-   keeps the card narrow enough to sit two-up without crowding the name. */
+
 .statusText { font-weight: 700; }
 .statusText[data-status='in_progress'] { color: var(--accent); }
 .statusText[data-status='mastered'] { color: var(--success); }
 
-/* History as one card with divided rows, rather than loose separate pills. */
+
 .history {
   list-style: none;
   padding: 0;

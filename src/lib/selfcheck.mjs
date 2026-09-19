@@ -38,7 +38,7 @@ function canonicalText(q) {
   return String(q.answer).replace('.', ',') // exercise comma parsing too
 }
 
-// ---- math helpers ----
+// ---- helpers de matemática ----
 assert(gcd(12, 8) === 4, 'gcd(12,8)')
 assert(gcd(0, 5) === 5, 'gcd(0,5)')
 const r = reduceFraction(6, 8)
@@ -69,7 +69,7 @@ for (const lang of ['pt', 'en']) {
       const q = generateQuestion(topic.id, level, lang)
       assert(typeof q.prompt === 'string' && q.prompt.length > 0, `${topic.id} L${level} has prompt`)
       assert(q.kind === 'number' || q.kind === 'fraction', `${topic.id} L${level} valid kind`)
-      // every question must carry non-empty steps AND non-empty strategy tips
+      // toda questão precisa vir com steps e tips não vazios
       assert(
         Array.isArray(q.steps) && q.steps.length > 0 && q.steps.every((s) => typeof s === 'string' && s.length > 0),
         `${topic.id} L${level} has steps: "${q.prompt}"`,
@@ -78,13 +78,13 @@ for (const lang of ['pt', 'en']) {
         Array.isArray(q.tips) && q.tips.length > 0 && q.tips.every((t) => typeof t === 'string' && t.length > 0),
         `${topic.id} L${level} has tips: "${q.prompt}"`,
       )
-      // no prompt/step/tip should ever leak a broken value into its text
+      // prompt/step/tip nunca pode vazar NaN/undefined no texto
       for (const text of [q.prompt, ...q.steps, ...q.tips]) {
         assert(!/\b(NaN|undefined|Infinity)\b/.test(text), `${topic.id} L${level} leaked value in: "${text}"`)
       }
-      // the generator's own answer must pass its own checker
+      // a resposta do próprio gerador tem que passar no próprio checker
       assert(checkAnswer(canonicalText(q), q), `${topic.id} L${level} answer checks out: "${q.prompt}"`)
-      // independent arithmetic verification where the prompt is machine-readable
+      // verificação independente da conta, quando o prompt dá pra parsear
       let m
       if ((m = q.prompt.match(/^(\d+) ÷ (\d+) = \?$/))) {
         assert(Number(m[1]) / Number(m[2]) === q.answer, `divisão exata: ${q.prompt}`)
@@ -108,7 +108,7 @@ for (const lang of ['pt', 'en']) {
   }
 }
 
-// ---- mastery / progression ----
+// ---- mastery / progressão ----
 let p = emptyProgress()
 for (let i = 0; i < 12; i++) p = recordAnswer(p, true)
 assert(p.recent.length === 10, 'rolling window caps at 10')
@@ -120,43 +120,42 @@ const firstTopic = TOPICS[0]
 let p2 = advanceIfReady(p, firstTopic)
 assert(p2.levelIndex === 1 && p2.recent.length === 0, 'advance moves up a level and resets window')
 
-// reviewing a past level (statsOnly) counts toward totals but not the window,
-// so it can never advance the topic
+// revisão de nível passado conta no total mas não na janela, não avança tópico
 let pr = { ...emptyProgress(), levelIndex: 2 }
 for (let i = 0; i < 12; i++) pr = recordAnswer(pr, true, true)
 assert(pr.answered === 12 && pr.correct === 12, 'review answers still count in totals')
 assert(pr.recent.length === 0 && !isLevelReady(pr), 'review answers do not fill the mastery window')
 
-// not ready -> no change
+// não fixado -> nada muda
 let p3 = emptyProgress()
 p3 = recordAnswer(p3, true)
 assert(!isLevelReady(p3) && advanceIfReady(p3, firstTopic).levelIndex === 0, 'not enough answers -> no advance')
 
-// exam rule: 8/10 up, 6/10 stay, 3/10 down
+// regra da prova: 8/10 sobe, 6/10 fica, 3/10 desce
 assert(applyExamResult({ ...emptyProgress(), levelIndex: 0 }, firstTopic, 8, 10).levelIndex === 1, 'exam 8/10 advances')
 assert(applyExamResult({ ...emptyProgress(), levelIndex: 1 }, firstTopic, 6, 10).levelIndex === 1, 'exam 6/10 repeats')
 assert(applyExamResult({ ...emptyProgress(), levelIndex: 1 }, firstTopic, 3, 10).levelIndex === 0, 'exam 3/10 drops')
 const lastLevel = firstTopic.levels.length - 1
 assert(applyExamResult({ ...emptyProgress(), levelIndex: lastLevel }, firstTopic, 10, 10).mastered, 'acing the last level masters the topic')
 
-// a fixed topic is never changed by re-taking the exam (no demotion, no contradictory state)
+// tópico dominado não muda mais, nem refazendo a prova
 const masteredProg = { ...emptyProgress(), levelIndex: lastLevel, mastered: true }
 assert(applyExamResult(masteredProg, firstTopic, 3, 10) === masteredProg, 'exam does not demote a fixed topic')
 assert(applyExamResult(masteredProg, firstTopic, 10, 10) === masteredProg, 'exam leaves a fixed topic unchanged')
 
-// lock rule
+// regra de bloqueio
 assert(topicStatus(TOPICS[0], {}) === 'available', 'first topic available')
 assert(topicStatus(TOPICS[1], {}) === 'locked', 'second topic locked until first mastered')
 assert(topicStatus(TOPICS[1], { [TOPICS[0].id]: { mastered: true } }) === 'available', 'mastering prereq unlocks next')
 
-// fraction-sum tip must not claim "no common factor" when there IS one
+// dica de soma de fração não pode dizer "sem fator comum" quando tem
 assert(!fracaoSomaTips(4, 6)[0].includes('não têm fator comum'), 'somar tip: 4 & 6 share the factor 2')
 assert(fracaoSomaTips(4, 6)[0].includes('12'), 'somar tip: 4 & 6 → common denominator 12')
 assert(fracaoSomaTips(3, 5)[0].includes('não têm fator comum'), 'somar tip: 3 & 5 are truly coprime')
 assert(fracaoSomaTips(2, 6)[0].includes('múltiplo'), 'somar tip: 2 divides 6')
 
-// ---- i18n: the two dictionaries must define exactly the same keys ----
-// (a key missing from `en` falls back to Portuguese, so only this catches it)
+// ---- i18n: os dois dicionários precisam ter as mesmas chaves ----
+// (chave que falta em `en` cai pro português, só isso aqui pega)
 const ptKeys = new Set(translationKeys('pt'))
 const enKeys = new Set(translationKeys('en'))
 assert(LANGS.length === 2, 'two languages')
@@ -164,18 +163,18 @@ assert(ptKeys.size > 0 && enKeys.size > 0, 'both dictionaries have keys')
 for (const key of ptKeys) assert(enKeys.has(key), `en is missing the key "${key}"`)
 for (const key of enKeys) assert(ptKeys.has(key), `pt is missing the key "${key}"`)
 
-// ---- the rank ladder ----
+// ---- a escada de rank ----
 assert(RANK_STEPS === RANK_TIERS.reduce((sum, tier) => sum + tier.divisions, 0), 'RANK_STEPS matches the tiers')
 assert(RANK_STEPS === 20, 'the ladder is 20 steps (Iniciante I .. Sábio VI)')
 assert(roman(1) === 'I' && roman(4) === 'IV' && roman(6) === 'VI', 'roman numerals')
 
-// clamping keeps every input inside the ladder
+// clamp mantém tudo dentro da escada
 assert(clampStep(-5) === 0, 'clampStep floors at 0')
 assert(clampStep(999) === RANK_STEPS - 1, 'clampStep caps at the top step')
 assert(clampStep(undefined) === 0, 'clampStep survives a missing value')
 assert(clampStep(3.4) === 3, 'clampStep rounds')
 
-// every step maps to a real tier/division, and the two ends are what we promise
+// todo step cai num tier/divisão real, e as duas pontas são o que prometemos
 const seenLabels = new Set()
 for (let step = 0; step < RANK_STEPS; step++) {
   const rank = rankAt(step)
@@ -194,13 +193,13 @@ const top = rankAt(RANK_STEPS - 1)
 assert(bottom.tierKey === 'iniciante' && bottom.roman === 'I', 'step 0 is Iniciante I')
 assert(top.tierKey === 'sabio' && top.roman === 'VI' && top.isTop, 'the last step is Sábio VI')
 assert(rankAt(RANK_STEPS + 10).step === RANK_STEPS - 1, 'rankAt clamps out-of-range steps')
-// tierStartStep must line up with rankAt
+// tierStartStep tem que bater com rankAt
 for (let i = 0; i < RANK_TIERS.length; i++) {
   const start = tierStartStep(i)
   assert(rankAt(start).tierIndex === i && rankAt(start).division === 1, `tierStartStep(${i}) is that tier's division I`)
 }
 
-// the match rule: 8+/10 up, 5-7 stay, <5 down — and never off the ladder
+// regra do match: 8+/10 sobe, 5-7 fica, <5 desce — nunca sai da escada
 for (let step = 0; step < RANK_STEPS; step++) {
   for (let correct = 0; correct <= MATCH_QUESTIONS; correct++) {
     const outcome = matchOutcome(step, correct, MATCH_QUESTIONS)
@@ -218,12 +217,12 @@ for (let step = 0; step < RANK_STEPS; step++) {
     }
   }
 }
-// the rule is a ratio, so a 20-question match behaves the same way
+// a regra é uma razão, então um match de 20 questões funciona igual
 assert(applyMatchResult(5, 16, 20) === 6, 'a 20-question match at 80% still promotes')
 assert(applyMatchResult(5, 9, 20) === 4, 'a 20-question match under 50% still demotes')
 assert(matchOutcome(3, 0, 0) === 'down', 'a match with no questions cannot count as a win')
 
-// the difficulty ladder a match draws from
+// a escada de dificuldade de onde o match sorteia
 const ladder = trainingLadder(TOPICS)
 assert(ladder.length === TOPICS.reduce((sum, topic) => sum + topic.levels.length, 0), 'the ladder has one rung per topic level')
 assert(ladder[0].topicId === TOPICS[0].id && ladder[0].level === 0, 'the ladder starts at the first level of the first topic')
@@ -242,7 +241,7 @@ for (let step = 0; step < RANK_STEPS; step++) {
     const topic = getTopic(rung.topicId)
     assert(topic, `matchPool(${step}) only names real topics`)
     assert(rung.level >= 0 && rung.level < topic.levels.length, `matchPool(${step}) only names real levels`)
-    // a question must actually be generatable for every rung the pool offers
+    // toda rung do pool tem que gerar questão de verdade
     for (const lang of LANGS) {
       const q = generateQuestion(rung.topicId, rung.level, lang)
       assert(typeof q.prompt === 'string' && q.prompt.length > 0, `match question has a prompt (${rung.topicId} ${rung.level} ${lang})`)
@@ -253,8 +252,8 @@ for (let step = 0; step < RANK_STEPS; step++) {
 assert(matchPool(0, TOPICS)[0].level === 0, 'the easiest match starts at the first rung')
 assert(matchPool(RANK_STEPS - 1, TOPICS).at(-1).topicId === TOPICS[TOPICS.length - 1].id, 'the hardest match reaches the last topic')
 
-// ---- the exam bank (data/exams.js) ----
-// Hand-catalogued data, so the checks below are the rules documented in exams.js.
+// ---- o banco de provas (data/exams.js) ----
+// Dado catalogado na mão, os testes abaixo são as regras do exams.js.
 const seenExamIds = new Set()
 for (const q of EXAM_QUESTIONS) {
   assert(typeof q.id === 'string' && q.id.length > 0, 'every exam question has an id')
@@ -272,7 +271,7 @@ for (const q of EXAM_QUESTIONS) {
   assert(new Set(q.alternatives).size === 5, `${q.id}: the 5 alternatives must all differ`)
   assert(Number.isInteger(q.correct) && q.correct >= 0 && q.correct < 5, `${q.id}: correct must index an alternative`)
   assert(Array.isArray(q.solution) && q.solution.length > 0, `${q.id}: a worked solution`)
-  // both languages, and the localized copy must never move the answer
+  // nos dois idiomas, e a versão localizada não pode mudar a resposta
   assert(q.en && typeof q.en.statement === 'string' && q.en.statement.length > 10, `${q.id}: English statement`)
   assert(Array.isArray(q.en.alternatives) && q.en.alternatives.length === 5, `${q.id}: 5 English alternatives`)
   assert(Array.isArray(q.en.solution) && q.en.solution.length > 0, `${q.id}: English solution`)
@@ -287,7 +286,7 @@ for (const q of EXAM_QUESTIONS) {
 }
 assert(letterFor(0) === 'a' && letterFor(4) === 'e', 'alternatives are labelled a..e')
 
-// filtering and drawing
+// filtro e sorteio
 assert(availableSources().every((source) => EXAM_SOURCES.includes(source)), 'availableSources stays inside EXAM_SOURCES')
 assert(availableTopicIds().every((id) => getTopic(id)), 'availableTopicIds are real topics')
 assert(countPapers({}) === EXAM_QUESTIONS.length, 'no filter counts the whole bank')

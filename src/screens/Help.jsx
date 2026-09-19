@@ -9,7 +9,7 @@ import { useStore } from '../store/StoreProvider.jsx'
 // `from` existe porque dá pra chegar aqui pelo "?" da Home, pelos Ajustes e pelo
 // Mais, e a seta tem que desfazer a porta por onde a pessoa entrou.
 const SECTIONS = [
-  { id: 'friday', paragraphs: 5, open: true }, // the question that prompted this page
+  { id: 'friday', paragraphs: 5, open: true }, // a pergunta que motivou essa página
   { id: 'philosophy', paragraphs: 2 },
   { id: 'track', paragraphs: 2 },
   { id: 'levels', paragraphs: 3 },

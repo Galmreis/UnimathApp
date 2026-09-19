@@ -16,7 +16,7 @@
   background: var(--accent);
 }
 
-/* Filter chips — same look as the session-length chips in Ajustes. */
+/* Mesmo visual dos chips de tamanho em Ajustes. */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chips button {
   min-height: 44px;

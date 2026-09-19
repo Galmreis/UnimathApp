@@ -82,9 +82,8 @@ function examMessage(t, correct, total, levelIndex, topic) {
 }
 
 // Espelha a regra do applyMatchResult.
-// "Stay" covers three different stories, and they don't read the same: a win
-// with nowhere left to climb, a loss with nowhere left to fall, and the ordinary
-// middle score that simply holds the step.
+// "Stay" cobre três histórias diferentes: vitória sem pra onde subir, derrota
+// sem pra onde cair, e o meio-termo comum que só mantém o step.
 function matchMessage(t, rank, correct, total) {
   const label = rankLabel(rank.to, t)
   if (rank.outcome === 'up') return t('rank_promoted', { rank: label })

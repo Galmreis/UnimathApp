@@ -1,7 +1,6 @@
 .rank { display: flex; flex-direction: column; gap: 26px; animation: fade-up 0.28s ease both; }
 
-/* The hero: the badge, which step of the ladder it is, and one bar for the
-   whole climb. Everything here is derived from rank.step. */
+/* Tudo aqui sai de rank.step. */
 .hero {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -19,7 +18,7 @@
 .cta { display: flex; flex-direction: column; gap: 10px; }
 .ctaNote { text-align: center; font-size: 0.82rem; color: var(--text-dim); }
 
-/* Same accent tick as the other screens' section titles. */
+
 .sectionTitle {
   font-size: 1.1rem;
   font-weight: 700;
@@ -36,8 +35,7 @@
   background: var(--accent);
 }
 
-/* The ladder: one row per tier, its divisions as roman-numeral pips. Cleared
-   pips carry the tier's colour, the current one is filled, the rest stay dim. */
+/* Pip passado usa a cor do tier, o atual vem preenchido, o resto apagado. */
 .ladder { display: flex; flex-direction: column; gap: 8px; }
 .tier {
   display: flex;

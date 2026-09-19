@@ -12,7 +12,7 @@ export function More({ navigate }) {
     { id: 'papers', icon: 'paper', titleKey: 'more_papers', subKey: 'more_papersSub', go: () => navigate('papers') },
     { id: 'rank', icon: 'rank', titleKey: 'more_rank', subKey: 'more_rankSub', go: () => navigate('rank'), trailing: <RankBadge step={rank.step} size="sm" /> },
     { id: 'help', icon: 'help', titleKey: 'more_help', subKey: 'more_helpSub', go: () => navigate('help') },
-    // Replaying the tour is just flipping the flag App watches.
+
     { id: 'tour', icon: 'replay', titleKey: 'more_tour', subKey: 'more_tourSub', go: () => updateSettings({ onboarded: false }) },
   ]
 

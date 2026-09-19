@@ -9,8 +9,7 @@ import { drawPaperSet, localizePaper, letterFor, isPaperCorrect } from '../lib/p
 export function PaperRun({ setup, navigate }) {
   const { t, lang, getTopic, commitPaperRound } = useStore()
 
-  // Drawn once, in a state initialiser: re-rendering must never reshuffle the
-  // round under the user's feet.
+  // Sorteado uma vez só, no initializer: re-render não pode reembaralhar a rodada.
   const [questions] = useState(() => drawPaperSet(setup))
   const [index, setIndex] = useState(0)
   const [chosen, setChosen] = useState(null)      // picked alternative, not yet confirmed
@@ -18,7 +17,7 @@ export function PaperRun({ setup, navigate }) {
   const [answers, setAnswers] = useState([])      // { id, chosen, correct } per question
   const startedAt = useRef(Date.now()).current
 
-  // A filter with nothing behind it: nothing to run, so offer the way back.
+  // Filtro sem questão nenhuma atrás: nada pra rodar, oferece a saída.
   if (questions.length === 0) {
     return (
       <div className={styles.run}>
@@ -45,7 +44,7 @@ export function PaperRun({ setup, navigate }) {
       setPhase('answering')
       return
     }
-    // Last question answered: log the round and switch to the result view.
+    // Última questão respondida: loga a rodada e mostra o resultado.
     const total = answers.length
     commitPaperRound({
       source: setup?.source ?? 'all',
@@ -127,8 +126,7 @@ export function PaperRun({ setup, navigate }) {
 
         <ul className={styles.alternatives} aria-label={t('papers_alternativesAria')}>
           {question.alternatives.map((text, i) => {
-            // In feedback the right answer is always marked; a wrong pick is
-            // marked too, so the user sees both what they chose and what was right.
+            // No feedback marca a certa e, se errou, marca a escolhida também.
             const state = phase === 'feedback'
               ? i === question.correct ? 'right' : i === chosen ? 'wrong' : 'idle'
               : i === chosen ? 'picked' : 'idle'

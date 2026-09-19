@@ -26,7 +26,7 @@ export default function App() {
   const rememberScroll = useScrollMemory(view.name)
 
   function navigate(name, params = {}) {
-    rememberScroll(name) // must run before the state change, while the old screen is still up
+    rememberScroll(name) // antes do estado mudar, com a tela antiga ainda em pé
     setView({ name, ...params })
   }
 

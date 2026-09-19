@@ -17,7 +17,7 @@
   border-color: color-mix(in srgb, var(--success) 50%, var(--border));
 }
 
-/* one tappable pill per level — tap a past level to review it */
+/* um pill por nível, clica pra revisar */
 .levels {
   display: flex;
   flex-wrap: wrap;
@@ -53,13 +53,12 @@
 .name { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
 .sub { font-size: 0.8rem; color: var(--text-dim); }
 
-/* status is a small colored word in the subtitle, not a wide pill — keeps the
-   card narrow enough to sit two-up without crowding the topic name. */
+
 .statusText { font-weight: 700; }
 .statusText[data-status='in_progress'] { color: var(--accent); }
 .statusText[data-status='mastered'] { color: var(--success); }
 
-/* Accuracy bar with its percentage pulled out — matches the Progress rows. */
+
 .accRow { display: flex; align-items: center; gap: 12px; }
 .accBar { flex: 1; }
 .accPct {
