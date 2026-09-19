@@ -3,19 +3,11 @@ import { Button } from '../components/Button.jsx'
 import { PageHeader } from '../components/PageHeader.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-// "Como funciona" — the reference page the field test asked for: what the Prova
-// da Sexta is, and the whole flow of the app, in one place the user can reach
-// whenever a screen leaves them guessing.
+// Cada seção é um <details> nativo: colapsa sem JS e já vem acessível de graça.
+// paragraphs diz quantos help_<id>_p<n> renderizar.
 //
-// Each section is a native <details>, so it collapses without a line of
-// JavaScript and stays keyboard- and screen-reader-friendly. `paragraphs` says
-// how many `help_<id>_p<n>` strings to render; `open` starts a section expanded.
-//
-// Adding a section = one entry here plus its strings in lib/i18n.js.
-//
-// `from` is where the back arrow leads: this page is reachable from Home's "?"
-// button, from Ajustes and from Mais, and the arrow should undo whichever door
-// the user came through.
+// `from` existe porque dá pra chegar aqui pelo "?" da Home, pelos Ajustes e pelo
+// Mais, e a seta tem que desfazer a porta por onde a pessoa entrou.
 const SECTIONS = [
   { id: 'friday', paragraphs: 5, open: true }, // the question that prompted this page
   { id: 'philosophy', paragraphs: 2 },

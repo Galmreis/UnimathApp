@@ -1,13 +1,8 @@
 import styles from './SessionSizePicker.module.css'
 import { useStore } from '../store/StoreProvider.jsx'
 
-// The "how long is a session?" control. It lives in its own component because
-// two screens need exactly the same thing: Ajustes › Tamanho da sessão, and the
-// last step of the first-run tour (screens/Onboarding.jsx), which asks the user
-// to set this before training — the field test showed people started without
-// ever finding it.
-//
-// Change the offered lengths here and both places follow.
+// Componente separado porque Ajustes e o último passo do tour precisam do mesmo
+// controle. Mudar as opções aqui muda nos dois.
 export const COUNT_OPTIONS = [5, 10, 15, 20, 30, 35]
 export const TIME_OPTIONS = [1, 5, 10, 20, 30, 45]
 

@@ -1,7 +1,5 @@
-// Runnable self-check for the pure logic (no React, no browser needed).
-//   npm run check      (or: node src/lib/selfcheck.mjs)
-// If the math or the progression rules break, this fails loudly. It is NOT a
-// full test suite — just the smallest safety net over the risky parts.
+// npm run check
+// Não é suíte de teste, é a rede mínima em cima do que pode quebrar calado.
 
 import { gcd, reduceFraction, round } from './math.js'
 import { checkAnswer, formatAnswer } from './checkAnswer.js'
@@ -32,7 +30,6 @@ function assert(cond, msg) {
   }
 }
 
-// The correct answer as text the user could have typed.
 function canonicalText(q) {
   if (q.kind === 'fraction') {
     const { n, d } = reduceFraction(q.answer.n, q.answer.d)
@@ -64,7 +61,7 @@ assert(!checkAnswer('2/4', fracQ), 'rejects wrong fraction')
 assert(formatAnswer(fracQ) === '3/4', 'formats fraction')
 assert(formatAnswer({ kind: 'fraction', answer: { n: 4, d: 2 } }) === '2', 'formats whole-number fraction as int')
 
-// ---- generators: every topic × level × language must produce a valid, self-consistent question ----
+// ---- generators ----
 for (const lang of ['pt', 'en']) {
   for (const topic of TOPICS) {
   for (let level = 0; level < topic.levels.length; level++) {

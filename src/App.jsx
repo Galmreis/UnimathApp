@@ -15,20 +15,14 @@ import { Papers } from './screens/Papers.jsx'
 import { PaperRun } from './screens/PaperRun.jsx'
 import { Onboarding } from './screens/Onboarding.jsx'
 
-// The whole app is a single React tree. Instead of a router library we keep the
-// current screen in state — `view` is an object like { name: 'session', topicId }.
-// `navigate(name, params)` swaps it. Simple, no dependency, and it teaches the
-// core React idea: UI is a function of state.
-//
-// The four names in TAB_VIEWS are the ones the bottom tab bar shows. Everything
-// else (a session, the summary, a rank match) is a full-screen flow that hides
-// the bar so the user has one obvious way out.
+// Sem router: a tela atual é estado. `view` é { name: 'session', topicId } e
+// navigate() troca. TAB_VIEWS são as que aparecem na barra de baixo; o resto
+// (sessão, resumo, teste de rank) é fluxo cheio e esconde a barra.
 const TAB_VIEWS = ['home', 'progress', 'more', 'settings']
 
 export default function App() {
   const { settings, updateSettings } = useStore()
   const [view, setView] = useState({ name: 'home' })
-  // Remembers where each screen was scrolled — see store/useScrollMemory.js.
   const rememberScroll = useScrollMemory(view.name)
 
   function navigate(name, params = {}) {
@@ -36,8 +30,7 @@ export default function App() {
     setView({ name, ...params })
   }
 
-  // First run: the tour owns the screen until it's done (or skipped). Ajustes ›
-  // "Ver o tour de novo" flips the flag back to replay it.
+  // Primeiro acesso: o tour toma a tela até acabar ou ser pulado.
   if (!settings.onboarded) {
     return <Onboarding onDone={() => updateSettings({ onboarded: true })} />
   }

@@ -16,7 +16,7 @@ export function Home({ navigate }) {
   const currentTopic = getTopic(currentTopicId)
   const currentLevel = progress[currentTopicId]?.levelIndex ?? 0
 
-  // Overall stats — the numbers that should go up. No streaks, no guilt.
+  // Sem streak: faltar um dia não pode virar punição.
   const allProgress = Object.values(progress)
   const totalAnswered = allProgress.reduce((sum, p) => sum + p.answered, 0)
   const totalCorrect = allProgress.reduce((sum, p) => sum + p.correct, 0)
@@ -24,8 +24,6 @@ export function Home({ navigate }) {
   // A study day = any day with a practice session OR a Friday exam.
   const studyDays = new Set([...sessions, ...exams].map((r) => r.date)).size
 
-  // Bucket topics into their sections, keeping track order within each group.
-  // Driven by each topic's `group`, so a new topic just declares one.
   const groups = []
   for (const topic of topics) {
     const key = topic.group ?? 'outros'
@@ -37,8 +35,6 @@ export function Home({ navigate }) {
   return (
     <div className={styles.home}>
       <header className={styles.header}>
-        {/* The two quiet corners: your rank on the left, the "how does this
-            work?" page on the right — both one tap from the first screen. */}
         <div className={styles.topRow}>
           <button className={styles.rankChip} onClick={() => navigate('rank', { from: 'home' })} aria-label={t('rank_title')}>
             <RankBadge step={rank.step} size="sm" />
@@ -51,9 +47,7 @@ export function Home({ navigate }) {
         <p className={styles.tagline}><i>{t('tagline')}</i></p>
       </header>
 
-      {/* A paused session, if there is one, comes before "Treinar agora": the
-          field test asked to be able to pick a session back up, and the offer is
-          only useful where the user lands. */}
+      {/* Antes do "Treinar agora": a oferta só serve onde a pessoa cai. */}
       {pending && (
         <section className={styles.pending}>
           <div className={styles.pendingHead}>
@@ -136,9 +130,7 @@ export function Home({ navigate }) {
   )
 }
 
-// The one line under "Sessão pausada": how far in you were. A session measured
-// in questions shows the count and the score; a timed one shows what is left on
-// the clock, since it has no target count to count towards.
+// Sessão por tempo não tem contagem alvo, então mostra o relógio em vez do placar.
 function pendingSubtitle(t, pending) {
   const answered = pending.results?.length ?? 0
   const correct = pending.results?.filter(Boolean).length ?? 0

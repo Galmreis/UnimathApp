@@ -3,10 +3,8 @@ import { Icon } from '../components/Icon.jsx'
 import { RankBadge } from '../components/RankBadge.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-// "Mais": the hub for everything that isn't the daily training loop. The field
-// test asked for two side features (exam papers and ranks) plus a page that
-// explains the app — putting them behind their own tab keeps Home focused on the
-// one thing that matters, which is training today.
+// Tudo que não é o treino do dia fica aqui, pra Home continuar sendo só sobre
+// treinar hoje.
 export function More({ navigate }) {
   const { t, rank, updateSettings } = useStore()
 

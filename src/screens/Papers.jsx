@@ -8,11 +8,8 @@ import {
   availableSources, availableTopicIds, countPapers, PAPER_SET_OPTIONS, PAPER_SET_SIZE,
 } from '../lib/papers.js'
 
-// The setup screen of the "Provas" mode: pick an exam board, a topic and how
-// many questions, then run the round (screens/PaperRun.jsx).
-//
-// The filters are built from the bank itself (lib/papers.js reads data/exams.js),
-// so cataloguing a new paper makes it selectable here with no code change.
+// Os filtros saem do próprio banco, então catalogar prova nova já aparece aqui
+// sem mexer em componente.
 export function Papers({ navigate }) {
   const { t, getTopic, papers } = useStore()
 

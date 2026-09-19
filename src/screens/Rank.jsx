@@ -8,11 +8,8 @@ import {
   RANK_TIERS, RANK_STEPS, rankAt, rankLabel, roman, tierStartStep, MATCH_QUESTIONS,
 } from '../lib/ranks.js'
 
-// The Ranking screen — the app's one bit of gamification.
-//
-// Everything shown here is derived from a single number (rank.step): the badge,
-// the ladder and how far along the bar sits. The only way that number moves is a
-// "teste de pareamento", so this screen is mostly an explanation plus one button.
+// Tudo aqui sai de rank.step. Como a única forma de mexer nesse número é o teste
+// de pareamento, a tela é basicamente explicação mais um botão.
 export function Rank({ from, navigate }) {
   const { t, rank } = useStore()
   const current = rankAt(rank.step)

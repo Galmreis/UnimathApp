@@ -6,11 +6,8 @@ import { TOPICS } from '../data/topics.js'
 import { round } from '../lib/math.js'
 import { rankLabel, MATCH_UP, MATCH_DOWN } from '../lib/ranks.js'
 
-// Shown after a session, an exam or a rank match. `result` is what Session
-// handed us:
-//   { mode, topicId, results: boolean[], durationMs, levelIndex?, rank? }
-// where `rank` (match only) is { from, to, outcome } — already computed by
-// Session with the same pure rules the store used to save it.
+// rank vem pronto do Session, calculado com as mesmas regras puras que o store
+// usou pra salvar. Se recalculasse aqui podia divergir.
 export function Summary({ result, navigate }) {
   const { t, getTopic } = useStore()
   const topic = result.topicId ? getTopic(result.topicId) : null
@@ -62,7 +59,6 @@ export function Summary({ result, navigate }) {
   )
 }
 
-// Short, guilt-free encouragement based on how the practice went.
 function practiceMessage(t, pct) {
   if (pct >= 90) return t('practice90')
   if (pct >= 70) return t('practice70')
@@ -70,7 +66,7 @@ function practiceMessage(t, pct) {
   return t('practice0')
 }
 
-// Explains what the exam did to your level (mirrors applyExamResult's rule).
+// Espelha a regra do applyExamResult.
 function examMessage(t, correct, total, levelIndex, topic) {
   const ratio = correct / total
   const atLastLevel = levelIndex >= topic.levels.length - 1
@@ -85,7 +81,7 @@ function examMessage(t, correct, total, levelIndex, topic) {
   return t('examStay')
 }
 
-// Explains what the rank match did to your step (mirrors applyMatchResult).
+// Espelha a regra do applyMatchResult.
 // "Stay" covers three different stories, and they don't read the same: a win
 // with nowhere left to climb, a loss with nowhere left to fall, and the ordinary
 // middle score that simply holds the step.

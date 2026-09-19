@@ -17,9 +17,7 @@ export function Progress() {
   // A study day = any day with a practice session OR a Friday exam.
   const studyDays = new Set([...sessions, ...exams].map((r) => r.date)).size
 
-  // "Where to improve": topics you've practiced enough but whose accuracy is
-  // still below the mastery bar — weakest first. `graded` is how many topics
-  // have enough data at all, so we can tell "no weak spots" from "no data yet".
+  // graded separa "nenhum ponto fraco" de "ainda não tem dado suficiente".
   const graded = topics.filter((topic) => (progress[topic.id]?.answered ?? 0) >= IMPROVE_MIN_ANSWERED)
   const weakSpots = graded
     .map((topic) => {
@@ -30,7 +28,6 @@ export function Progress() {
     .sort((a, b) => a.accFrac - b.accFrac)
     .slice(0, 3)
 
-  // Same sectioning as Home's track: bucket topics by `group`, track order kept.
   const groups = []
   for (const topic of topics) {
     const key = topic.group ?? 'outros'

@@ -1,43 +1,21 @@
-// The question bank for the "Provas" mode (ENEM / UFRGS style).
+// Banco do modo Provas. Questão de vestibular é contextual e de múltipla
+// escolha, não dá pra gerar por fórmula, então fica aqui na mão.
 //
-// Training questions are generated from random numbers (lib/generators.js), but
-// real exam questions are contextual and multiple choice, so they live here as
-// plain data. lib/papers.js filters and draws from this list.
+// origin: 'official' (transcrita), 'adapted' (número ou texto mudado),
+// 'authored' (escrita no estilo da banca, não é questão real).
+// alternatives: exatamente 5, na ordem da prova. correct: índice 0-4.
+// en: mesma coisa em inglês, mesma ordem.
 //
-// One question:
-//   id           unique slug, never reused (React key + log key)
-//   source       must be in EXAM_SOURCES
-//   year         the paper's year, or null
-//   number       the question's number in the paper, or null
-//   origin       'official' transcribed as printed
-//                'adapted'  real question, numbers or wording changed
-//                'authored' written in that exam's style, not a real question
-//   topicId      a topic in data/topics.js (pick the dominant skill)
-//   level        that topic's level index
-//   statement    question text, Portuguese, plain text
-//   alternatives exactly 5, in the paper's order, all different
-//   correct      index 0-4, checked against the official key
-//   solution     2 to 4 worked steps
-//   en           statement/alternatives/solution in English, same order
+// Sem imagem: se precisa de figura, ou reescreve os dados no enunciado (aí vira
+// 'adapted') ou pula. Sem questão em grupo, o sorteio é individual.
 //
-// Rules that npm run check enforces, and a few it can't:
-//   - no images. If it needs a figure, rewrite the data into the text (that
-//     makes it 'adapted') or skip the question.
-//   - no question groups. Repeat the shared context in each statement, since
-//     questions are drawn individually.
-//   - keep the numbers exact, don't round an alternative.
-//   - to add a board, put its name in EXAM_SOURCES and catalogue one question.
-//     Empty boards never show up as a filter chip.
-//
-// Papers and answer keys: INEP for ENEM, COPERSE for UFRGS.
-//
-// Everything here is origin: 'authored', written so the mode has content to run
-// on. Replace or extend with catalogued papers; nothing else needs to change.
+// Provas e gabaritos: INEP pro ENEM, COPERSE pra UFRGS.
+// Tudo aqui é 'authored' por enquanto.
 
 export const EXAM_SOURCES = ['ENEM', 'UFRGS']
 
 export const EXAM_QUESTIONS = [
-  // ---------------- ENEM style: context first, arithmetic second ----------------
+  // ENEM: contexto primeiro, conta depois
   {
     id: 'enem-a01',
     source: 'ENEM', year: null, number: null, origin: 'authored',
@@ -313,7 +291,7 @@ export const EXAM_QUESTIONS = [
     },
   },
 
-  // ---------------- UFRGS style: short, direct, technical ----------------
+  // UFRGS: curta, direta, técnica
   {
     id: 'ufrgs-a01',
     source: 'UFRGS', year: null, number: null, origin: 'authored',

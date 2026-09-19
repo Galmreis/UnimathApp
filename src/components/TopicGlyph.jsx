@@ -1,12 +1,7 @@
 import styles from './TopicGlyph.module.css'
 
-// A coloured rounded badge showing a topic's math symbol — the replacement for
-// emoji icons. Both the symbol and the colour come from the topic object
-// (data/topics.js), so the styling is driven by data. `size="sm"` is the
-// compact version used in list rows.
-//
-// Note the inline `style`: we build the tinted background/border by appending
-// an alpha value to the topic's hex colour ("#7aa2f7" + "22" = ~13% opacity).
+// style inline porque o fundo é a cor do tópico com alpha concatenado no hex:
+// "#7aa2f7" + "22" dá uns 13% de opacidade.
 export function TopicGlyph({ topic, size }) {
   return (
     <span

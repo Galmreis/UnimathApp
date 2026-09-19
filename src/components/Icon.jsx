@@ -1,7 +1,5 @@
-// Minimal inline SVG icons. They inherit the current text colour (stroke),
-// so they automatically match the theme and the active-tab highlight.
-// To add an icon: add an entry with its SVG shapes. To tweak one: edit the
-// coordinates (the viewBox is a 24×24 grid, 0,0 = top-left).
+// SVG inline herdando currentColor, então acompanha o tema sozinho.
+// viewBox 24×24, 0,0 no canto superior esquerdo.
 const ICONS = {
   home: (
     <>
@@ -23,7 +21,7 @@ const ICONS = {
       <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1" />
     </>
   ),
-  // Four dots — the "Mais" tab, where the side features live.
+  // Mais
   more: (
     <>
       <circle cx="8" cy="8" r="1.6" />
@@ -32,20 +30,20 @@ const ICONS = {
       <circle cx="16" cy="16" r="1.6" />
     </>
   ),
-  // A sheet of paper with lines — the ENEM/UFRGS papers mode.
+  // Provas
   paper: (
     <>
       <path d="M6 3h9l3 3v15H6z" />
       <path d="M9 9h6M9 13h6M9 17h4" />
     </>
   ),
-  // A laurel-ish chevron stack — the rank ladder.
+  // Ranking
   rank: (
     <>
       <path d="M12 3l2.6 5.3 5.4.8-4 3.9.9 5.5L12 15.9 7.1 18.5l.9-5.5-4-3.9 5.4-.8z" />
     </>
   ),
-  // A question mark in a circle — "Como funciona".
+  // Como funciona
   help: (
     <>
       <circle cx="12" cy="12" r="9" />

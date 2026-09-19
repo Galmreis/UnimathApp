@@ -10,17 +10,10 @@ import { MATCH_QUESTIONS, matchPool, matchOutcome, applyMatchResult } from '../l
 
 const EXAM_LENGTH = 10 // the "prova da sexta" is always 10 questions
 
-// The training loop, in three flavours. Props:
-//   mode: 'practice' | 'exam' | 'match'
-//   topicId: which topic to drill (practice/exam; a match mixes topics)
-//   levelIndex: practice only — review an already-passed level
-//   resume: a paused-session snapshot to continue from (practice only)
-//   navigate: to move to the summary or back home
-//
-// practice  immediate feedback, steps and the Dica; can be paused and resumed.
-// exam      the prova da sexta: 10 questions of one topic, no feedback until the end.
-// match     the rank match: 10 questions drawn from the whole track ladder at
-//           the difficulty of your rank, no feedback until the end.
+// Três modos:
+//   practice  feedback na hora, com passos e Dica. Dá pra pausar.
+//   exam      prova da sexta, 10 questões de um tópico, feedback só no fim.
+//   match     teste de rank, 10 questões da escada inteira, feedback só no fim.
 export function Session({ mode, topicId, levelIndex, resume, navigate }) {
   const {
     settings, t, lang, getTopic, topics, progress, rank,
@@ -31,20 +24,15 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
   const isPractice = mode === 'practice'
   const topic = isMatch ? null : getTopic(topicId)
 
-  // Practice can target any reached level (levelIndex prop, for reviewing an old
-  // one); default to the current level. A resumed session keeps the level it was
-  // started at. The exam always runs at the current level.
+  // Sessão retomada mantém o nível em que começou.
   const level = resume?.level ?? levelIndex ?? progress[topicId]?.levelIndex ?? 0
 
-  // The rank a match is judged against is fixed when it starts, so committing
-  // the result can't shift the questions or the message halfway through.
+  // Rank fixado no início, senão commitar o resultado mexia nas questões no meio.
   const matchStep = useRef(rank.step).current
   const pool = useMemo(() => (isMatch ? matchPool(matchStep, topics) : []), [isMatch, matchStep, topics])
 
-  // How long this session lasts. Time mode has no fixed count — it ends when the
-  // clock runs out (handled by the timer effect below). A resumed session uses
-  // the shape it was started with, so changing the setting while it was paused
-  // can't stretch or truncate it.
+  // Sessão retomada usa o formato com que começou: mudar o ajuste enquanto ela
+  // estava pausada não pode esticar nem cortar ela.
   const byTime = isPractice && (resume ? resume.byTime : settings.sessionMode === 'time')
   const totalMs = resume?.totalMs ?? settings.sessionMinutes * 60000
   const targetCount = mode === 'exam'
@@ -52,9 +40,8 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
     : isMatch ? MATCH_QUESTIONS
       : byTime ? Infinity : (resume?.targetCount ?? settings.sessionCount)
 
-  // Build one question. Practice drills the chosen level; the exam mixes every
-  // level up to the current one; a match picks a rung of the global ladder (so
-  // the question can come from any topic — we tag it with the one it came from).
+  // Exam mistura todos os níveis até o atual. Match sorteia da escada global, daí
+  // a questão pode vir de qualquer tópico e a gente marca de qual veio.
   function makeQuestion() {
     if (isMatch) {
       const rung = pick(pool)
@@ -72,23 +59,20 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
   const [resumed, setResumed] = useState(Boolean(resume)) // show the "picking up" note once
 
   const inputRef = useRef(null)
-  // A resumed session carries its elapsed time, so the clock continues instead
-  // of restarting: pretend it started that many milliseconds ago.
+  // Finge que começou há X ms pro relógio continuar em vez de zerar.
   const startedAt = useRef(Date.now() - (resume?.elapsedMs ?? 0)).current
   const finishedRef = useRef(false) // guards against finishing twice (e.g. timer race)
 
-  // The timer reads the latest results without being re-created every render.
+  // Timer lê o results atual sem se recriar todo render.
   const resultsRef = useRef(results)
   useEffect(() => { resultsRef.current = results }, [results])
 
-  // Put the cursor in the input whenever a new question appears. During feedback
-  // the "Próxima" button auto-focuses itself (see autoFocus below), so Enter
-  // moves on without touching the mouse.
+  // Cursor no input a cada questão nova. No feedback quem pega o foco é o botão
+  // Próxima, então dá pra ir até o fim só no Enter.
   useEffect(() => {
     if (phase === 'answering' && !paused) inputRef.current?.focus()
   }, [phase, question, paused])
 
-  // Time mode: tick every second to update the countdown and end when it hits 0.
   const [now, setNow] = useState(Date.now())
   useEffect(() => {
     if (!byTime) return
@@ -101,8 +85,7 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Everything needed to rebuild this session later. Written after every answer
-  // (see submit) so even closing the tab mid-session doesn't lose it.
+  // Gravado a cada resposta, então fechar a aba no meio não perde.
   function snapshot(currentResults) {
     return {
       topicId,
@@ -118,7 +101,7 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
   function finish(finalResults) {
     if (finishedRef.current) return // never commit/navigate twice
     finishedRef.current = true
-    // A timed session can run out before any answer — don't log an empty session.
+    // Sessão por tempo pode acabar sem nenhuma resposta. Não loga vazia.
     if (finalResults.length === 0) {
       if (isPractice) clearPending()
       navigate('home')
@@ -133,8 +116,8 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
       return
     }
     if (isMatch) {
-      // Compute the outcome with the same pure functions the store uses, so the
-      // message on the summary always matches the step that was saved.
+      // Mesmas funções puras que o store usa, senão a mensagem do resumo
+      // discorda do step que foi salvo.
       const total = finalResults.length
       commitMatch({ correct, total })
       navigate('summary', {
@@ -152,12 +135,10 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
       })
       return
     }
-    // Practice: commitSession also clears the paused session for us.
-    commitSession({ topicId, results: finalResults, durationMs, level })
+      commitSession({ topicId, results: finalResults, durationMs, level })
     navigate('summary', { result: { mode: 'practice', topicId, results: finalResults, durationMs } })
   }
 
-  // User submits an answer.
   function submit(event) {
     event.preventDefault()
     if (input.trim() === '') return
@@ -167,12 +148,11 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
     setResumed(false)
 
     if (mode === 'exam' || isMatch) {
-      // No feedback in an assessment — record and move on (or finish).
+      // Avaliação não dá feedback: registra e segue.
       if (next.length >= targetCount) finish(next)
       else { setQuestion(makeQuestion()); setInput('') }
       return
     }
-    // Practice: keep the paused-session snapshot current, then show the feedback.
     savePending(snapshot(next))
     setLastCorrect(correct)
     setPhase('feedback')
@@ -276,8 +256,7 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
         {isMatch && <p className={styles.examNote}>{t('rank_matchNote')}</p>}
       </div>
 
-      {/* The pause sheet. It replaces the old window.confirm() because there are
-          three answers now, not two — and only practice can actually be paused. */}
+      {/* Era um window.confirm, mas agora são três respostas e não duas. */}
       {paused && (
         <div className={styles.sheetWrap} role="dialog" aria-modal="true" aria-label={t('pause_title')}>
           <div className={styles.sheetBackdrop} onClick={() => setPaused(false)} />

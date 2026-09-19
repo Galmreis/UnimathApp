@@ -39,7 +39,6 @@ export function Settings({ navigate }) {
 
       <section className={styles.group}>
         <h2 className={styles.groupTitle}>{t('sessionSize')}</h2>
-        {/* The same control the first-run tour shows, so both stay in step. */}
         <SessionSizePicker />
       </section>
 

@@ -1,10 +1,5 @@
-// The learning track: an ordered list of topics. Each topic unlocks only after
-// its `prerequisite` is mastered, so the order of this array IS the study plan
-// (adição → subtração → multiplicação → divisão → frações → porcentagem →
-// equação → funções → potências).
-//
-// This is plain data on purpose: adding a new topic later means adding an object
-// here and a matching generator in lib/generators.js — nothing else.
+// A ordem desse array é o plano de estudo: cada tópico só destrava quando o
+// `prerequisite` dele é dominado.
 
 // `glyph` is the math symbol shown in the topic's coloured badge (see
 // components/TopicGlyph.jsx). `color` tints that badge. Both are easy to change

@@ -1,14 +1,10 @@
-// Turns whatever the user typed into a yes/no verdict, and formats the correct
-// answer for the feedback line. A question object looks like:
-//   { prompt, answer, kind }
-// where `kind` is 'number' (answer is a Number) or 'fraction' (answer is {n,d}).
+// kind 'number' -> answer é Number; kind 'fraction' -> answer é {n,d}.
 
 import { reduceFraction, formatNumber } from './math.js'
 
 const TOLERANCE = 1e-3 // decimals within this distance count as correct
 
-// Parse a typed number, accepting the Brazilian comma ("6,25") as the decimal
-// separator. Returns a Number, or null if the text isn't a valid number.
+// Aceita vírgula decimal. Digitar "6,25" é o caso normal aqui, não exceção.
 function parseNumber(text) {
   const cleaned = String(text).trim().replace(',', '.')
   if (cleaned === '') return null
@@ -16,7 +12,6 @@ function parseNumber(text) {
   return Number.isFinite(value) ? value : null
 }
 
-// Parse a typed fraction like "3/4" or "-6/8". Returns it reduced, or null.
 function parseFraction(text) {
   const match = String(text).replace(/\s+/g, '').match(/^(-?\d+)\/(-?\d+)$/)
   if (!match) return null
@@ -26,7 +21,6 @@ function parseFraction(text) {
   return reduceFraction(n, d)
 }
 
-// Is the user's text a correct answer to this question?
 export function checkAnswer(userText, question) {
   if (question.kind === 'fraction') {
     const want = reduceFraction(question.answer.n, question.answer.d)
@@ -34,7 +28,7 @@ export function checkAnswer(userText, question) {
     if (asFraction) {
       return asFraction.n === want.n && asFraction.d === want.d
     }
-    // Be friendly: also accept the equivalent decimal (e.g. "0,75" for 3/4).
+    // Aceita o decimal equivalente também: 0,75 vale por 3/4.
     const asNumber = parseNumber(userText)
     if (asNumber === null) return false
     return Math.abs(asNumber - want.n / want.d) < TOLERANCE
@@ -46,7 +40,6 @@ export function checkAnswer(userText, question) {
   return Math.abs(asNumber - question.answer) < TOLERANCE
 }
 
-// The correct answer as a readable string, for the "certo/errado" feedback.
 export function formatAnswer(question, lang = 'pt') {
   if (question.kind === 'fraction') {
     const { n, d } = reduceFraction(question.answer.n, question.answer.d)

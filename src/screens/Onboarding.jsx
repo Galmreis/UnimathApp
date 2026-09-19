@@ -4,17 +4,9 @@ import { Button } from '../components/Button.jsx'
 import { SessionSizePicker } from '../components/SessionSizePicker.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-// The first-run tour. It owns the whole screen (App renders it instead of the
-// app while settings.onboarded is false) and walks through every concept the
-// field test showed people guessing at: the track, what "fixar" means, the two
-// session shapes, the prova da sexta, and the extra modes.
-//
-// The last step is the important one — it puts the session-size control right in
-// the flow, because testers were starting to train without ever setting the time
-// or the number of questions.
-//
-// Adding a step = one entry here plus its `ob_<id>_t` / `ob_<id>_p*` strings in
-// lib/i18n.js. Nothing else changes.
+// Tour de primeiro acesso. Toma a tela inteira enquanto settings.onboarded for
+// false. O último passo embute o controle de tamanho de sessão de propósito: sem
+// isso a pessoa treina sem nunca configurar tempo nem número de questões.
 const STEPS = [
   { id: 'welcome', glyph: '∑', paragraphs: ['ob_welcome_p', 'ob_welcome_p2'] },
   { id: 'track', glyph: '→', paragraphs: ['ob_track_p', 'ob_track_p2'] },
@@ -43,7 +35,7 @@ export function Onboarding({ onDone }) {
         <button className={styles.skip} onClick={onDone}>{t('ob_skip')}</button>
       </div>
 
-      {/* key={step.id} remounts the card on every step, so the fade-up plays again */}
+      {/* key={step.id} remonta o card a cada passo pro fade rodar de novo */}
       <div key={step.id} className={styles.card}>
         <span className={styles.glyph} aria-hidden>{step.glyph}</span>
         <span className={styles.counter}>{t('ob_stepOf', { n: index + 1, m: STEPS.length })}</span>

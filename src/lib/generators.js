@@ -1,42 +1,35 @@
-// Question generators — the heart of the app. Instead of a fixed bank of
-// questions (which you'd memorise), each topic builds a fresh question from
-// random parameters every time. That gives effectively infinite practice.
+// Cada tópico monta a questão na hora a partir de número aleatório, então não
+// tem gabarito pra decorar.
 //
-// Every generator returns a question object:
-//   { prompt, answer, kind: 'number'|'fraction', steps: string[], tips: string[] }
-// `steps`  = the plain mechanical solution, built from the same random numbers.
-// `tips`   = strategy / mental-math advice chosen from those numbers (see
-//            lib/strategies.js). Both always match this exact question.
+// Retorno: { prompt, answer, kind, steps, tips }. steps é a resolução mecânica,
+// tips é o atalho de cálculo mental (lib/strategies.js). Os dois saem dos mesmos
+// números, então sempre batem com a questão.
 //
-// Every generator takes a `lang` ('pt' | 'en', default 'pt'). Prompt/step text
-// is chosen with the local `L(pt, en)` helper; `f(value)` formats decimals in
-// the right convention. Numbers, operators and fractions read the same in both.
+// L(pt, en) escolhe o idioma, f(v) formata decimal na convenção certa.
 
 import { randInt, pick, reduceFraction, round, formatNumber, gcd } from './math.js'
 import { getTopic } from '../data/topics.js'
 import * as S from './strategies.js'
 
-// Format the constant term of a linear expression, e.g. " + 3" / " - 2" / "".
+// " + 3" / " - 2" / ""
 function withSign(value) {
   if (value === 0) return ''
   return value > 0 ? ` + ${value}` : ` - ${Math.abs(value)}`
 }
 
-// A fraction as a readable string, reduced ("3/4", or "2" when whole).
 function fracStr(frac) {
   const { n, d } = reduceFraction(frac.n, frac.d)
   return d === 1 ? String(n) : `${n}/${d}`
 }
 
-// A coefficient in front of x, dropping a leading 1: coefX(1)="x",
-// coefX(-1)="-x", coefX(3)="3x".
+// coefX(1)="x", coefX(-1)="-x", coefX(3)="3x"
 function coefX(n) {
   if (n === 1) return 'x'
   if (n === -1) return '-x'
   return `${n}x`
 }
 
-// ----------------------------------------------------------------- Adição ----
+// Adição
 function adicao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
@@ -83,7 +76,7 @@ function adicao(level, lang) {
   }
 }
 
-// -------------------------------------------------------------- Subtração ----
+// Subtração
 function subtracao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
@@ -133,7 +126,7 @@ function subtracao(level, lang) {
   }
 }
 
-// ---------------------------------------------------------- Multiplicação ----
+// Multiplicação
 function multiplicacao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   switch (level) {
@@ -179,7 +172,7 @@ function multiplicacao(level, lang) {
   }
 }
 
-// ---------------------------------------------------------------- Divisão ----
+// Divisão
 function divisao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
@@ -251,7 +244,7 @@ function divisao(level, lang) {
   }
 }
 
-// ---------------------------------------------------------------- Frações ----
+// Frações
 function fracoes(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   switch (level) {
@@ -317,7 +310,7 @@ function fracoes(level, lang) {
   }
 }
 
-// ------------------------------------------------------------ Porcentagem ----
+// Porcentagem
 function porcentagem(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
@@ -369,7 +362,7 @@ function porcentagem(level, lang) {
   }
 }
 
-// ------------------------------------------------------- Equação de 1º grau ----
+// Equação de 1º grau
 function equacao1(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   switch (level) {
@@ -419,7 +412,7 @@ function equacao1(level, lang) {
   }
 }
 
-// ---------------------------------------------------------------- Funções ----
+// Funções
 function funcoes(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   switch (level) {
@@ -470,7 +463,7 @@ function funcoes(level, lang) {
   }
 }
 
-// ----------------------------------------------------- Potências e raízes ----
+// Potências e raízes
 function potencias(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
@@ -514,13 +507,10 @@ function potencias(level, lang) {
   }
 }
 
-// Map each topic id to its generator. To add a topic: add it to data/topics.js
-// and register a function here.
+// Pra adicionar tópico: entra em data/topics.js e registra a função aqui.
 const GENERATORS = { adicao, subtracao, multiplicacao, divisao, fracoes, porcentagem, equacao1, funcoes, potencias }
 
-// Public entry point. Clamps `levelIndex` to the topic's real range so callers
-// never have to worry about off-by-one at the edges. `lang` picks the language
-// of the prompt/steps/tips text (default Portuguese).
+// Clampa o levelIndex pra quem chama não precisar cuidar de off-by-one.
 export function generateQuestion(topicId, levelIndex, lang = 'pt') {
   const generate = GENERATORS[topicId]
   if (!generate) throw new Error(`sem gerador para o tópico "${topicId}"`)

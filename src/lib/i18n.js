@@ -1,10 +1,7 @@
-// Tiny, dependency-free i18n. One flat dictionary per language; `makeT(lang)`
-// returns a `t(key, params)` that looks up a template and fills `{placeholders}`.
-// The app defaults to Portuguese — English is opt-in via the language setting.
+// Um dicionário chapado por idioma. t(key, params) preenche {placeholders}.
 //
-// Generated question text (prompts, steps, tips) is NOT here: it's built from
-// random numbers inside lib/generators.js and lib/strategies.js, which take a
-// `lang` argument. This file only covers the fixed UI chrome and the labels.
+// Texto de questão gerada não fica aqui: sai de generators.js e strategies.js,
+// que recebem lang. Aqui é só o chrome fixo da UI.
 
 export const LANGS = ['pt', 'en']
 

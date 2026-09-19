@@ -1,12 +1,6 @@
-// Strategy & mental-math tips — the "smart way" to attack a question, chosen
-// from the SPECIFIC numbers in it. These are separate from `steps` (which show
-// the plain mechanical solution): tips teach shortcuts and habits, and they
-// adapt to the numbers (÷5 → the ×2÷10 trick; 15% → the 10%+5% block method; a
-// fraction with a common factor → cross-cancel).
-//
-// Every function returns an array of strings and takes a `lang` ('pt' | 'en',
-// default 'pt'). Text is chosen with the local `L(pt, en)` helper; numbers are
-// formatted with `f(value)` so decimals follow the language's convention.
+// A "Dica": o jeito esperto de atacar a questão, escolhido a partir dos números
+// que ela tem. Diferente de steps, que é a conta mecânica. Ex.: ÷5 vira ×2÷10,
+// 15% vira 10%+5%, fração com fator comum corta em cruz.
 
 import { gcd, formatNumber } from './math.js'
 
@@ -14,13 +8,11 @@ import { gcd, formatNumber } from './math.js'
 const digitsList = (n) => String(Math.abs(n)).split('').join(' + ')
 const digitsSum = (n) => String(Math.abs(n)).split('').reduce((s, d) => s + Number(d), 0)
 
-// Per-call helpers: L picks the language string; each function that formats
-// numbers defines a local `f = (v) => formatNumber(v, lang)`.
 const L = (lang, pt, en) => (lang === 'en' ? en : pt)
 
-// ------------------------------------------------------------------- Adição --
+// Adição
 export function adicaoTips(a, b, lang = 'pt') {
-  // Round the second number to a friendly ten, add, then adjust back.
+  // Arredonda a segunda parcela pra dezena, soma, depois compensa.
   const r = Math.round(b / 10) * 10
   const diff = b - r
   if (r !== 0 && diff !== 0) {
@@ -34,7 +26,7 @@ export function adicaoDecimalTips(lang = 'pt') {
   return [L(lang, `Alinhe as vírgulas uma sob a outra e some casa por casa, como se fossem inteiros.`, `Line up the decimal points and add column by column, as if they were whole numbers.`)]
 }
 
-// ---------------------------------------------------------------- Subtração --
+// Subtração
 export function subtracaoTips(a, b, lang = 'pt') {
   const r = Math.round(b / 10) * 10
   const diff = b - r
@@ -49,7 +41,7 @@ export function subtracaoDecimalTips(lang = 'pt') {
   return [L(lang, `Alinhe as vírgulas e subtraia casa por casa; complete com zeros se um número tiver menos casas.`, `Line up the decimal points and subtract column by column; pad with zeros if one number has fewer places.`)]
 }
 
-// ------------------------------------------------------------- Multiplicação --
+// Multiplicação
 export function multiplicacaoTabuadaTips(a, b, lang = 'pt') {
   if (a === 9 || b === 9) { const x = a === 9 ? b : a; return [L(lang, `× 9 é (× 10) menos 1 vez: ${x} × 10 = ${x * 10}, menos ${x} = ${x * 9}.`, `× 9 is (× 10) minus once: ${x} × 10 = ${x * 10}, minus ${x} = ${x * 9}.`)] }
   if (a === 5 || b === 5) { const x = a === 5 ? b : a; return [L(lang, `× 5 é a metade de × 10: ${x} × 10 = ${x * 10}, ÷ 2 = ${x * 5}.`, `× 5 is half of × 10: ${x} × 10 = ${x * 10}, ÷ 2 = ${x * 5}.`)] }
@@ -59,21 +51,20 @@ export function multiplicacaoTabuadaTips(a, b, lang = 'pt') {
 }
 
 export function multiplicacaoTips(a, b, lang = 'pt') {
-  // Decompose whichever factor has two digits into tens + units.
+  // Quebra o fator de dois dígitos em dezena + unidade.
   const [whole, part] = b >= 10 ? [a, b] : [b, a]
   const t = Math.floor(part / 10) * 10, u = part % 10
   return [L(lang, `Separe ${part} em ${t} + ${u}: ${whole} × ${t} = ${whole * t} e ${whole} × ${u} = ${whole * u}. Some os dois: ${whole * (t + u)}.`, `Split ${part} into ${t} + ${u}: ${whole} × ${t} = ${whole * t} and ${whole} × ${u} = ${whole * u}. Add them: ${whole * (t + u)}.`)]
 }
 
-// ------------------------------------------------------------------ Divisão --
+// Divisão
 export function divisaoExataTips(a, b, q, lang = 'pt') {
   if (b === 5) return [L(lang, `Truque do 5: dividir por 5 é × 2 e ÷ 10. ${a} × 2 = ${a * 2}, e ${a * 2} ÷ 10 = ${q}.`, `The 5 trick: dividing by 5 is × 2 then ÷ 10. ${a} × 2 = ${a * 2}, and ${a * 2} ÷ 10 = ${q}.`)]
   if (b === 2) return [L(lang, `Dividir por 2 é achar a metade: a metade de ${a} é ${q}.`, `Dividing by 2 is halving: half of ${a} is ${q}.`)]
   if (b === 4) return [L(lang, `Dividir por 4 é tirar a metade duas vezes: ${a} ÷ 2 = ${a / 2}, e ÷ 2 = ${q}.`, `Dividing by 4 is halving twice: ${a} ÷ 2 = ${a / 2}, then ÷ 2 = ${q}.`)]
   if (b === 8) return [L(lang, `Dividir por 8 é tirar a metade três vezes: ${a} → ${a / 2} → ${a / 4} → ${q}.`, `Dividing by 8 is halving three times: ${a} → ${a / 2} → ${a / 4} → ${q}.`)]
   if (b === 3 || b === 9) return [L(lang, `Some os dígitos de ${a}: ${digitsList(a)} = ${digitsSum(a)} (múltiplo de ${b}) — por isso ${a} ÷ ${b} fecha certinho.`, `Add the digits of ${a}: ${digitsList(a)} = ${digitsSum(a)} (a multiple of ${b}) — that's why ${a} ÷ ${b} comes out exact.`)]
-  // Only list the first few multiples when there are enough to be worth it,
-  // so the sequence never overshoots the target (e.g. avoid "7, 14, 21… até 14").
+  // Não passar do alvo: evitar listar "7, 14, 21... até 14".
   if (q <= 3) return [L(lang, `Conte de ${b} em ${b} até chegar em ${a}: são ${q} passos.`, `Count up by ${b} until you reach ${a}: that's ${q} steps.`)]
   return [L(lang, `Conte de ${b} em ${b}: ${b}, ${b * 2}, ${b * 3}… até ${a} (são ${q} passos).`, `Count up by ${b}: ${b}, ${b * 2}, ${b * 3}… up to ${a} (that's ${q} steps).`)]
 }
@@ -96,7 +87,7 @@ export function divisaoDecimalTips(a, b, ans, lang = 'pt') {
   return [L(lang, `Acrescente uma vírgula e vá baixando zeros até o resto zerar.`, `Add a decimal point and bring down zeros until the remainder is zero.`)]
 }
 
-// ------------------------------------------------------------------ Frações --
+// Frações
 export function fracaoSimplificarTips(N, D, lang = 'pt') {
   if (N % 2 === 0 && D % 2 === 0) return [L(lang, `Os dois são pares — comece dividindo por 2 (e repita enquanto der).`, `Both are even — start by dividing by 2 (and repeat while you can).`)]
   if (N % 5 === 0 && D % 5 === 0) return [L(lang, `Os dois terminam em 0 ou 5 — então dá pra dividir por 5.`, `Both end in 0 or 5 — so you can divide by 5.`)]
@@ -110,7 +101,7 @@ export function fracaoSomaTips(b, d, lang = 'pt') {
   }
   const g = gcd(b, d)
   if (g > 1) {
-    // e.g. 4 and 6 share the factor 2 even though neither divides the other.
+    // 4 e 6 têm fator 2 em comum mesmo nenhum dividindo o outro.
     return [L(lang, `${b} e ${d} têm o fator comum ${g}: dá para usar ${(b * d) / g} como denominador comum, menor que ${b} × ${d} = ${b * d}.`, `${b} and ${d} share the factor ${g}: you can use ${(b * d) / g} as the common denominator, smaller than ${b} × ${d} = ${b * d}.`)]
   }
   return [L(lang, `${b} e ${d} não têm fator comum, então o denominador comum é ${b} × ${d} = ${b * d}.`, `${b} and ${d} share no common factor, so the common denominator is ${b} × ${d} = ${b * d}.`)]
@@ -127,7 +118,7 @@ export function fracaoDividirTips(c, d, lang = 'pt') {
   return [L(lang, `Regra prática: mantenha a primeira fração e multiplique pelo INVERSO da segunda (${c}/${d} vira ${d}/${c}).`, `Handy rule: keep the first fraction and multiply by the RECIPROCAL of the second (${c}/${d} becomes ${d}/${c}).`)]
 }
 
-// -------------------------------------------------------------- Porcentagem --
+// Porcentagem
 export function porcentagemDeTips(pct, base, lang = 'pt') {
   const f = (v) => formatNumber(v, lang)
   const ten = base / 10
@@ -152,7 +143,7 @@ export function aumentoDescontoTips(pct, base, isIncrease, ans, lang = 'pt') {
   return [L(lang, `Atalho: ${isIncrease ? 'aumento' : 'desconto'} de ${pct}% = multiplicar por ${f(mult)}. ${base} × ${f(mult)} = ${f(ans)} — resolve em uma conta só.`, `Shortcut: a ${pct}% ${isIncrease ? 'increase' : 'discount'} = multiply by ${f(mult)}. ${base} × ${f(mult)} = ${f(ans)} — one calculation.`)]
 }
 
-// ------------------------------------------------------------------ Equação --
+// Equação
 export function equacaoAxbTips(a, lang = 'pt') {
   return [L(lang, `Isolar o x = desfazer a multiplicação. Como ${a} multiplica o x, divida os dois lados por ${a}.`, `Isolating x = undoing the multiplication. Since ${a} multiplies x, divide both sides by ${a}.`)]
 }
@@ -168,7 +159,7 @@ export function equacaoDuploTips(lang = 'pt') {
   ]
 }
 
-// ------------------------------------------------------------------ Funções --
+// Funções
 export function funcaoValorTips(k, lang = 'pt') {
   return [L(lang, `Calcular f(${k}) é só trocar TODO x por ${k} e fazer a conta.`, `Computing f(${k}) is just replacing every x with ${k} and doing the arithmetic.`)]
 }
@@ -181,7 +172,7 @@ export function funcaoCoefTips(x1, y1, x2, y2, a, lang = 'pt') {
   return [L(lang, `Coeficiente angular = quanto o y muda quando o x anda 1. De x=${x1} a x=${x2} (andou ${x2 - x1}), o y foi de ${y1} a ${y2} (mudou ${y2 - y1}): ${y2 - y1} ÷ ${x2 - x1} = ${a}.`, `Slope = how much y changes when x moves by 1. From x=${x1} to x=${x2} (moved ${x2 - x1}), y went from ${y1} to ${y2} (changed ${y2 - y1}): ${y2 - y1} ÷ ${x2 - x1} = ${a}.`)]
 }
 
-// -------------------------------------------------------- Potências e raízes --
+// Potências e raízes
 export function potenciaDezTips(e, lang = 'pt') {
   return [L(lang, `Cada 10 multiplicado empurra a vírgula uma casa: 10^${e} é 1 com ${e} zeros.`, `Each extra 10 pushes the decimal one place: 10^${e} is a 1 with ${e} zeros.`)]
 }

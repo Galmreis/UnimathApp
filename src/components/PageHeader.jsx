@@ -2,9 +2,7 @@ import styles from './PageHeader.module.css'
 import { Icon } from './Icon.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-// The header of a secondary screen (Como funciona, Ranking, Provas): a back
-// arrow, the title, and an optional line of intro text under it. These screens
-// are reached from "Mais" and hide the tab bar, so the arrow is the way out.
+// Telas secundárias escondem a tab bar, então a seta é a única saída.
 export function PageHeader({ title, intro, onBack }) {
   const { t } = useStore()
   return (

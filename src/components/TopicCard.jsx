@@ -3,17 +3,13 @@ import { ProgressBar } from './ProgressBar.jsx'
 import { TopicGlyph } from './TopicGlyph.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-// One row in the learning track. Shows the topic, its status, the current
-// difficulty level and an accuracy bar. Locked topics are disabled.
-// `onStart(levelIndex)` starts a practice session at the chosen level.
 export function TopicCard({ topic, status, levelIndex, accuracy, onStart }) {
   const { t } = useStore()
   const locked = status === 'locked'
   const mastered = status === 'mastered'
   const totalLevels = topic.levels.length
   const safeLevel = Math.min(levelIndex, totalLevels - 1)
-  // Highest level you're allowed to train: everything up to (and including) the
-  // one you've reached — or every level once the topic is fixed.
+  // Dá pra treinar até o nível alcançado. Tópico dominado libera todos.
   const maxTrainable = mastered ? totalLevels - 1 : safeLevel
 
   const hasData = status === 'in_progress' || mastered

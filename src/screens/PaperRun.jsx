@@ -5,14 +5,7 @@ import { ProgressBar } from '../components/ProgressBar.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 import { drawPaperSet, localizePaper, letterFor, isPaperCorrect } from '../lib/papers.js'
 
-// One round of the "Provas" mode. This is the multiple-choice sibling of
-// screens/Session.jsx: the questions come from the bank instead of a generator,
-// the answer is one of five alternatives instead of a typed number, and the
-// result deliberately does NOT touch the learning track (see the store's
-// commitPaperRound).
-//
-// Three phases, same shape as the practice loop: answering -> feedback ->
-// (repeat) -> result.
+// Irmão múltipla escolha do Session.jsx. De propósito não encosta na trilha.
 export function PaperRun({ setup, navigate }) {
   const { t, lang, getTopic, commitPaperRound } = useStore()
 
