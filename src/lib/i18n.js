@@ -7,7 +7,6 @@ export const LANGS = ['pt', 'en']
 
 const DICT = {
   pt: {
-    tagline: 'Matemática não é talento, é treino!',
     now: 'Agora',
     level_of: 'Nível {n}/{m}',
     trainNow: 'Treinar agora',
@@ -283,7 +282,6 @@ const DICT = {
     nav_settings: 'Ajustes',
   },
   en: {
-    tagline: "Math isn't talent, it's practice!",
     now: 'Now',
     level_of: 'Level {n}/{m}',
     trainNow: 'Train now',

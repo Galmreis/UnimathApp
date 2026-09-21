@@ -2,7 +2,6 @@
 
 .header { text-align: center; padding-top: 8px; }
 .title { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
-.tagline { color: var(--text-dim); font-size: 0.95rem; margin-top: 4px; }
 
 .cta { display: flex; flex-direction: column; gap: 12px; }
 .now {

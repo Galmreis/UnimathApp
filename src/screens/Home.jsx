@@ -44,7 +44,6 @@ export function Home({ navigate }) {
           </button>
         </div>
         <h1 className={styles.title}>Unimath</h1>
-        <p className={styles.tagline}><i>{t('tagline')}</i></p>
       </header>
 
       {/* Antes do "Treinar agora": a oferta só serve onde a pessoa cai. */}
