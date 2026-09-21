@@ -34,7 +34,7 @@ function adicao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
   switch (level) {
-    case 0: { // Sem reagrupar — cada coluna soma menos de 10, sem vai-um
+    case 0: { // Sem reagrupar: cada coluna soma menos de 10, sem vai-um
       const t1 = randInt(1, 8), t2 = randInt(1, 9 - t1)
       const u1 = randInt(0, 9), u2 = randInt(0, 9 - u1)
       const a = t1 * 10 + u1, b = t2 * 10 + u2
@@ -47,19 +47,19 @@ function adicao(level, lang) {
         tips: S.adicaoTips(a, b, lang),
       }
     }
-    case 1: { // Com reagrupamento — força a coluna de unidades passar de 10
+    case 1: { // Com reagrupamento: força a coluna de unidades passar de 10
       let a, b
       do { a = randInt(15, 89); b = randInt(15, 89) } while ((a % 10) + (b % 10) < 10)
       return {
         prompt: `${a} + ${b} = ?`, answer: a + b, kind: 'number',
         steps: [
-          L(`Some as unidades: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)} — passa de 10, então "vai 1".`, `Add the units: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)} — over 10, so carry 1.`),
+          L(`Some as unidades: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)}. Passa de 10, então "vai 1".`, `Add the units: ${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)}. Over 10, so carry 1.`),
           L(`Some as dezenas com o 1 que subiu: total ${a + b}.`, `Add the tens together with the carried 1: total ${a + b}.`),
         ],
         tips: S.adicaoTips(a, b, lang),
       }
     }
-    default: { // Com decimais — décimo mantém a conta limpa
+    default: { // Com decimais, décimo mantém a conta limpa
       let A, B
       do { A = randInt(15, 199) } while (A % 10 === 0)
       do { B = randInt(15, 199) } while (B % 10 === 0)
@@ -81,7 +81,7 @@ function subtracao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
   switch (level) {
-    case 0: { // Sem reagrupar — dígito de cima sempre ≥ o de baixo, sem empréstimo
+    case 0: { // Sem reagrupar: dígito de cima sempre ≥ o de baixo, sem empréstimo
       let a, b
       do {
         const t1 = randInt(2, 9), u1 = randInt(0, 9)
@@ -97,7 +97,7 @@ function subtracao(level, lang) {
         tips: S.subtracaoTips(a, b, lang),
       }
     }
-    case 1: { // Com reagrupamento — unidade de cima menor, precisa emprestar
+    case 1: { // Com reagrupamento: unidade de cima menor, precisa emprestar
       let a, b
       do { a = randInt(20, 99); b = randInt(11, a - 1) } while ((a % 10) >= (b % 10))
       return {
@@ -130,7 +130,7 @@ function subtracao(level, lang) {
 function multiplicacao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   switch (level) {
-    case 0: { // Tabuada — um dígito × um dígito
+    case 0: { // Tabuada
       const a = randInt(2, 9), b = randInt(2, 9)
       return {
         prompt: `${a} × ${b} = ?`, answer: a * b, kind: 'number',
@@ -141,7 +141,7 @@ function multiplicacao(level, lang) {
         tips: S.multiplicacaoTabuadaTips(a, b, lang),
       }
     }
-    case 1: { // Por um dígito — 2 dígitos × 1, quebra pela distributiva
+    case 1: { // Por um dígito, 2 dígitos × 1, quebra pela distributiva
       const a = randInt(11, 99), b = randInt(3, 9)
       const t = Math.floor(a / 10) * 10, u = a % 10
       return {
@@ -154,7 +154,7 @@ function multiplicacao(level, lang) {
         tips: S.multiplicacaoTips(a, b, lang),
       }
     }
-    default: { // Dois dígitos — 2 × 2, quebra o segundo fator
+    default: { // Dois dígitos: 2 × 2, quebra o segundo fator
       const a = randInt(11, 99)
       let b
       do { b = randInt(11, 29) } while (b % 10 === 0)
@@ -177,7 +177,7 @@ function divisao(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
   switch (level) {
-    case 0: { // Exata — dividendo é múltiplo exato do divisor
+    case 0: { // Exata
       const b = randInt(2, 9)
       const q = randInt(2, 9)
       const a = b * q
@@ -190,7 +190,7 @@ function divisao(level, lang) {
         tips: S.divisaoExataTips(a, b, q, lang),
       }
     }
-    case 1: { // Com resto — pede quociente ou resto
+    case 1: { // Com resto, pede quociente ou resto
       const b = randInt(3, 9)
       const q = randInt(2, 12)
       const r = randInt(1, b - 1)
@@ -214,7 +214,7 @@ function divisao(level, lang) {
         tips: S.divisaoRestoTips(b, lang),
       }
     }
-    case 2: { // Divisão longa — exata, só que maior
+    case 2: { // Divisão longa, exata só que maior
       const b = randInt(12, 39)
       const q = randInt(11, 99)
       const a = b * q
@@ -227,7 +227,7 @@ function divisao(level, lang) {
         tips: S.divisaoLongaTips(a, b, lang),
       }
     }
-    default: { // Com decimais — divisor que divide 100 dá resposta limpa
+    default: { // Com decimais: divisor que divide 100 dá resposta limpa
       const b = pick([2, 4, 5, 20, 25])
       const a = randInt(3, 99)
       const ans = round(a / b, 2)
@@ -248,7 +248,7 @@ function divisao(level, lang) {
 function fracoes(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   switch (level) {
-    case 0: { // Simplificar — monta fração redutível a partir de uma já reduzida
+    case 0: { // Simplificar: monta fração redutível a partir de uma já reduzida
       const base = reduceFraction(randInt(1, 8), randInt(2, 9))
       const k = randInt(2, 6)
       const N = base.n * k
@@ -264,7 +264,7 @@ function fracoes(level, lang) {
         tips: S.fracaoSimplificarTips(N, D, lang),
       }
     }
-    case 1: { // Somar e subtrair — ordena os operandos pra não dar negativo
+    case 1: { // Somar e subtrair, ordena os operandos pra não dar negativo
       let a = randInt(1, 9), b = randInt(2, 9), c = randInt(1, 9), d = randInt(2, 9)
       const op = pick(['+', '-'])
       if (op === '-' && a * d < c * b) { [a, c] = [c, a]; [b, d] = [d, b] }
@@ -294,7 +294,7 @@ function fracoes(level, lang) {
         tips: S.fracaoMultiplicarTips(a, b, c, d, lang),
       }
     }
-    default: { // Dividir — inverte e multiplica
+    default: { // Dividir: inverte e multiplica
       const a = randInt(1, 9), b = randInt(2, 9), c = randInt(1, 9), d = randInt(2, 9)
       const answer = reduceFraction(a * d, b * c)
       return {
@@ -468,7 +468,7 @@ function potencias(level, lang) {
   const L = (pt, en) => (lang === 'en' ? en : pt)
   const f = (v) => formatNumber(v, lang)
   switch (level) {
-    case 0: { // Potências de 10 — resposta é 1 seguido de e zeros
+    case 0: { // Potências de 10: resposta é 1 seguido de e zeros
       const e = randInt(2, 6)
       const ans = 10 ** e
       return {
@@ -480,7 +480,7 @@ function potencias(level, lang) {
         tips: S.potenciaDezTips(e, lang),
       }
     }
-    case 1: { // Potências de base pequena — quadrado ou cubo
+    case 1: { // Potências de base pequena
       const b = randInt(2, 9), e = pick([2, 3])
       const ans = b ** e
       const expand = e === 3 ? `${b} × ${b} × ${b}` : `${b} × ${b}`
@@ -493,7 +493,7 @@ function potencias(level, lang) {
         tips: S.potenciaTips(b, e, lang),
       }
     }
-    default: { // Raiz quadrada exata — de um quadrado perfeito
+    default: { // Raiz quadrada exata
       const n = randInt(2, 15), sq = n * n
       return {
         prompt: `√${sq} = ?`, answer: n, kind: 'number',

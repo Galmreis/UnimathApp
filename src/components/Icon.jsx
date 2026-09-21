@@ -57,7 +57,7 @@ const ICONS = {
       <path d="M14.5 5 8 12l6.5 7" />
     </>
   ),
-  // A circular arrow — "rever o tour".
+  // Rever o tour
   replay: (
     <>
       <path d="M20 12a8 8 0 1 1-2.6-5.9" />

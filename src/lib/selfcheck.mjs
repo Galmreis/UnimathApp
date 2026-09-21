@@ -199,7 +199,7 @@ for (let i = 0; i < RANK_TIERS.length; i++) {
   assert(rankAt(start).tierIndex === i && rankAt(start).division === 1, `tierStartStep(${i}) is that tier's division I`)
 }
 
-// regra do match: 8+/10 sobe, 5-7 fica, <5 desce — nunca sai da escada
+// regra do match: 8+/10 sobe, 5-7 fica, <5 desce, nunca sai da escada
 for (let step = 0; step < RANK_STEPS; step++) {
   for (let correct = 0; correct <= MATCH_QUESTIONS; correct++) {
     const outcome = matchOutcome(step, correct, MATCH_QUESTIONS)

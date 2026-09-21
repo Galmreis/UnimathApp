@@ -26,7 +26,7 @@ export const EXAM_QUESTIONS = [
     solution: [
       '15% de 1.800 = 270, então o preço promocional é 1.800 − 270 = 1.530.',
       '10% de 1.530 = 153, então o preço à vista é 1.530 − 153 = 1.377.',
-      'Cuidado: descontos sucessivos não se somam — 15% + 10% daria 1.350, que é a pegadinha.',
+      'Cuidado: descontos sucessivos não se somam. 15% + 10% daria 1.350, que é a pegadinha.',
     ],
     en: {
       statement: 'A shop advertises a television for R$ 1,800.00. In the anniversary sale the price drops 15%, and paying up front takes another 10% off the already discounted value. What is the up-front price?',
@@ -34,7 +34,7 @@ export const EXAM_QUESTIONS = [
       solution: [
         '15% of 1,800 = 270, so the sale price is 1,800 − 270 = 1,530.',
         '10% of 1,530 = 153, so the up-front price is 1,530 − 153 = 1,377.',
-        "Careful: successive discounts don't add up — 15% + 10% would give 1,350, which is the trap.",
+        "Careful: successive discounts don't add up. 15% + 10% would give 1,350, which is the trap.",
       ],
     },
   },
@@ -500,7 +500,7 @@ export const EXAM_QUESTIONS = [
     solution: [
       'Três quartos de 480: 480 ÷ 4 = 120, e 120 × 3 = 360.',
       'Dois terços de 360: 360 ÷ 3 = 120, e 120 × 2 = 240.',
-      'O resultado é 240 — repare que (2/3) × (3/4) = 1/2, ou seja, metade de 480.',
+      'O resultado é 240, repare que (2/3) × (3/4) = 1/2, ou seja, metade de 480.',
     ],
     en: {
       statement: 'Two thirds of three quarters of 480 equals',
@@ -508,7 +508,7 @@ export const EXAM_QUESTIONS = [
       solution: [
         'Three quarters of 480: 480 ÷ 4 = 120, and 120 × 3 = 360.',
         'Two thirds of 360: 360 ÷ 3 = 120, and 120 × 2 = 240.',
-        'The result is 240 — note that (2/3) × (3/4) = 1/2, i.e. half of 480.',
+        'The result is 240, note that (2/3) × (3/4) = 1/2, i.e. half of 480.',
       ],
     },
   },

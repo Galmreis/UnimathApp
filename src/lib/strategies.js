@@ -19,7 +19,7 @@ export function adicaoTips(a, b, lang = 'pt') {
     const adj = diff > 0 ? `+ ${diff}` : `− ${-diff}`
     return [L(lang, `Arredonde ${b} para ${r}: ${a} + ${r} = ${a + r}, depois ${adj} = ${a + b}.`, `Round ${b} to ${r}: ${a} + ${r} = ${a + r}, then ${adj} = ${a + b}.`)]
   }
-  return [L(lang, `Some as unidades primeiro, depois as dezenas — e "vai 1" sempre que uma coluna passar de 10.`, `Add the units first, then the tens — and carry 1 whenever a column tops 10.`)]
+  return [L(lang, `Some as unidades primeiro, depois as dezenas, e "vai 1" sempre que uma coluna passar de 10.`, `Add the units first, then the tens, and carry 1 whenever a column tops 10.`)]
 }
 
 export function adicaoDecimalTips(lang = 'pt') {
@@ -63,7 +63,7 @@ export function divisaoExataTips(a, b, q, lang = 'pt') {
   if (b === 2) return [L(lang, `Dividir por 2 é achar a metade: a metade de ${a} é ${q}.`, `Dividing by 2 is halving: half of ${a} is ${q}.`)]
   if (b === 4) return [L(lang, `Dividir por 4 é tirar a metade duas vezes: ${a} ÷ 2 = ${a / 2}, e ÷ 2 = ${q}.`, `Dividing by 4 is halving twice: ${a} ÷ 2 = ${a / 2}, then ÷ 2 = ${q}.`)]
   if (b === 8) return [L(lang, `Dividir por 8 é tirar a metade três vezes: ${a} → ${a / 2} → ${a / 4} → ${q}.`, `Dividing by 8 is halving three times: ${a} → ${a / 2} → ${a / 4} → ${q}.`)]
-  if (b === 3 || b === 9) return [L(lang, `Some os dígitos de ${a}: ${digitsList(a)} = ${digitsSum(a)} (múltiplo de ${b}) — por isso ${a} ÷ ${b} fecha certinho.`, `Add the digits of ${a}: ${digitsList(a)} = ${digitsSum(a)} (a multiple of ${b}) — that's why ${a} ÷ ${b} comes out exact.`)]
+  if (b === 3 || b === 9) return [L(lang, `Some os dígitos de ${a}: ${digitsList(a)} = ${digitsSum(a)} (múltiplo de ${b}), por isso ${a} ÷ ${b} fecha certinho.`, `Add the digits of ${a}: ${digitsList(a)} = ${digitsSum(a)} (a multiple of ${b}), that's why ${a} ÷ ${b} comes out exact.`)]
   // Não passar do alvo: evitar listar "7, 14, 21... até 14".
   if (q <= 3) return [L(lang, `Conte de ${b} em ${b} até chegar em ${a}: são ${q} passos.`, `Count up by ${b} until you reach ${a}: that's ${q} steps.`)]
   return [L(lang, `Conte de ${b} em ${b}: ${b}, ${b * 2}, ${b * 3}… até ${a} (são ${q} passos).`, `Count up by ${b}: ${b}, ${b * 2}, ${b * 3}… up to ${a} (that's ${q} steps).`)]
@@ -74,7 +74,7 @@ export function divisaoRestoTips(b, lang = 'pt') {
 }
 
 export function divisaoLongaTips(a, b, lang = 'pt') {
-  return [L(lang, `Estime pelo tamanho: ${b} × 10 = ${b * 10} e ${b} × 100 = ${b * 100}. Como ${a} fica entre eles, o resultado tem 2 dígitos — aí é só ir ajustando.`, `Estimate by size: ${b} × 10 = ${b * 10} and ${b} × 100 = ${b * 100}. Since ${a} falls between them, the answer has 2 digits — from there just adjust.`)]
+  return [L(lang, `Estime pelo tamanho: ${b} × 10 = ${b * 10} e ${b} × 100 = ${b * 100}. Como ${a} fica entre eles, o resultado tem 2 dígitos. Daí é só ir ajustando.`, `Estimate by size: ${b} × 10 = ${b * 10} and ${b} × 100 = ${b * 100}. Since ${a} falls between them, the answer has 2 digits. From there just adjust.`)]
 }
 
 export function divisaoDecimalTips(a, b, ans, lang = 'pt') {
@@ -89,15 +89,15 @@ export function divisaoDecimalTips(a, b, ans, lang = 'pt') {
 
 // Frações
 export function fracaoSimplificarTips(N, D, lang = 'pt') {
-  if (N % 2 === 0 && D % 2 === 0) return [L(lang, `Os dois são pares — comece dividindo por 2 (e repita enquanto der).`, `Both are even — start by dividing by 2 (and repeat while you can).`)]
-  if (N % 5 === 0 && D % 5 === 0) return [L(lang, `Os dois terminam em 0 ou 5 — então dá pra dividir por 5.`, `Both end in 0 or 5 — so you can divide by 5.`)]
-  if (digitsSum(N) % 3 === 0 && digitsSum(D) % 3 === 0) return [L(lang, `A soma dos dígitos dos dois dá múltiplo de 3 — então dá pra dividir por 3.`, `The digit sum of each is a multiple of 3 — so you can divide by 3.`)]
+  if (N % 2 === 0 && D % 2 === 0) return [L(lang, `Os dois são pares, comece dividindo por 2 (e repita enquanto der).`, `Both are even, start by dividing by 2 (and repeat while you can).`)]
+  if (N % 5 === 0 && D % 5 === 0) return [L(lang, `Os dois terminam em 0 ou 5, então dá pra dividir por 5.`, `Both end in 0 or 5, so you can divide by 5.`)]
+  if (digitsSum(N) % 3 === 0 && digitsSum(D) % 3 === 0) return [L(lang, `A soma dos dígitos dos dois dá múltiplo de 3, então dá pra dividir por 3.`, `The digit sum of each is a multiple of 3, so you can divide by 3.`)]
   return [L(lang, `Procure o MDC: o maior número que divide ${N} e ${D} ao mesmo tempo, e divida os dois por ele de uma vez.`, `Look for the GCD: the largest number that divides both ${N} and ${D}, and divide both by it at once.`)]
 }
 
 export function fracaoSomaTips(b, d, lang = 'pt') {
   if (b % d === 0 || d % b === 0) {
-    return [L(lang, `Um denominador é múltiplo do outro: use ${Math.max(b, d)} como denominador comum — não precisa multiplicar os dois.`, `One denominator is a multiple of the other: use ${Math.max(b, d)} as the common denominator — no need to multiply them together.`)]
+    return [L(lang, `Um denominador é múltiplo do outro: use ${Math.max(b, d)} como denominador comum. Não precisa multiplicar os dois.`, `One denominator is a multiple of the other: use ${Math.max(b, d)} as the common denominator. No need to multiply them together.`)]
   }
   const g = gcd(b, d)
   if (g > 1) {
@@ -111,7 +111,7 @@ export function fracaoMultiplicarTips(a, b, c, d, lang = 'pt') {
   if (gcd(a, d) > 1 || gcd(c, b) > 1) {
     return [L(lang, `Dá pra "cortar cruzado" antes de multiplicar (${a} com ${d}, ou ${c} com ${b}, têm fator comum). Simplificar antes deixa as contas bem menores.`, `You can cross-cancel before multiplying (${a} with ${d}, or ${c} with ${b}, share a factor). Simplifying first keeps the numbers much smaller.`)]
   }
-  return [L(lang, `Multiplique direto: de cima com de cima, de baixo com de baixo — e simplifique só no fim.`, `Multiply straight across: tops with tops, bottoms with bottoms — and simplify only at the end.`)]
+  return [L(lang, `Multiplique direto: de cima com de cima, de baixo com de baixo, e simplifique só no fim.`, `Multiply straight across: tops with tops, bottoms with bottoms, and simplify only at the end.`)]
 }
 
 export function fracaoDividirTips(c, d, lang = 'pt') {
@@ -140,7 +140,7 @@ export function quePorcentagemTips(part, base, lang = 'pt') {
 export function aumentoDescontoTips(pct, base, isIncrease, ans, lang = 'pt') {
   const f = (v) => formatNumber(v, lang)
   const mult = isIncrease ? 1 + pct / 100 : 1 - pct / 100
-  return [L(lang, `Atalho: ${isIncrease ? 'aumento' : 'desconto'} de ${pct}% = multiplicar por ${f(mult)}. ${base} × ${f(mult)} = ${f(ans)} — resolve em uma conta só.`, `Shortcut: a ${pct}% ${isIncrease ? 'increase' : 'discount'} = multiply by ${f(mult)}. ${base} × ${f(mult)} = ${f(ans)} — one calculation.`)]
+  return [L(lang, `Atalho: ${isIncrease ? 'aumento' : 'desconto'} de ${pct}% = multiplicar por ${f(mult)}. ${base} × ${f(mult)} = ${f(ans)}. Resolve em uma conta só.`, `Shortcut: a ${pct}% ${isIncrease ? 'increase' : 'discount'} = multiply by ${f(mult)}. ${base} × ${f(mult)} = ${f(ans)}. One calculation.`)]
 }
 
 // Equação
@@ -165,7 +165,7 @@ export function funcaoValorTips(k, lang = 'pt') {
 }
 
 export function funcaoRaizTips(lang = 'pt') {
-  return [L(lang, `A raiz é onde f(x) = 0 — o ponto em que a reta corta o eixo x.`, `The root is where f(x) = 0 — the point where the line crosses the x-axis.`)]
+  return [L(lang, `A raiz é onde f(x) = 0, o ponto em que a reta corta o eixo x.`, `The root is where f(x) = 0, the point where the line crosses the x-axis.`)]
 }
 
 export function funcaoCoefTips(x1, y1, x2, y2, a, lang = 'pt') {
