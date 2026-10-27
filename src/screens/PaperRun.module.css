@@ -33,11 +33,11 @@
 }
 
 .tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.02em;
 }
 
 /* Enunciado é prosa, não fórmula, por isso tamanho de leitura e não o 1.9rem do Session. */
@@ -71,13 +71,13 @@
   justify-content: center;
   width: 26px;
   height: 26px;
-  border-radius: 8px;
+  border-radius: var(--radius-xs);
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-dim);
+  font-family: var(--font-mono);
   font-size: 0.8rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-weight: 700;
 }
 .altText { flex: 1; }
 

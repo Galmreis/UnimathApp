@@ -10,12 +10,13 @@
 
 .close {
   align-self: flex-start;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-xs);
   color: var(--text-dim);
-  font-size: 1.1rem;
+  font-size: 1rem;
   background: var(--surface-2);
+  border: 1px solid var(--border);
 }
 .close:focus-visible { outline: 2px solid var(--accent); }
 
@@ -25,14 +26,24 @@
   align-items: baseline;
   font-size: 0.9rem;
 }
-.topicName { font-weight: 700; }
-.counter { color: var(--text-dim); font-variant-numeric: tabular-nums; }
-
+.topicName {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.counter {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
 
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-top: 2px solid var(--accent);
+  border-radius: var(--radius-sm);
   padding: 24px 20px;
   display: flex;
   flex-direction: column;
@@ -40,41 +51,80 @@
 }
 
 .prompt {
-  font-size: 1.9rem;
+  font-family: var(--font-mono);
+  font-size: 2.1rem;
   font-weight: 700;
   text-align: center;
-  line-height: 1.25;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
 .input {
   width: 100%;
-  height: 60px;
+  height: 58px;
   text-align: center;
-  font-size: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 1.55rem;
+  font-weight: 600;
   background: var(--surface-2);
-  border: 2px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0 12px;
-  margin-bottom: 16px;
-  transition: border-color 0.15s ease;
+  margin-bottom: 12px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  font-variant-numeric: tabular-nums;
 }
-.input:focus { outline: none; border-color: var(--accent); }
+.input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
 .input:disabled { opacity: 0.8; }
+
+.keypadRow {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.keyBtn {
+  flex: 1;
+  max-width: 68px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.keyBtn:hover {
+  background: var(--elev);
+  border-color: var(--accent);
+}
+.keyBtn:active {
+  transform: translateY(1px);
+}
 
 .feedback {
   text-align: center;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  padding: 14px;
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
   background: var(--error-bg);
   color: var(--error);
+  border: 1px solid color-mix(in srgb, var(--error) 30%, transparent);
   animation: fade-up 0.2s ease both;
 }
 .feedback[data-correct='true'] {
   background: var(--success-bg);
   color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 30%, transparent);
 }
 
 
@@ -87,8 +137,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.55;
   color: var(--text-dim);
 }
 .steps li { padding-left: 4px; }
@@ -97,8 +148,8 @@
 
 .tip {
   border-left: 3px solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 9%, var(--surface-2));
-  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface-2));
+  border-radius: var(--radius-sm);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -107,10 +158,8 @@
   line-height: 1.55;
 }
 .tipLabel {
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
   color: var(--accent);
 }
 .tip p { color: var(--text); }
@@ -123,7 +172,8 @@
 
 
 .resumed {
-  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
   color: var(--accent);
   font-weight: 600;
 }
@@ -131,11 +181,14 @@
 /* No teste de rank a questão pode vir de outro tópico, então mostra qual. */
 .questionTag {
   align-self: center;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
 }
 
 /* --- ficha de pausa --- */

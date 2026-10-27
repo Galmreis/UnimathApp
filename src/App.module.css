@@ -5,9 +5,12 @@
   flex-direction: column;
   max-width: var(--maxw);
   margin: 0 auto;
+  position: relative;
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
 }
 
 .content {
   flex: 1;
-  padding: 20px 16px 28px;
+  padding: 24px 20px 36px;
 }

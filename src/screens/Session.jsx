@@ -212,13 +212,64 @@ export function Session({ mode, topicId, levelIndex, resume, navigate }) {
             className={styles.input}
             value={input}
             onChange={(e) => setInput(sanitizeAnswer(e.target.value, question.kind))}
-            inputMode={question.kind === 'fraction' || question.signed ? 'text' : 'decimal'}
+            inputMode={question.kind === 'fraction' ? 'text' : 'decimal'}
             placeholder={question.kind === 'fraction' ? t('answerPlaceholderFraction') : t('answerPlaceholder')}
             autoComplete="off"
             enterKeyHint="go"
             disabled={phase === 'feedback'}
             aria-label={t('answerAria')}
           />
+
+          {phase === 'answering' && (
+            <div className={styles.keypadRow}>
+              {question.kind === 'fraction' && (
+                <button
+                  type="button"
+                  className={styles.keyBtn}
+                  onClick={() => {
+                    setInput((prev) => sanitizeAnswer(prev + '/', question.kind))
+                    inputRef.current?.focus()
+                  }}
+                  aria-label="Barra de fração"
+                >
+                  /
+                </button>
+              )}
+              <button
+                type="button"
+                className={styles.keyBtn}
+                onClick={() => {
+                  setInput((prev) => (prev.startsWith('-') ? prev.slice(1) : '-' + prev))
+                  inputRef.current?.focus()
+                }}
+                aria-label="Sinal de menos"
+              >
+                ±
+              </button>
+              <button
+                type="button"
+                className={styles.keyBtn}
+                onClick={() => {
+                  setInput((prev) => sanitizeAnswer(prev + (lang === 'pt' ? ',' : '.'), question.kind))
+                  inputRef.current?.focus()
+                }}
+                aria-label="Separador decimal"
+              >
+                {lang === 'pt' ? ',' : '.'}
+              </button>
+              <button
+                type="button"
+                className={styles.keyBtn}
+                onClick={() => {
+                  setInput((prev) => prev.slice(0, -1))
+                  inputRef.current?.focus()
+                }}
+                aria-label="Apagar dígito"
+              >
+                ⌫
+              </button>
+            </div>
+          )}
 
           {phase === 'answering' && (
             <Button type="submit" full disabled={input.trim() === ''}>{t('submit')}</Button>

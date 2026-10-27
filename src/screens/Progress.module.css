@@ -1,6 +1,13 @@
 .progress { display: flex; flex-direction: column; gap: 28px; animation: fade-up 0.28s ease both; }
 
-.title { font-size: 1.6rem; font-weight: 800; padding-top: 8px; }
+.title {
+  font-family: var(--font-sans);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  padding-top: 8px;
+}
 
 /* Um painel só, 4 números em grid 2×2, em vez de 4 cards soltos. */
 .overview {
@@ -20,29 +27,26 @@
 .ovCell:nth-child(2n) { border-right: none; }
 .ovCell:nth-last-child(-n+2) { border-bottom: none; }
 .ovValue {
-  font-size: 2.3rem;
-  font-weight: 800;
+  font-family: var(--font-mono);
+  font-size: 2.1rem;
+  font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 .ovAccent { color: var(--accent); }
-.ovLabel { font-size: 0.82rem; color: var(--text-dim); margin-top: 7px; }
+.ovLabel { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-dim); margin-top: 6px; }
 
-/* Mesmo tracinho de destaque dos grupos de Ajustes. */
+/* Título de seção editorial e limpo, com tipografia acadêmica */
 .sectionTitle {
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
   font-weight: 700;
+  letter-spacing: -0.01em;
   margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.sectionTitle::before {
-  content: '';
-  width: 4px;
-  height: 1.05em;
-  border-radius: 2px;
-  background: var(--accent);
+  color: var(--text);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
 }
 
 /* "Onde melhorar": borda na cor de erro pra número já sinalizar sozinho. */
@@ -81,12 +85,19 @@
 .group { margin-bottom: 20px; }
 .group:last-child { margin-bottom: 0; }
 .groupTitle {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--text-dim);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.groupTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle, var(--border));
 }
 
 /* Dois por linha, um em tela estreita. */
@@ -118,7 +129,8 @@
   flex-shrink: 0;
   min-width: 42px;
   text-align: right;
-  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--text-dim);

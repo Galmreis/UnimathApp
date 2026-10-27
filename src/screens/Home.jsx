@@ -35,29 +35,28 @@ export function Home({ navigate }) {
   return (
     <div className={styles.home}>
       <header className={styles.header}>
-        <div className={styles.topRow}>
+        <div className={styles.brand}>
+          <h1 className={styles.title}>Unimath</h1>
+        </div>
+        <div className={styles.headerActions}>
           <button className={styles.rankChip} onClick={() => navigate('rank', { from: 'home' })} aria-label={t('rank_title')}>
             <RankBadge step={rank.step} size="sm" />
           </button>
           <button className={styles.helpBtn} onClick={() => navigate('help', { from: 'home' })} aria-label={t('help_title')}>
-            <Icon name="help" size={20} />
+            <Icon name="help" size={16} />
           </button>
         </div>
-        <h1 className={styles.title}>Unimath</h1>
       </header>
 
       {/* Antes do "Treinar agora": a oferta só serve onde a pessoa cai. */}
       {pending && (
         <section className={styles.pending}>
           <div className={styles.pendingHead}>
-            <span className={styles.pendingIcon} aria-hidden><Icon name="pause" size={18} /></span>
+            <span className={styles.pendingIcon} aria-hidden><Icon name="pause" size={16} /></span>
             <div className={styles.pendingTitles}>
               <span className={styles.pendingTitle}>{t('pending_title')}</span>
               <span className={styles.pendingWhere}>
-                {t('pending_where', {
-                  topic: getTopic(pending.topicId)?.name ?? pending.topicId,
-                  n: (pending.level ?? 0) + 1,
-                })}
+                {getTopic(pending.topicId)?.name ?? pending.topicId} · {t('level_of', { n: (pending.level ?? 0) + 1, m: getTopic(pending.topicId)?.levels.length ?? 3 })}
               </span>
             </div>
           </div>
@@ -84,15 +83,21 @@ export function Home({ navigate }) {
       )}
 
       <section className={styles.cta}>
-        <div className={styles.now}>
-          {t('now')}: <strong>{currentTopic.name}</strong> · {t('level_of', { n: currentLevel + 1, m: currentTopic.levels.length })}
+        <div className={styles.ctaHeader}>
+          <span className={styles.ctaBadge}>{t('now')}</span>
+          <span className={styles.ctaLevel}>{t('level_of', { n: currentLevel + 1, m: currentTopic.levels.length })}</span>
         </div>
-        <Button size="big" full onClick={() => navigate('session', { topicId: currentTopicId })}>
-          {t('trainNow')}
-        </Button>
-        <Button variant="ghost" full onClick={() => navigate('exam', { topicId: currentTopicId })}>
-          {t('fridayExam')}
-        </Button>
+        <div className={styles.ctaBody}>
+          <span className={styles.ctaTopicName}>{currentTopic.name}</span>
+        </div>
+        <div className={styles.ctaButtons}>
+          <Button size="big" full onClick={() => navigate('session', { topicId: currentTopicId })}>
+            {t('trainNow')}
+          </Button>
+          <Button variant="ghost" full onClick={() => navigate('exam', { topicId: currentTopicId })}>
+            {t('fridayExam')}
+          </Button>
+        </div>
       </section>
 
       <section className={styles.stats}>
@@ -101,7 +106,7 @@ export function Home({ navigate }) {
         <StatTile value={`${overallPct}%`} label={t('stat_overall')} />
       </section>
 
-      <section>
+      <section className={styles.trackSection}>
         <h2 className={styles.sectionTitle}>{t('yourTrack')}</h2>
         {groups.map((group) => (
           <div key={group.key} className={styles.group}>

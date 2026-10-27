@@ -13,8 +13,7 @@ export function RankBadge({ step, size, bare = false }) {
         className={styles.plate}
         style={{
           color: rank.color,
-          backgroundColor: `${rank.color}22`,
-          borderColor: `${rank.color}55`,
+          borderColor: `color-mix(in srgb, ${rank.color} 35%, var(--border))`,
         }}
       >
         {rank.roman}

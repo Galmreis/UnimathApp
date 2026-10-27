@@ -3,7 +3,7 @@ import { ProgressBar } from './ProgressBar.jsx'
 import { TopicGlyph } from './TopicGlyph.jsx'
 import { useStore } from '../store/StoreProvider.jsx'
 
-export function TopicCard({ topic, status, levelIndex, accuracy, onStart }) {
+export function TopicCard({ index, topic, status, levelIndex, accuracy, onStart }) {
   const { t } = useStore()
   const locked = status === 'locked'
   const mastered = status === 'mastered'
@@ -15,20 +15,24 @@ export function TopicCard({ topic, status, levelIndex, accuracy, onStart }) {
   const hasData = status === 'in_progress' || mastered
 
   return (
-    <div className={styles.card} data-status={status}>
+    <article className={styles.card} data-status={status}>
       <div className={styles.head}>
         <TopicGlyph topic={topic} />
         <div className={styles.titles}>
-          <div className={styles.name}>{topic.name}</div>
+          <div className={styles.nameRow}>
+            <h4 className={styles.name}>{topic.name}</h4>
+            <span className={styles.statusText} data-status={status}>
+              {mastered ? '★ ' : ''}{t(`status_${status}`)}
+            </span>
+          </div>
           <div className={styles.sub}>
-            <span className={styles.statusText} data-status={status}>{t(`status_${status}`)}</span>
-            {!locked && <>{' · '}{t('level_of', { n: safeLevel + 1, m: totalLevels })}</>}
+            {!locked ? t('level_of', { n: safeLevel + 1, m: totalLevels }) : t('lockedHint')}
           </div>
         </div>
       </div>
 
       {!locked && (
-        <>
+        <div className={styles.details}>
           <div className={styles.accRow}>
             <div className={styles.accBar}>
               <ProgressBar value={accuracy} tone={mastered ? 'success' : 'accent'} />
@@ -41,17 +45,18 @@ export function TopicCard({ topic, status, levelIndex, accuracy, onStart }) {
             {topic.levels.map((label, i) => (
               <button
                 key={i}
-                className={styles.levelPill}
+                className={styles.levelStep}
                 data-current={i === safeLevel && !mastered}
                 disabled={i > maxTrainable}
                 onClick={() => onStart(i)}
               >
-                {i + 1}. {label}
+                <span className={styles.stepNum}>{i + 1}</span>
+                <span className={styles.stepLabel}>{label}</span>
               </button>
             ))}
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </article>
   )
 }

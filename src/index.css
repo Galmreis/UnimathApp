@@ -1,155 +1,162 @@
 /* Reset + tokens de tema. Especifico de componente fica no *.module.css.
-   Fundo azul-acinzentado, não preto puro; texto quase branco, não branco puro. */
+   Direção visual: Caderno Técnico / Folha de Prova Vestibular.
+   Profundidade com contraste real de grafite, tipografia dupla (Sans + Mono). */
 
-:root {
-  /* Surfaces */
-  --bg: #171b24;
-  --surface: #1f2530;
-  --surface-2: #272e3c;
-  --elev: #2f3746;
+:root,
+:root[data-theme='midnight'] {
+  /* Surfaces - Caderno Acadêmico / Vestibular */
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #1f242c;
+  --elev: #272e38;
 
-  /* Text */
-  --text: #e7eaf0;
-  --text-dim: #98a2b3;
+  /* Text - Tipografia de estudo de alta legibilidade */
+  --text: #f0f4f8;
+  --text-dim: #8b97a8;
 
-  /* Lines & accent */
-  --border: #313a4a;
-  --accent: #7aa2f7;
-  --accent-ink: #0e1420; /* texto em cima do accent */
+  /* Linhas e Acento Acadêmico */
+  --border: #252d3a;
+  --border-subtle: #191f28;
+  --accent: #3b82f6; /* Cobalto Acadêmico */
+  --accent-ink: #ffffff;
 
   /* Feedback */
-  --success: #7ecb8f;
-  --success-bg: rgba(126, 203, 143, 0.14);
-  --error: #e39191;
-  --error-bg: rgba(227, 145, 145, 0.14);
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --error: #f43f5e;
+  --error-bg: rgba(244, 63, 94, 0.12);
 
-  /* Shape & rhythm */
-  --radius: 16px;
-  --radius-sm: 10px;
-  --tap: 52px;           /* alvo mínimo de toque */
-  --maxw: 480px;
+  /* Forma e ritmo - Proporção de caderno e prova */
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-xs: 4px;
+  --tap: 46px;
+  --maxw: 540px;
 
-  /* Troca a fonte do app inteiro nessa linha. */
-  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Tipografia: Superfamília Acadêmica (Inter + JetBrains Mono) */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+  --font: var(--font-sans);
+  --font-display: var(--font-sans);
 
   color-scheme: dark;
 }
 
-/* Temas alternativos. Cada bloco só sobrescreve cor; forma e espaçamento ficam
-   compartilhados. :root acima já é o tema padrão "Meia-noite". */
+/* Temas alternativos com identidades materiais reais e contraste refinado */
 
 :root[data-theme='dim'] {
-  --bg: #1a1c20;
-  --surface: #23262c;
-  --surface-2: #2b2f37;
-  --elev: #343945;
-  --text: #d7dae0;
-  --text-dim: #8b909b;
-  --border: #333842;
-  --accent: #8fb0e8;
-  --success: #86c99a;
-  --error: #d89a9a;
+  --bg: #121316;
+  --surface: #191a1f;
+  --surface-2: #21232a;
+  --elev: #2a2d36;
+  --text: #e7e9ee;
+  --text-dim: #858994;
+  --border: #262831;
+  --accent: #60a5fa;
+  --accent-ink: #0c1322;
+  --success: #34d399;
+  --error: #f87171;
 }
 
 :root[data-theme='sepia'] {
-  --bg: #1e1a15;
-  --surface: #282219;
-  --surface-2: #322a1f;
-  --elev: #3d3427;
-  --text: #ece3d3;
-  --text-dim: #ab9d86;
-  --border: #3d3427;
-  --accent: #d9a45b;
-  --accent-ink: #201a12;
-  --success: #a7c48a;
-  --success-bg: rgba(167, 196, 138, 0.14);
-  --error: #d89a86;
-  --error-bg: rgba(216, 154, 134, 0.14);
+  --bg: #14120f;
+  --surface: #1c1813;
+  --surface-2: #26211a;
+  --elev: #322b22;
+  --text: #f6efe2;
+  --text-dim: #aa9c88;
+  --border: #32281e;
+  --accent: #f59e0b;
+  --accent-ink: #191206;
+  --success: #84cc16;
+  --success-bg: rgba(132, 204, 22, 0.12);
+  --error: #f97316;
+  --error-bg: rgba(249, 115, 22, 0.12);
 }
 
 :root[data-theme='forest'] {
-  --bg: #161d19;
-  --surface: #1e2723;
-  --surface-2: #26312c;
-  --elev: #2f3b35;
-  --text: #e2e8e2;
-  --text-dim: #93a29a;
-  --border: #2e3a34;
-  --accent: #83c19a;
-  --accent-ink: #0d1712;
-  --success: #8fce9f;
-  --success-bg: rgba(143, 206, 159, 0.14);
-  --error: #d99a9a;
+  --bg: #0d1310;
+  --surface: #141c17;
+  --surface-2: #1b2620;
+  --elev: #233229;
+  --text: #ebf3ec;
+  --text-dim: #899c8f;
+  --border: #213227;
+  --accent: #10b981;
+  --accent-ink: #042014;
+  --success: #34d399;
+  --success-bg: rgba(52, 211, 153, 0.12);
+  --error: #f87171;
 }
 
 :root[data-theme='ocean'] {
-  --bg: #141d20;
-  --surface: #1c272b;
-  --surface-2: #243136;
-  --elev: #2d3d43;
-  --text: #dfe9e9;
-  --text-dim: #8fa3a5;
-  --border: #2c3a3f;
-  --accent: #6fbfc4;
-  --accent-ink: #0a1416;
-  --success: #8fce9f;
-  --error: #d99a9a;
+  --bg: #0a1216;
+  --surface: #101a20;
+  --surface-2: #16242d;
+  --elev: #1e303c;
+  --text: #e2f0f4;
+  --text-dim: #7f99a5;
+  --border: #1a323e;
+  --accent: #06b6d4;
+  --accent-ink: #04181c;
+  --success: #22c55e;
+  --error: #f43f5e;
 }
 
 :root[data-theme='plum'] {
-  --bg: #1a1620;
-  --surface: #241e2c;
-  --surface-2: #2d2637;
-  --elev: #382f45;
-  --text: #e7e1ee;
-  --text-dim: #9f95ab;
-  --border: #352d40;
-  --accent: #b79be0;
-  --accent-ink: #160f1e;
-  --success: #9ecf9f;
-  --error: #dd9aa9;
+  --bg: #130f18;
+  --surface: #1a1522;
+  --surface-2: #241c2f;
+  --elev: #2f253d;
+  --text: #f0eaf7;
+  --text-dim: #9c8ea9;
+  --border: #2e223c;
+  --accent: #a855f7;
+  --accent-ink: #170724;
+  --success: #34d399;
+  --error: #f43f5e;
 }
 
 :root[data-theme='rose'] {
-  --bg: #1f171a;
-  --surface: #291f23;
-  --surface-2: #33272c;
-  --elev: #3f3036;
-  --text: #efe2e5;
-  --text-dim: #b0989e;
-  --border: #3d2f34;
-  --accent: #d98fa0;
-  --accent-ink: #1e1215;
-  --success: #a7c48a;
-  --error: #dd9a9a;
+  --bg: #150f12;
+  --surface: #1d1419;
+  --surface-2: #281a22;
+  --elev: #35222c;
+  --text: #f7ebef;
+  --text-dim: #a88d97;
+  --border: #35202c;
+  --accent: #f43f5e;
+  --accent-ink: #20040b;
+  --success: #22c55e;
+  --error: #fb7185;
 }
 
 :root[data-theme='slate'] {
-  --bg: #181a1e;
-  --surface: #212429;
-  --surface-2: #292d34;
-  --elev: #333842;
-  --text: #e3e6eb;
-  --text-dim: #969ba6;
-  --border: #31363f;
-  --accent: #93a7cf;
-  --accent-ink: #12141a;
-  --success: #8cc99a;
-  --error: #d69a9a;
+  --bg: #0f1216;
+  --surface: #161b21;
+  --surface-2: #1e242d;
+  --elev: #272f3a;
+  --text: #e5edf5;
+  --text-dim: #8292a4;
+  --border: #232c37;
+  --accent: #38bdf8;
+  --accent-ink: #071e2c;
+  --success: #34d399;
+  --error: #f87171;
 }
 
 :root[data-theme='clay'] {
-  --bg: #1e1815;
-  --surface: #28211c;
-  --surface-2: #322824;
-  --elev: #3e322b;
-  --text: #ede3dc;
-  --text-dim: #ab9a8f;
-  --border: #3d3129;
-  --accent: #d99873;
-  --accent-ink: #1f1410;
-  --success: #a7c48a;
-  --error: #dd9a86;
+  --bg: #15110e;
+  --surface: #1e1713;
+  --surface-2: #291e18;
+  --elev: #362820;
+  --text: #f6ede7;
+  --text-dim: #a89489;
+  --border: #36241b;
+  --accent: #f97316;
+  --accent-ink: #200d02;
+  --success: #84cc16;
+  --error: #ef4444;
 }
 
 /* Camada de alto contraste sobre o tema ativo. Não redeclara --bg/--surface/
@@ -167,12 +174,13 @@
 html, body, #root { height: 100%; }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 16px;               /* >=16px, senão o celular dá zoom ao focar input */
+  font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 

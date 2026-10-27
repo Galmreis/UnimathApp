@@ -15,13 +15,22 @@
 }
 
 .pct {
+  font-family: var(--font-mono);
   font-size: 4rem;
   font-weight: 800;
   line-height: 1;
   color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
   animation: pop 0.4s 0.1s ease both;
 }
-.score { font-size: 1.25rem; font-weight: 600; margin-top: 8px; }
+.score {
+  font-family: var(--font-sans);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 8px;
+}
 .sub { font-size: 0.9rem; color: var(--text-dim); margin-top: 4px; }
 
 .message {
